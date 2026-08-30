@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+  <title id="title">Market Entry</title>
+  <desc id="desc">VOrigin premium website UI icon: Market Entry</desc>
+  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M12 3.8a8.2 8.2 0 1 0 0 16.4 8.1 8.1 0 0 0 5.8-2.4"/>
+    <path d="M3.8 12h11.4"/>
+    <path d="M12 3.8c2 2 3.2 5 3.2 8.2S14 18.2 12 20.2c-2-2-3.2-5-3.2-8.2S10 5.8 12 3.8Z"/>
+    <path d="M16.3 9.7h4.2v4.2"/>
+    <path d="M20.5 9.7l-5 5"/>
+  </g>
+</svg>

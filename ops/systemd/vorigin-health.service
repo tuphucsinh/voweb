@@ -1,0 +1,6 @@
+[Unit]
+Description=VOrigin local health check
+After=network-online.target nginx.service docker.service
+[Service]
+Type=oneshot
+ExecStart=/srv/vorigin/app/scripts/healthcheck.sh

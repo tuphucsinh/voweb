@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+  <title id="title">Brand Localization</title>
+  <desc id="desc">VOrigin premium website UI icon: Brand Localization</desc>
+  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="10.5" cy="11" r="6.5"/>
+    <path d="M4.5 11h12M10.5 4.5c1.7 1.6 2.8 4 2.8 6.5s-1.1 4.9-2.8 6.5c-1.7-1.6-2.8-4-2.8-6.5s1.1-4.9 2.8-6.5Z"/>
+    <path d="M16 15.5s2.5-2.3 2.5-4.3a2.5 2.5 0 0 0-5 0c0 2 2.5 4.3 2.5 4.3Z"/>
+    <circle cx="16" cy="11.2" r=".8"/>
+  </g>
+</svg>

@@ -1,0 +1,81 @@
+name: vorigin
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [private]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  directus:
+    image: ${DIRECTUS_IMAGE:-directus/directus:11}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8055:8055"
+    environment:
+      SECRET: ${DIRECTUS_SECRET}
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
+      DB_CLIENT: pg
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      PUBLIC_URL: https://admin.vorigin.vn
+      TELEMETRY: "false"
+      WEBSOCKETS_ENABLED: "false"
+    volumes:
+      - directus_uploads:/directus/uploads
+      - directus_extensions:/directus/extensions
+    networks: [private]
+
+  lead-api:
+    build:
+      context: ../services/lead-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8787:8787"
+    environment:
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY}
+      TRUSTED_HOSTS: vorigin.vn,www.vorigin.vn
+      IP_HASH_SALT: ${IP_HASH_SALT}
+      DIRECTUS_URL: http://directus:8055
+      DIRECTUS_TOKEN: ${DIRECTUS_LEAD_TOKEN:-}
+      LEAD_WEBHOOK_URL: ${LEAD_WEBHOOK_URL:-}
+      LEAD_STORE: /data/leads.ndjson
+    volumes:
+      - lead_data:/data
+    networks: [private]
+    depends_on: [directus]
+
+  uptime-kuma:
+    profiles: ["monitoring"]
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - uptime_data:/app/data
+
+networks:
+  private:
+    driver: bridge
+volumes:
+  postgres_data:
+  directus_uploads:
+  directus_extensions:
+  lead_data:
+  uptime_data:

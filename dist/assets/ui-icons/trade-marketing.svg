@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+  <title id="title">Trade Marketing</title>
+  <desc id="desc">VOrigin premium website UI icon: Trade Marketing</desc>
+  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M4.5 13.5V9.2c0-.7.5-1.2 1.2-1.2h2.3l5.7-2.6a.9.9 0 0 1 1.3.8v11.5a.9.9 0 0 1-1.3.8L8 16H5.7c-.7 0-1.2-.5-1.2-1.2Z"/>
+    <path d="M8 16.1v2.1c0 .9-.7 1.6-1.6 1.6H5.8"/>
+    <path d="M17.5 9.2c1.3.8 2 1.9 2 3.3s-.7 2.5-2 3.3"/>
+    <path d="M16.2 7.2c2.1 1.3 3.3 3.1 3.3 5.3s-1.2 4-3.3 5.3"/>
+  </g>
+</svg>

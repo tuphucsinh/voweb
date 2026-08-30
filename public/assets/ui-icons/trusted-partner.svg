@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+  <title id="title">Trusted Partner</title>
+  <desc id="desc">VOrigin premium website UI icon: Trusted Partner</desc>
+  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M4.5 8.8 7.7 6.6l3.2 2.1-2.6 3.2-3.8-1.2Z"/>
+    <path d="M19.5 8.8 16.3 6.6l-3.2 2.1 2.6 3.2 3.8-1.2Z"/>
+    <path d="M8.3 11.9 10.6 14c.8.7 1.9.8 2.8.1l2.9-2.2"/>
+    <path d="M6.8 13.2l2.7 2.7c.7.7 1.9.7 2.6 0l.4-.4"/>
+    <path d="M17.2 13.2l-2.4 2.4c-.7.7-1.8.7-2.5.1"/>
+    <path d="M6 11.5 4.2 13.2M18 11.5l1.8 1.7"/>
+  </g>
+</svg>

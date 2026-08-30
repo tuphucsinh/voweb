@@ -1,0 +1,8 @@
+[Unit]
+Description=VOrigin CMS sync and static rebuild
+After=network-online.target docker.service
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/vorigin/app
+EnvironmentFile=-/srv/vorigin/app/ops/.env
+ExecStart=/srv/vorigin/app/scripts/cms-refresh.sh

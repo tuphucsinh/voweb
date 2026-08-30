@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+  <title id="title">Origin</title>
+  <desc id="desc">VOrigin premium website UI icon: Origin</desc>
+  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M5 14.5h14"/>
+    <path d="M12 14.5v-5.5"/>
+    <path d="M12 9c-1.9 0-3-1.4-3-3 1.7 0 3 .8 3 3Z"/>
+    <path d="M12 10.2c0-2 1.4-3.2 3.2-3.2 0 1.8-.8 3.2-3.2 3.2Z"/>
+  </g>
+</svg>

@@ -1,0 +1,88 @@
+{
+  "policy": "Publish only claims supported by an official MARIGOLD/MDI source or VOrigin's own Vietnam distribution documentation. Do not infer therapeutic or disease-prevention benefits beyond approved wording.",
+  "last_reviewed": "2026-08-30",
+  "claims": [
+    {
+      "key": "exclusive_distribution_vietnam",
+      "statement_vi": "VOrigin là nhà phân phối độc quyền MARIGOLD Fruit Drinks tại Việt Nam.",
+      "statement_en": "VOrigin is the exclusive distributor of MARIGOLD Fruit Drinks in Vietnam.",
+      "source_type": "VOrigin distribution documentation",
+      "source": "Documentation held by VOrigin",
+      "verified_public": false,
+      "owner_confirmed": true,
+      "approved_vn": true,
+      "public_visible": false,
+      "publication_note": "Temporarily hidden from all public website copy at owner request (2026-08-30). Retain internally for future activation."
+    },
+    {
+      "key": "four_flavours",
+      "statement_vi": "Bốn hương vị: Apple, Orange, Mango và Grape.",
+      "statement_en": "Four flavours: Apple, Orange, Mango and Grape.",
+      "source_type": "MARIGOLD official website",
+      "source": "https://marigold.com.sg/fruit-drinks/",
+      "verified_public": true,
+      "owner_confirmed": true,
+      "approved_vn": true
+    },
+    {
+      "key": "pack_250_6",
+      "statement_vi": "Quy cách tham chiếu: 250ml x 6.",
+      "statement_en": "Reference pack format: 250ml x 6.",
+      "source_type": "MARIGOLD official website",
+      "source": "https://marigold.com.sg/fruit-drinks/",
+      "verified_public": true,
+      "owner_confirmed": true,
+      "approved_vn": true
+    },
+    {
+      "key": "vitamins_abcde",
+      "statement_vi": "Bổ sung vitamin A, B, C, D & E.",
+      "statement_en": "Enriched with Vitamins A, B, C, D & E.",
+      "source_type": "MARIGOLD official website",
+      "source": "https://marigold.com.sg/fruit-drinks/",
+      "verified_public": true,
+      "owner_confirmed": true,
+      "approved_vn": true
+    },
+    {
+      "key": "no_preservatives",
+      "statement_vi": "Không sử dụng chất bảo quản.",
+      "statement_en": "No preservatives.",
+      "source_type": "MARIGOLD official website",
+      "source": "https://marigold.com.sg/fruit-drinks/",
+      "verified_public": true,
+      "owner_confirmed": true,
+      "approved_vn": true
+    },
+    {
+      "key": "halal_certified",
+      "statement_vi": "Sản phẩm MARIGOLD được chứng nhận Halal.",
+      "statement_en": "MARIGOLD products are Halal-certified.",
+      "source_type": "Malaysia Dairy Industries official website",
+      "source": "https://marigold.com.sg/about-us/",
+      "verified_public": true,
+      "owner_confirmed": true,
+      "approved_vn": true
+    },
+    {
+      "key": "manufacturer_accreditations",
+      "statement_vi": "Malaysia Dairy Industries công bố các chứng nhận/hệ thống ISO 9001, ISO 22000 và HACCP cho quản lý chất lượng và an toàn thực phẩm.",
+      "statement_en": "Malaysia Dairy Industries lists ISO 9001, ISO 22000 and HACCP among its quality and food-safety accreditations.",
+      "source_type": "Malaysia Dairy Industries official website",
+      "source": "https://marigold.com.sg/about-us/",
+      "verified_public": true,
+      "owner_confirmed": true,
+      "approved_vn": true
+    },
+    {
+      "key": "manufacturer_heritage",
+      "statement_vi": "Malaysia Dairy Industries Pte Ltd được thành lập năm 1963 tại Singapore.",
+      "statement_en": "Malaysia Dairy Industries Pte Ltd was incorporated in Singapore in 1963.",
+      "source_type": "Malaysia Dairy Industries official website",
+      "source": "https://marigold.com.sg/about-us/",
+      "verified_public": true,
+      "owner_confirmed": true,
+      "approved_vn": true
+    }
+  ]
+}

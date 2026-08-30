@@ -1,0 +1,8 @@
+[Unit]
+Description=VOrigin daily backup timer
+[Timer]
+OnCalendar=*-*-* 03:20:00
+RandomizedDelaySec=20m
+Persistent=true
+[Install]
+WantedBy=timers.target

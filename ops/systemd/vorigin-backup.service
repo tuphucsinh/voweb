@@ -1,0 +1,7 @@
+[Unit]
+Description=VOrigin daily backup
+After=docker.service
+[Service]
+Type=oneshot
+EnvironmentFile=-/srv/vorigin/app/ops/.env
+ExecStart=/srv/vorigin/app/scripts/backup.sh

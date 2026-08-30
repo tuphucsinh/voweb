@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+  <title id="title">Play Circle</title>
+  <desc id="desc">VOrigin premium website UI icon: Play Circle</desc>
+  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="12" cy="12" r="8.5"/>
+    <path d="m10.2 8.8 5.3 3.2-5.3 3.2Z"/>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+ops/.env
+.env
+content/cms-cache/
+backups/
+*.log
+.DS_Store
+__pycache__/
