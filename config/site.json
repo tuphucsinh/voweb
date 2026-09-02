@@ -11,9 +11,11 @@
   ],
   "contact": {
     "email": "contact@vorigin.vn",
-    "phone": "84 913736233",
-    "address_vi": "E2, đường N5 KĐT Ecoxuân Lái Thiêu HCMC",
-    "address_en": "E2, N5 Street, Eco Xuan Urban Area, Lai Thieu, HCMC",
+    "phone": "+84 913 736 233",
+    "address_vi": "E2, đường N5, KĐT Ecoxuân Lái Thiêu",
+    "city_vi": "TP. Hồ Chí Minh",
+    "address_en": "E2, N5 Street, Eco Xuan Urban Area, Lai Thieu",
+    "city_en": "Ho Chi Minh City",
     "tax_id": ""
   },
   "contact_forms_enabled": false,

@@ -60,6 +60,7 @@ dist/assets/marigold-mango-premium.webp
 dist/assets/marigold-orange-premium-390w.webp
 dist/assets/marigold-orange-premium-640w.webp
 dist/assets/marigold-orange-premium.webp
+dist/assets/marigold-web3.png
 dist/assets/story-craft.webp
 dist/assets/story-nature.webp
 dist/assets/story-origin.webp
@@ -174,6 +175,7 @@ public/assets/marigold-mango-premium.webp
 public/assets/marigold-orange-premium-390w.webp
 public/assets/marigold-orange-premium-640w.webp
 public/assets/marigold-orange-premium.webp
+public/assets/marigold-web3.png
 public/assets/story-craft.webp
 public/assets/story-nature.webp
 public/assets/story-origin.webp
