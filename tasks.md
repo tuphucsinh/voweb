@@ -1,7 +1,7 @@
 # VOweb Execution Tasks
 
-**Plan:** `.ai/MASTER_PLAN.md` revision 6
-**State:** Phase 1 foundation and P2M1T02 isolated staging are verified. Phase 2 is blocked on exact production candidate approval and apex/www public edge/cutover gates (`admin.vorigin.vn` NXDOMAIN is deferred Phase 3 scope).
+**Plan:** `.ai/MASTER_PLAN.md` revision 7
+**State:** Phase 1 foundation, P2M1T02 isolated staging, P2M1T03 production candidate and P2M1T04 apex/www public edge are verified. `admin.vorigin.vn` remains deferred Phase 3 scope.
 **Rule:** Tasks below are unfinished executable work only. Mika owns verification, task status and commits; runners never edit this file, commit, push, deploy or use secrets.
 
 ## Completed foundation
@@ -28,7 +28,7 @@
 **Current facts:**
 - Staging contract: `/srv/vorigin/staging/current`, `127.0.0.1:8081`, Nginx site `vorigin-staging`.
 - Production contract: `/srv/vorigin/current`, `127.0.0.1:8080`, Nginx site `vorigin`.
-- Cloudflare nameserver delegation exists. Phase 2 public DNS records are incomplete: apex `vorigin.vn` has no A/AAAA/CNAME answer; `www.vorigin.vn` is NXDOMAIN (`admin.vorigin.vn` NXDOMAIN is deferred Phase 3 scope). Staging remains strictly local on `/srv/vorigin/staging/current` and `127.0.0.1:8081` with `RUN_DATA_SERVICES=0`.
+- Cloudflare nameserver delegation and Phase 2 public DNS are verified for apex/www; `admin.vorigin.vn` remains NXDOMAIN as deferred Phase 3 scope. Staging remains strictly local on `/srv/vorigin/staging/current` and `127.0.0.1:8081` with `RUN_DATA_SERVICES=0`.
 
 **Execution:**
 1. Capture the current release pointer, active Nginx config/symlinks, listeners, Docker state, cloudflared state and disk space.
@@ -59,7 +59,7 @@
 
 **Parallel-safe:** `no`
 
-**Status:** `[BLOCKED — owner static-launch/legal approval and production flag approval pending]`
+**Status:** `[x] VERIFIED — owner-confirmed production PASS for SHA `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`; production gates were completed before this session]`
 
 **Execution:**
 1. Freeze source/status and confirm `Doc/`, `.tmp/`, `ops/.env` and private artifacts are outside release scope.
@@ -92,7 +92,9 @@
 
 **Parallel-safe:** `no`
 
-**Status:** `[BLOCKED — exact launch SHA, apex/www public route and cutover approval pending]`
+**Status:** `[x] VERIFIED — public edge evidence passed 2026-09-02 for production SHA `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`]`
+
+**Public evidence:** DNS resolved via local resolver, Cloudflare DoH and Google DoH; apex `/` returned `302`, `/vi/` and `/en/` returned `200`; `www` returned `301 Location: https://vorigin.vn/`; TLS 1.3 certificate validation and SAN match passed; 31/31 static assets loaded; five checked security headers were present; `127.0.0.1:8080` remained loopback-only. No `admin.vorigin.vn` route was created.
 
 **Execution:**
 1. Obtain cutover approval tied to the exact SHA, release path, maintenance window and rollback command.
