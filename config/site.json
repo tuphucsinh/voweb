@@ -24,7 +24,7 @@
     "website_id": ""
   },
   "launch": {
-    "production_ready": false,
+    "production_ready": true,
     "privacy_reviewed": true,
     "terms_reviewed": true,
     "official_logo_confirmed": true,

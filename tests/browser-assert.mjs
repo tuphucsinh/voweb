@@ -1,7 +1,7 @@
 const d = process.env.WD_DOM || '';
 const checks = [
   ['expected locale html', /<html\b[^>]*\blang="(?:vi|en)"/.test(d)],
-  ['mobile menu control', d.includes('data-menu-toggle')],
+  ['mobile menu control', /<button\b[^>]*\bclass="[^"]*\bmenu-toggle\b[^"]*"/.test(d)],
   ['all local images have geometry', !/<img\b[^>]*\bsrc="\/(?!\/)[^"]*"[^>]*\b(?:width|height)="(?:0|)"/.test(d)],
   ['partners clean asset contract', !d.includes('b2b-vorigin-premium.webp')],
 ];
