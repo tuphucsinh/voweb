@@ -72,8 +72,9 @@
     transitionObserver.observe(market);
   }
 
-  document.querySelectorAll('[data-lead-form]').forEach(form => {
-    form.addEventListener('submit', async (event) => {
+  if (document.documentElement.dataset.contactForms === 'enabled') {
+    document.querySelectorAll('[data-lead-form]').forEach(form => {
+      form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const status = form.querySelector('.form-status');
       const submit = form.querySelector('[type="submit"]');
@@ -98,4 +99,5 @@
       }
     });
   });
+  }
 })();

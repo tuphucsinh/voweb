@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import json, os, shutil, html
+from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import quote
+from scripts.optimize_images import RESPONSIVE_SPECS
 
 ROOT = Path(__file__).resolve().parent
 DIST = ROOT / 'dist'
@@ -25,6 +27,7 @@ except Exception: pass
 BASE = SITE['domain'].rstrip('/')
 ENV = os.getenv('SITE_ENV', 'preview')
 TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY', SITE.get('turnstile_site_key','')).strip()
+CONTACT_FORMS_ENABLED = bool(SITE.get('contact_forms_enabled', False))
 ANALYTICS_URL = os.getenv('ANALYTICS_SCRIPT_URL', SITE['analytics'].get('script_url','')).strip()
 ANALYTICS_ID = os.getenv('ANALYTICS_WEBSITE_ID', SITE['analytics'].get('website_id','')).strip()
 
@@ -70,6 +73,68 @@ def e(v): return html.escape(str(v), quote=True)
 
 def icon_img(name, cls='icon-svg'):
     return f'<img src="/assets/ui-icons/{e(name)}.svg" alt="" aria-hidden="true" class="{cls}" width="24" height="24">'
+
+
+def render_b2b_picture(css_class, alt_text, loading='lazy'):
+    """Render the shared responsive B2B image contract."""
+    if loading not in {'lazy', 'eager'}:
+        raise ValueError(f'unsupported image loading mode: {loading}')
+    sizes = '(max-width: 820px) 100vw, 58vw'
+    priority = ' fetchpriority="high"' if loading == 'eager' else ''
+    return (
+        f'<picture class="b2b-picture {e(css_class)}">'
+        f'<source type="image/webp" '
+        f'srcset="/assets/b2b-vorigin-partner-640w.webp 640w, '
+        f'/assets/b2b-vorigin-partner-1020w.webp 1020w" sizes="{sizes}">'
+        f'<img class="{e(css_class)}" '
+        f'src="/assets/b2b-vorigin-partner-1020w.webp" '
+        f'alt="{e(alt_text)}" width="1020" height="818" '
+        f'loading="{loading}" decoding="async"{priority}>'
+        '</picture>'
+    )
+
+
+@dataclass(frozen=True)
+class ImagePolicy:
+    widths: tuple[int, ...]
+    sizes: str
+    loading: str = 'lazy'
+    fetchpriority: str = 'auto'
+    css_class: str = ''
+
+
+RESPONSIVE_POLICIES = {
+    'home_hero': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 52vw', 'eager', 'high', 'hero-responsive'),
+    'lineup': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 72vw', 'lazy', 'auto', 'lineup-responsive'),
+    'marigold_hero': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 64vw', 'eager', 'high', 'marigold-lineup-responsive'),
+    'product_hero': ImagePolicy((390, 640), '(max-width: 820px) 100vw, 54vw', 'eager', 'high', 'product-responsive'),
+    'flavor_card': ImagePolicy((390, 640), '(max-width: 580px) 80vw, 25vw', 'lazy', 'auto', 'flavor-responsive'),
+    'mini_flavor': ImagePolicy((390, 640), '(max-width: 580px) 74vw, 30vw', 'lazy', 'auto', 'mini-flavor-responsive'),
+}
+
+
+def responsive_picture(asset_key: str, alt: str, policy: ImagePolicy) -> str:
+    """Render one deterministic responsive picture contract for a managed asset."""
+    spec = RESPONSIVE_SPECS.get(asset_key)
+    if spec is None:
+        raise KeyError(f'unknown responsive asset: {asset_key}')
+    available = {variant.width: variant.filename for variant in spec.variants}
+    if any(width not in available for width in policy.widths):
+        raise ValueError(f'policy widths not generated for {asset_key}: {policy.widths}')
+    if policy.loading not in {'lazy', 'eager'}:
+        raise ValueError(f'unsupported image loading mode: {policy.loading}')
+    srcset = ', '.join(f'/assets/{available[width]} {width}w' for width in policy.widths)
+    srcset += f', /assets/{spec.source_filename} {spec.source_size[0]}w'
+    priority = f' fetchpriority="{e(policy.fetchpriority)}"' if policy.fetchpriority in {'high', 'low'} else ''
+    css_class = e(policy.css_class)
+    return (
+        f'<picture class="responsive-picture {css_class}">'
+        f'<source type="image/webp" srcset="{srcset}" sizes="{e(policy.sizes)}">'
+        f'<img class="{css_class}" src="/assets/{spec.source_filename}" '
+        f'alt="{e(alt)}" width="{spec.source_size[0]}" height="{spec.source_size[1]}" '
+        f'loading="{policy.loading}" decoding="async"{priority}>'
+        '</picture>'
+    )
 
 
 def claim_text(key, locale):
@@ -139,7 +204,7 @@ def base_page(locale, title, description, route_key=None, body='', canonical_pat
     if alt_path_en is None and route_key: alt_path_en=ROUTES['en'].get(route_key)
     robots = 'index,follow,max-image-preview:large' if ENV=='production' else 'noindex,nofollow'
     ld = {'@context':'https://schema.org','@type':'Organization','name':'VOrigin','legalName':SITE['legal_name'],'url':BASE,'slogan':'From Origins to Value'}
-    head = f'''<!doctype html><html lang="{lang_attr}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f3eee4"><meta name="robots" content="{robots}">
+    head = f'''<!doctype html><html lang="{lang_attr}" data-contact-forms="{'enabled' if CONTACT_FORMS_ENABLED else 'disabled'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f3eee4"><meta name="robots" content="{robots}">
 <title>{e(title)}</title><meta name="description" content="{e(description)}"><link rel="canonical" href="{e(canonical)}">'''
     if alt_path_vi: head += f'<link rel="alternate" hreflang="vi-VN" href="{BASE}{alt_path_vi}">'
     if alt_path_en: head += f'<link rel="alternate" hreflang="en" href="{BASE}{alt_path_en}">'
@@ -167,17 +232,19 @@ def home(locale):
     global_label='DÀNH CHO THƯƠNG HIỆU QUỐC TẾ' if vi else 'FOR GLOBAL BRANDS'
     services=[('market-entry','Gia nhập<br>thị trường' if vi else 'Market Entry'),('import-compliance','Nhập khẩu &amp;<br>tuân thủ' if vi else 'Import &amp;<br>Compliance'),('distribution-development','Phát triển<br>phân phối' if vi else 'Distribution<br>Development'),('brand-localization','Bản địa hóa<br>thương hiệu' if vi else 'Brand<br>Localisation'),('trade-marketing','Tiếp thị<br>thương mại' if vi else 'Trade<br>Marketing')]
     service_html=''.join(f'<span><i class="service-icon">{icon_img(ic,"service-icon-svg")}</i><small>{label}</small></span>' for ic,label in services)
-    body=f'''<section class="hero section-light"><div class="shell hero-grid"><div class="hero-copy reveal"><p class="eyebrow">{hero_eyebrow}</p><h1>From Origins<br><span>to Value.</span></h1><p class="hero-lead">{e(t['hero_lead'])}</p><div class="hero-actions"><a href="{r['about']}" class="button button-solid">{e(t['hero_primary'])}<span>→</span></a><a href="{r['brands']}" class="text-action"><span class="play">{icon_img("play-circle","play-icon-svg")}</span>{e(t['hero_secondary'])}</a></div></div><figure class="hero-visual reveal"><figcaption class="visual-label">{featured_label} — MARIGOLD</figcaption><img src="/assets/hero-marigold-premium.webp" alt="MARIGOLD Orange Fruit Drink" width="1494" height="1065" fetchpriority="high"></figure></div></section>
+    body=f'''<section class="hero section-light"><div class="shell hero-grid"><div class="hero-copy reveal"><p class="eyebrow">{hero_eyebrow}</p><h1>From Origins<br><span>to Value.</span></h1><p class="hero-lead">{e(t['hero_lead'])}</p><div class="hero-actions"><a href="{r['about']}" class="button button-solid">{e(t['hero_primary'])}<span>→</span></a><a href="{r['brands']}" class="text-action"><span class="play">{icon_img("play-circle","play-icon-svg")}</span>{e(t['hero_secondary'])}</a></div></div><figure class="hero-visual reveal"><figcaption class="visual-label">{featured_label} — MARIGOLD</figcaption>{responsive_picture('hero-marigold-premium', 'MARIGOLD Orange Fruit Drink', RESPONSIVE_POLICIES['home_hero'])}</figure></div></section>
 <section class="story section-light" id="story"><div class="shell"><div class="section-heading centered reveal"><p class="eyebrow">{story_eyebrow}</p><h2>{e(t['story_title'])}</h2><i class="bronze-rule"></i></div><div class="story-grid">
 {story_card('story-origin.webp','Nguồn gốc' if vi else 'Origin',t['origin'],'origin')}{story_card('story-nature.webp','Tự nhiên' if vi else 'Nature',t['nature'],'nature')}{story_card('story-craft.webp','Tiêu chuẩn' if vi else 'Craft',t['craft'],'craft')}{story_card('story-value.webp','Giá trị' if vi else 'Value',t['value'],'value')}</div></div></section>
-<section class="featured section-soft" id="brands"><div class="shell featured-grid"><div class="featured-copy reveal"><p class="eyebrow">{featured_label}</p><h2>MARIGOLD</h2><p>{e(t['featured_copy'])}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['discover_marigold'])}<span>→</span></a></div><figure class="lineup reveal"><img src="/assets/marigold-lineup-premium.webp" alt="MARIGOLD Fruit Drink Apple, Orange, Mango and Grape" width="1300" height="500" loading="lazy"></figure></div></section>
+<section class="featured section-soft" id="brands"><div class="shell featured-grid"><div class="featured-copy reveal"><p class="eyebrow">{featured_label}</p><h2>MARIGOLD</h2><p>{e(t['featured_copy'])}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['discover_marigold'])}<span>→</span></a></div><figure class="lineup reveal">{responsive_picture('marigold-lineup-premium', 'MARIGOLD Fruit Drink Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['lineup'])}</figure></div></section>
 <section class="portfolio section-light"><div class="shell portfolio-grid"><div class="portfolio-copy reveal"><p class="eyebrow">{portfolio_label}</p><h2>{portfolio_title}</h2><p>{e(t['portfolio_copy'])}</p><a class="button button-outline" href="{r['brands']}">{e(t['portfolio_cta'])}<span>→</span></a></div><div class="portfolio-cards" role="list">{portfolio_cards(locale)}</div></div></section>
 <section class="why-partner section-light" id="partners"><div class="leaf-ornament leaf-left">⌁⌁⌁</div><div class="leaf-ornament leaf-right">⌁⌁⌁</div><div class="shell"><div class="section-heading centered reveal"><h2>{e(t['why'])}</h2><i class="bronze-rule transition-rule"></i></div><div class="benefit-grid">{benefits}</div></div></section>
-<section class="market section-dark" id="market"><div class="sunset-bleed"></div><div class="shell market-grid"><figure class="market-visual reveal"><img src="/assets/b2b-vorigin-premium.webp" alt="VOrigin branded container at a port at sunset" width="1936" height="430" loading="lazy"></figure><div class="market-copy reveal"><p class="eyebrow">{global_label}</p><h2>YOUR BRAND.<br>OUR MARKET.</h2><p>{e(t['market_copy'])}</p><div class="services">{service_html}</div><a class="button button-gold" href="{r['partners']}">{e(t['market_cta'])}<span>→</span></a></div></div></section>'''
+<section class="market section-dark" id="market"><div class="sunset-bleed"></div><div class="shell market-grid"><figure class="market-visual reveal">{render_b2b_picture('market-visual-image', 'VOrigin branded container at a port at sunset')}</figure><div class="market-copy reveal"><p class="eyebrow">{global_label}</p><h2>YOUR BRAND.<br>OUR MARKET.</h2><p>{e(t['market_copy'])}</p><div class="services">{service_html}</div><a class="button button-gold" href="{r['partners']}">{e(t['market_cta'])}<span>→</span></a></div></div></section>'''
     return base_page(locale,'VOrigin — From Origins to Value',t['hero_lead'],'home',body)
 
 def story_card(img,title,copy,icon):
-    return f'<article class="story-card reveal"><img src="/assets/{img}" alt="{e(title)}" width="420" height="264" loading="lazy"><div class="story-body"><span class="round-icon">{icon_img(icon, "round-icon-svg")}</span><h3>{e(title)}</h3><p>{e(copy)}</p></div></article>'
+    dimensions={'story-origin.webp':(210,132),'story-nature.webp':(210,132),'story-craft.webp':(210,132),'story-value.webp':(215,132)}
+    width,height=dimensions[img]
+    return f'<article class="story-card reveal"><img src="/assets/{img}" alt="{e(title)}" width="{width}" height="{height}" loading="lazy"><div class="story-body"><span class="round-icon">{icon_img(icon, "round-icon-svg")}</span><h3>{e(title)}</h3><p>{e(copy)}</p></div></article>'
 
 def portfolio_cards(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
@@ -206,7 +273,7 @@ def about(locale):
     about_eyebrow='VỀ VORIGIN' if vi else 'ABOUT VORIGIN'; standard_eyebrow='TIÊU CHUẨN VORIGIN' if vi else 'THE VORIGIN STANDARD'
     vision_copy='Trở thành đối tác thương mại – nhập khẩu đáng tin cậy cho những thương hiệu muốn phát triển tại Việt Nam, với cách chọn sản phẩm có tiêu chuẩn, làm việc minh bạch và tầm nhìn dài hạn.' if vi else 'To become a trusted partner for brands seeking to grow in Vietnam — with disciplined selection, transparent relationships and a long-term view.'
     body=page_hero(locale,about_eyebrow,t['about_title'],t['about_lede'],f'<a href="{r["home"]}">{t["home"]}</a> / {t["about"]}')
-    body+=f'''<section class="brand-story-premium page-section"><div class="shell brand-story-grid"><div class="brand-story-statement reveal"><p class="eyebrow">FROM ORIGINS TO VALUE</p><h2>{e(lead)}</h2><p>{e(story)}</p></div><figure class="brand-story-visual reveal"><img src="/assets/story-origin.webp" alt="VOrigin origin landscape" loading="lazy"><figcaption>{'NGUỒN GỐC → CHỌN LỌC → GIÁ TRỊ' if vi else 'ORIGIN → SELECTION → VALUE'}</figcaption></figure></div></section>'''
+    body+=f'''<section class="brand-story-premium page-section"><div class="shell brand-story-grid"><div class="brand-story-statement reveal"><p class="eyebrow">FROM ORIGINS TO VALUE</p><h2>{e(lead)}</h2><p>{e(story)}</p></div><figure class="brand-story-visual reveal"><img src="/assets/story-origin.webp" alt="VOrigin origin landscape" width="210" height="132" loading="lazy"><figcaption>{'NGUỒN GỐC → CHỌN LỌC → GIÁ TRỊ' if vi else 'ORIGIN → SELECTION → VALUE'}</figcaption></figure></div></section>'''
     body+=f'''<section class="page-section alt" id="standard"><div class="shell"><div class="section-heading centered"><p class="eyebrow">{standard_eyebrow}</p><h2>{e(t['standard'])}</h2><i class="bronze-rule"></i></div><div class="standard-grid">{cards}</div></div></section>'''
     body+=f'''<section class="page-section"><div class="shell editorial-grid"><div><p class="eyebrow">{'TẦM NHÌN' if vi else 'VISION'}</p><h2>{e(t['vision'])}</h2></div><div class="content-block"><p>{e(vision_copy)}</p></div></div></section>'''
     return base_page(locale,f'{t["about"]} — VOrigin',t['about_lede'],'about',body,body_class='about-page')
@@ -221,7 +288,7 @@ def brands(locale):
     feature_copy='Thương hiệu nổi bật đầu tiên trong danh mục VOrigin, mở đầu cho một hành trình danh mục được xây dựng có chọn lọc.' if vi else 'The first featured brand in VOrigin’s portfolio, marking the beginning of a carefully built brand journey.'
     next_label='DANH MỤC ĐANG MỞ RỘNG' if vi else 'A GROWING PORTFOLIO'; next_title='Những hướng danh mục VOrigin đang tìm hiểu' if vi else 'Areas VOrigin is exploring'
     body=page_hero(locale,page_label,t['brands_title'],t['brands_lede'],f'<a href="{r["home"]}">{t["home"]}</a> / {t["brands"]}')
-    body+=f'''<section class="portfolio-feature page-section"><div class="shell portfolio-feature-grid"><div class="portfolio-feature-copy reveal"><p class="eyebrow">{feature_label}</p><h2>MARIGOLD</h2><p>{e(feature_copy)}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a class="button button-outline" href="{r['marigold']}">{e(t['view'])}<span>→</span></a></div><figure class="portfolio-feature-visual reveal"><img src="/assets/marigold-lineup-premium.webp" alt="MARIGOLD Fruit Drinks" loading="lazy"></figure></div></section>'''
+    body+=f'''<section class="portfolio-feature page-section"><div class="shell portfolio-feature-grid"><div class="portfolio-feature-copy reveal"><p class="eyebrow">{feature_label}</p><h2>MARIGOLD</h2><p>{e(feature_copy)}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a class="button button-outline" href="{r['marigold']}">{e(t['view'])}<span>→</span></a></div><figure class="portfolio-feature-visual reveal">{responsive_picture('marigold-lineup-premium', 'MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['lineup'])}</figure></div></section>'''
     body+=f'''<section class="page-section alt"><div class="shell"><div class="section-heading centered"><p class="eyebrow">{next_label}</p><h2>{e(next_title)}</h2><i class="bronze-rule"></i></div><div class="portfolio-direction-grid">{cards}</div></div></section>'''
     return base_page(locale,f'{t["brands"]} — VOrigin',t['brands_lede'],'brands',body,body_class='brands-page')
 
@@ -232,12 +299,12 @@ def marigold(locale):
     pmap={p['slug']:p for p in PRODUCTS}; flavor_cards=''
     for slug,label,color in flavors:
         p=pmap.get(slug,{'pack':'250ml x 6'}); path=(f'/vi/san-pham/marigold-{slug}/' if vi else f'/en/products/marigold-{slug}/')
-        flavor_cards+=f'''<a class="flavor-card flavor-{slug} reveal" href="{path}" style="--flavor:{color}"><div class="flavor-visual"><img src="/assets/marigold-{slug}-premium.webp" alt="MARIGOLD {label} Fruit Drink" loading="lazy"></div><div class="flavor-copy"><p class="eyebrow">{e(p['pack'])}</p><h3>{label}</h3><span>{e(t['view'])} →</span></div></a>'''
+        flavor_cards+=f'''<a class="flavor-card flavor-{slug} reveal" href="{path}" style="--flavor:{color}"><div class="flavor-visual">{responsive_picture(f'marigold-{slug}-premium', f'MARIGOLD {label} Fruit Drink', RESPONSIVE_POLICIES['flavor_card'])}</div><div class="flavor-copy"><p class="eyebrow">{e(p['pack'])}</p><h3>{label}</h3><span>{e(t['view'])} →</span></div></a>'''
     feature_label='THƯƠNG HIỆU NỔI BẬT' if vi else 'FEATURED BRAND'; flavour_label='KHÁM PHÁ HƯƠNG VỊ' if vi else 'EXPLORE THE FLAVOURS'
     flavour_title='Bốn hương vị, mỗi vị một nét riêng.' if vi else 'Four flavours, each with its own character.'; curated_label='TUYỂN CHỌN BỞI VORIGIN' if vi else 'CURATED BY VORIGIN'
     editorial_title='Một thương hiệu nổi bật. Khởi đầu cho một danh mục rộng hơn.' if vi else 'A featured brand. The beginning of a broader portfolio.'
     editorial_copy='MARIGOLD là thương hiệu nổi bật đầu tiên trong danh mục VOrigin. Dù danh mục mở rộng, nguyên tắc chọn lựa vẫn không đổi: nguồn gốc rõ ràng, tiêu chuẩn phù hợp và giá trị bền lâu.' if vi else 'MARIGOLD is the first featured brand in VOrigin’s portfolio. As the portfolio grows, the principles stay the same: clear provenance, relevant standards and lasting value.'
-    body=f'''<section class="marigold-hero"><div class="shell marigold-hero-grid"><div class="marigold-hero-copy reveal"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / <a href="{r['brands']}">{t['brands']}</a> / MARIGOLD</div><p class="eyebrow">{feature_label}</p><h1>MARIGOLD</h1><p class="lede">{e(summary)}</p><div class="marigold-hero-trust">{marigold_trust_chips(locale)}</div><a class="source-link" href="{e(BRAND['source_url'])}" rel="noopener noreferrer">{t['source']} ↗</a></div><figure class="marigold-hero-visual reveal"><img src="/assets/marigold-lineup-premium.webp" alt="MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape"></figure></div></section>'''
+    body=f'''<section class="marigold-hero"><div class="shell marigold-hero-grid"><div class="marigold-hero-copy reveal"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / <a href="{r['brands']}">{t['brands']}</a> / MARIGOLD</div><p class="eyebrow">{feature_label}</p><h1>MARIGOLD</h1><p class="lede">{e(summary)}</p><div class="marigold-hero-trust">{marigold_trust_chips(locale)}</div><a class="source-link" href="{e(BRAND['source_url'])}" rel="noopener noreferrer">{t['source']} ↗</a></div><figure class="marigold-hero-visual reveal">{responsive_picture('marigold-lineup-premium', 'MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['marigold_hero'])}</figure></div></section>'''
     assurance_eyebrow='NGUỒN GỐC & BẢO CHỨNG' if vi else 'PROVENANCE & ASSURANCE'
     assurance_title='Niềm tin bắt đầu từ những thông tin có thể kiểm chứng.' if vi else 'Trust begins with information that can be verified.'
     assurance_intro='VOrigin trình bày những thông tin cốt lõi của MARIGOLD Fruit Drinks dựa trên các nguồn chính thức của MARIGOLD và Malaysia Dairy Industries.' if vi else 'VOrigin presents the core facts behind MARIGOLD Fruit Drinks using official information from MARIGOLD and Malaysia Dairy Industries.'
@@ -253,11 +320,12 @@ def product_page(locale,p):
     for other in PRODUCTS:
         if other['slug']==slug: continue
         opath=(f'/vi/san-pham/marigold-{other["slug"]}/' if vi else f'/en/products/marigold-{other["slug"]}/')
-        sibling+=f'<a href="{opath}" class="mini-flavor"><img src="/assets/marigold-{other["slug"]}-premium.webp" alt="MARIGOLD {e(other["flavor"])}"><span>{e(other["flavor"])}</span></a>'
+        other_key=f'marigold-{other["slug"]}-premium'; other_alt=f'MARIGOLD {other["flavor"]}'
+        sibling+=f'<a href="{opath}" class="mini-flavor">{responsive_picture(other_key, other_alt, RESPONSIVE_POLICIES["mini_flavor"])}<span>{e(other["flavor"])}</span></a>'
     hero_label='MARIGOLD — THỨC UỐNG TRÁI CÂY' if vi else 'MARIGOLD FRUIT DRINK'; hero_lede='Một trong bốn hương vị của dòng MARIGOLD Fruit Drinks.' if vi else 'Part of the four-flavour MARIGOLD Fruit Drinks range.'
     category='Thức uống trái cây' if vi else 'Fruit Drink'; flavor_label='Hương vị' if vi else 'Flavour'; category_label='Nhóm sản phẩm' if vi else 'Category'
     product_info_label='THÔNG TIN SẢN PHẨM' if vi else 'PRODUCT INFORMATION'; explore_label='KHÁM PHÁ THÊM' if vi else 'EXPLORE MORE'; other_title='Các hương vị khác' if vi else 'Other flavours'
-    body=f'''<section class="product-hero" style="--flavor:{accent}"><div class="shell product-hero-grid"><div class="product-hero-copy reveal"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / <a href="{r['marigold']}">MARIGOLD</a> / {e(p['flavor'])}</div><p class="eyebrow">{hero_label}</p><h1>{e(p['flavor'])}</h1><p class="lede">{e(hero_lede)}</p><div class="product-trust">{marigold_trust_chips(locale, True)}</div><div class="product-meta"><span>{e(p['pack'])}</span><span>{category}</span></div></div><figure class="product-hero-visual reveal"><img src="/assets/marigold-{slug}-premium.webp" alt="{e(p['name'])}"></figure></div></section>'''
+    body=f'''<section class="product-hero" style="--flavor:{accent}"><div class="shell product-hero-grid"><div class="product-hero-copy reveal"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / <a href="{r['marigold']}">MARIGOLD</a> / {e(p['flavor'])}</div><p class="eyebrow">{hero_label}</p><h1>{e(p['flavor'])}</h1><p class="lede">{e(hero_lede)}</p><div class="product-trust">{marigold_trust_chips(locale, True)}</div><div class="product-meta"><span>{e(p['pack'])}</span><span>{category}</span></div></div><figure class="product-hero-visual reveal">{responsive_picture(f'marigold-{slug}-premium', e(p['name']), RESPONSIVE_POLICIES['product_hero'])}</figure></div></section>'''
     body+=f'''<section class="page-section"><div class="shell editorial-grid"><div><p class="eyebrow">{product_info_label}</p><h2>{e(t['product_info'])}</h2></div><div class="content-block"><div class="facts-grid product-facts"><div class="fact"><b>{e(p['flavor'])}</b><span>{flavor_label}</span></div><div class="fact"><b>{e(p['pack'])}</b><span>{e(t['pack'])}</span></div><div class="fact"><b>{category}</b><span>{category_label}</span></div><div class="fact"><b>{e(claim_text('vitamins_abcde',locale))}</b><span>{'Điểm nổi bật dinh dưỡng' if vi else 'Nutrition highlight'}</span></div><div class="fact"><b>{e(claim_text('no_preservatives',locale))}</b><span>{'Thông tin sản phẩm' if vi else 'Product claim'}</span></div></div><div class="notice"><p>{e(t['market_note'])}</p></div><a class="source-link" href="{e(p['source_url'])}" rel="noopener noreferrer">{t['source']} ↗</a></div></div></section>'''
     assurance_title='Thông tin rõ ràng, nguồn gốc có thể đối chiếu.' if vi else 'Clear facts, traceable provenance.'
     assurance_copy='MARIGOLD công bố dòng Fruit Drinks được bổ sung vitamin A, B, C, D & E và không sử dụng chất bảo quản. MARIGOLD cũng công bố các sản phẩm của mình được chứng nhận Halal.' if vi else 'MARIGOLD states that its Fruit Drinks are enriched with Vitamins A, B, C, D & E and contain no preservatives. MARIGOLD also states that its products are Halal-certified.'
@@ -291,7 +359,7 @@ def partners(locale):
     cards=''.join(f'<article class="partner-criterion reveal"><span>{icon_img(ic,"criterion-icon-svg")}</span><h3>{e(h)}</h3><p>{e(c)}</p></article>' for ic,h,c in criteria)
     global_label='DÀNH CHO THƯƠNG HIỆU QUỐC TẾ' if vi else 'FOR GLOBAL BRANDS'; contact_cta='Bắt đầu trao đổi' if vi else 'Start a conversation'; criteria_label='ĐIỀU VORIGIN TÌM KIẾM' if vi else 'WHAT WE LOOK FOR'; criteria_title='Những điều VOrigin tìm kiếm ở một thương hiệu' if vi else 'What VOrigin looks for in a brand'; how_label='CÁCH CHÚNG TÔI LÀM VIỆC' if vi else 'HOW WE WORK'; how_title='Bắt đầu bằng việc hiểu thương hiệu.' if vi else 'We begin by understanding the brand.'
     how_copy='VOrigin bắt đầu từ chính sản phẩm — nguồn gốc, hồ sơ, tiêu chuẩn và mục tiêu phát triển — trước khi bàn đến kênh bán. Khi nền tảng đã rõ, hai bên mới cùng xác định mức độ phù hợp, lộ trình vào thị trường và phần nào cần được bản địa hóa một cách tinh tế.' if vi else 'We begin with the product itself — its provenance, documentation, standards and ambitions — before we discuss channels. That creates a clearer view of fit, the right route to market and where localisation can add value without diluting the brand.'
-    body=f'''<section class="partner-hero section-dark"><div class="shell partner-hero-grid"><div class="partner-hero-copy reveal"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / {t['partners']}</div><p class="eyebrow">{global_label}</p><h1>YOUR BRAND.<br><span>OUR MARKET.</span></h1><p class="lede">{e(t['partners_lede'])}</p><a class="button button-gold" href="{r['contact']}?type=partner">{e(contact_cta)}<span>→</span></a></div><figure class="partner-hero-visual reveal"><img src="/assets/b2b-vorigin-premium.webp" alt="VOrigin market-entry and partnership"></figure></div></section>'''
+    body=f'''<section class="partner-hero section-dark"><div class="shell partner-hero-grid"><div class="partner-hero-copy reveal"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / {t['partners']}</div><p class="eyebrow">{global_label}</p><h1>YOUR BRAND.<br><span>OUR MARKET.</span></h1><p class="lede">{e(t['partners_lede'])}</p><a class="button button-gold" href="{r['contact']}?type=partner">{e(contact_cta)}<span>→</span></a></div><figure class="partner-hero-visual reveal">{render_b2b_picture('partner-hero-image', 'VOrigin market-entry and partnership', 'eager')}</figure></div></section>'''
     body+=f'''<section class="page-section"><div class="shell"><div class="section-heading centered"><p class="eyebrow">{criteria_label}</p><h2>{e(criteria_title)}</h2><i class="bronze-rule"></i></div><div class="partner-criteria-grid">{cards}</div></div></section>'''
     body+=f'''<section class="page-section alt"><div class="shell editorial-grid"><div><p class="eyebrow">{how_label}</p><h2>{e(how_title)}</h2></div><div class="content-block"><p>{e(how_copy)}</p><a class="button button-solid" href="{r['contact']}?type=partner">{e(contact_cta)}<span>→</span></a></div></div></section>'''
     return base_page(locale,f'{t["partners"]} — VOrigin',t['partners_lede'],'partners',body,body_class='partners-page')
@@ -306,22 +374,51 @@ def insights(locale):
 
 def contact(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
-    sitekey = TURNSTILE_SITE_KEY or 'TURNSTILE_SITE_KEY_REQUIRED'; turnstile_head='<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' if TURNSTILE_SITE_KEY else ''; disabled=' disabled' if not TURNSTILE_SITE_KEY else ''
-    note='' if TURNSTILE_SITE_KEY else ('<div class="notice"><p>Biểu mẫu liên hệ sẽ được bật khi website đi vào vận hành.</p></div>' if vi else '<div class="notice"><p>The contact form will be enabled when the website goes live.</p></div>')
-    labels = {'name':'Họ và tên' if vi else 'Name','email':'Email','company':'Công ty' if vi else 'Company','country':'Quốc gia' if vi else 'Country','website':'Website','type':'Nội dung trao đổi' if vi else 'Enquiry type','message':'Lời nhắn' if vi else 'Message'}
-    options=[('general','Trao đổi chung' if vi else 'General enquiry'),('brand-owner','Chủ thương hiệu / Gia nhập thị trường' if vi else 'Brand owner / Market entry'),('retail','Bán lẻ / Phân phối' if vi else 'Retail / Distribution'),('media','Truyền thông' if vi else 'Media')]; option_html=''.join(f'<option value="{value}">{label}</option>' for value,label in options)
-    email=SITE['contact'].get('email','contact@vorigin.vn'); body=page_hero(locale,'LIÊN HỆ' if vi else 'CONTACT',t['contact_title'],t['contact_lede'],f'<a href="{r["home"]}">{t["home"]}</a> / {t["contact"]}')
-    form=f'''<form data-lead-form="contact" autocomplete="on"><div class="form-grid"><div class="field"><label>{labels['name']}</label><input name="name" required maxlength="120" autocomplete="name"></div><div class="field"><label>{labels['email']}</label><input name="email" type="email" required maxlength="160" autocomplete="email"></div><div class="field"><label>{labels['company']}</label><input name="company" maxlength="160" autocomplete="organization"></div><div class="field"><label>{labels['country']}</label><input name="country" maxlength="100" autocomplete="country-name"></div><div class="field full"><label>{labels['website']}</label><input name="website" maxlength="240" inputmode="url"></div><div class="field full"><label>{labels['type']}</label><select name="inquiry_type">{option_html}</select></div><div class="honeypot" aria-hidden="true"><label>Leave empty<input name="website_confirmation" tabindex="-1" autocomplete="off"></label></div><div class="field full"><label>{labels['message']}</label><textarea name="message" required minlength="10" maxlength="4000"></textarea></div><div class="field full"><div class="cf-turnstile" data-sitekey="{e(sitekey)}"></div><button class="button button-solid" type="submit"{disabled}>{e(t['send'])}<span>→</span></button><div class="form-status" role="status" aria-live="polite"></div></div></div></form>'''
-    aside_title='Một mối quan hệ tốt thường bắt đầu từ sự rõ ràng.' if vi else 'Good partnerships often start with clarity.'; aside_copy='Hãy cho chúng tôi biết về doanh nghiệp, sản phẩm và điều bạn kỳ vọng đạt được tại Việt Nam. Từ một cuộc trao đổi rõ ràng, những khả năng hợp tác đúng đắn mới có thể bắt đầu.' if vi else 'Tell us about your business, your product and what you hope to achieve in Vietnam. Clear conversations are often where the right partnerships begin.'
-    body+=f'''<section class="page-section"><div class="shell contact-premium-grid"><aside class="contact-aside reveal"><p class="eyebrow">VORIGIN CORP</p><h2>{e(aside_title)}</h2><p>{e(aside_copy)}</p><a class="contact-method" href="mailto:{e(email)}"><span>{icon_img('email','contact-icon-svg')}</span><b>{e(email)}</b></a></aside><div class="form-wrap reveal">{note}{form}</div></div></section>'''
+    email=SITE['contact'].get('email','contact@vorigin.vn')
+    body=page_hero(locale,'LIÊN HỆ' if vi else 'CONTACT',t['contact_title'],t['contact_lede'],f'<a href="{r["home"]}">{t["home"]}</a> / {t["contact"]}')
+    if not CONTACT_FORMS_ENABLED:
+        form = f'''<div class="notice contact-disabled" role="status"><p>{'Tạm thời chưa nhận liên hệ trực tuyến.' if vi else 'Online enquiries are temporarily unavailable.'}</p><p>{'Vui lòng liên hệ trực tiếp qua email hoặc số điện thoại bên cạnh.' if vi else 'Please contact us directly by email or phone using the details beside this notice.'}</p></div>'''
+        turnstile_head = ''
+    else:
+        sitekey = TURNSTILE_SITE_KEY or 'TURNSTILE_SITE_KEY_REQUIRED'
+        turnstile_head='<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' if TURNSTILE_SITE_KEY else ''
+        disabled=' disabled' if not TURNSTILE_SITE_KEY else ''
+        note='' if TURNSTILE_SITE_KEY else ('<div class="notice"><p>Biểu mẫu liên hệ sẽ được bật khi website đi vào vận hành.</p></div>' if vi else '<div class="notice"><p>The contact form will be enabled when the website goes live.</p></div>')
+        labels = {'name':'Họ và tên' if vi else 'Name','email':'Email','company':'Công ty' if vi else 'Company','country':'Quốc gia' if vi else 'Country','website':'Website','type':'Nội dung trao đổi' if vi else 'Enquiry type','message':'Lời nhắn' if vi else 'Message'}
+        options=[('general','Trao đổi chung' if vi else 'General enquiry'),('brand-owner','Chủ thương hiệu / Gia nhập thị trường' if vi else 'Brand owner / Market entry'),('retail','Bán lẻ / Phân phối' if vi else 'Retail / Distribution'),('media','Truyền thông' if vi else 'Media')]
+        option_html=''.join(f'<option value="{value}">{label}</option>' for value,label in options)
+        form=f'''{note}<form data-lead-form="contact" autocomplete="on"><div class="form-grid"><div class="field"><label>{labels['name']}</label><input name="name" required maxlength="120" autocomplete="name"></div><div class="field"><label>{labels['email']}</label><input name="email" type="email" required maxlength="160" autocomplete="email"></div><div class="field"><label>{labels['company']}</label><input name="company" maxlength="160" autocomplete="organization"></div><div class="field"><label>{labels['country']}</label><input name="country" maxlength="100" autocomplete="country-name"></div><div class="field full"><label>{labels['website']}</label><input name="website" maxlength="240" inputmode="url"></div><div class="field full"><label>{labels['type']}</label><select name="inquiry_type">{option_html}</select></div><div class="honeypot" aria-hidden="true"><label>Leave empty<input name="website_confirmation" tabindex="-1" autocomplete="off"></label></div><div class="field full"><label>{labels['message']}</label><textarea name="message" required minlength="10" maxlength="4000"></textarea></div><div class="field full"><div class="cf-turnstile" data-sitekey="{e(sitekey)}"></div><button class="button button-solid" type="submit"{disabled}>{e(t['send'])}<span>→</span></button><div class="form-status" role="status" aria-live="polite"></div></div></div></form>'''
+    aside_title='Một mối quan hệ tốt thường bắt đầu từ sự rõ ràng.' if vi else 'Good partnerships often start with clarity.'
+    aside_copy='Hãy cho chúng tôi biết về doanh nghiệp, sản phẩm và điều bạn kỳ vọng đạt được tại Việt Nam. Từ một cuộc trao đổi rõ ràng, những khả năng hợp tác đúng đắn mới có thể bắt đầu.' if vi else 'Tell us about your business, your product and what you hope to achieve in Vietnam. Clear conversations are often where the right partnerships begin.'
+    body+=f'''<section class="page-section"><div class="shell contact-premium-grid"><div class="form-wrap reveal">{form}</div><aside class="contact-aside reveal"><p class="eyebrow">VORIGIN CORP</p><h2>{e(aside_title)}</h2><p>{e(aside_copy)}</p><a class="contact-method" href="mailto:{e(email)}"><span>{icon_img('email','contact-icon-svg')}</span><b>{e(email)}</b></a></aside></div></section>'''
     return base_page(locale,f'{t["contact"]} — VOrigin',t['contact_lede'],'contact',body,extra_head=turnstile_head,body_class='contact-page')
 
 def legal(locale, kind):
     t=LANG[locale]; vi=locale=='vi'; title=t['privacy_title'] if kind=='privacy' else t['terms_title']
-    lede=('Trang này đang được rà soát để phản ánh chính xác cách VOrigin xử lý thông tin khi website chính thức hoạt động.' if kind=='privacy' else 'Các điều khoản sử dụng đang được rà soát để phản ánh chính xác phạm vi và cách vận hành của website.') if vi else ('This page is being reviewed to accurately reflect how VOrigin handles information when the website goes live.' if kind=='privacy' else 'These terms are being reviewed to accurately reflect the scope and operation of the website.')
-    status_h='Trạng thái' if vi else 'Status'; status_p='Nội dung pháp lý chưa phải bản cuối và sẽ được VOrigin phê duyệt trước khi công bố.' if vi else 'This legal text is not final and will be approved by VOrigin before publication.'
-    principle_h='Nguyên tắc hiện tại' if vi else 'Current approach'; principle_p='Website hạn chế việc thu thập dữ liệu không cần thiết. Biểu mẫu liên hệ chỉ yêu cầu thông tin phục vụ việc phản hồi yêu cầu của bạn.' if vi else 'The website limits unnecessary data collection. Contact forms request only the information needed to respond to your enquiry.'
-    body=f'''<section class="page-hero"><div class="shell"><p class="eyebrow">{'PHÁP LÝ' if vi else 'LEGAL'}</p><h1>{e(title)}</h1><p class="lede">{e(lede)}</p></div></section><section class="page-section"><div class="shell legal-copy"><div class="notice"><p>{e(t['draft_legal'])}</p></div><h2>{e(status_h)}</h2><p>{e(status_p)}</p><h2>{e(principle_h)}</h2><p>{e(principle_p)}</p></div></section>'''
+    draft_notice=('BẢN DỰ THẢO — Nội dung này được VOrigin tự soạn để hoàn thiện website và vẫn cần được rà soát, phê duyệt trước khi áp dụng chính thức.' if vi else 'DRAFT — This text was prepared by VOrigin to complete the website and still requires review and approval before it becomes effective.')
+    lede=(('Trang này mô tả cách VOrigin dự kiến xử lý thông tin cá nhân khi website tiếp nhận yêu cầu liên hệ.' if kind=='privacy' else 'Các điều khoản này mô tả phạm vi sử dụng website, nội dung được công bố và cách VOrigin tiếp nhận yêu cầu hợp tác.') if vi else ('This page describes how VOrigin expects to handle personal information when the website receives contact enquiries.' if kind=='privacy' else 'These terms describe the scope of website use, published content and how VOrigin handles partnership enquiries.'))
+    if kind=='privacy':
+        sections=[
+            ('Phạm vi áp dụng' if vi else 'Scope', ['Chính sách này áp dụng cho website VOrigin và các biểu mẫu, đường dẫn hoặc kênh liên hệ được website giới thiệu. Chính sách không tự động áp dụng cho website của bên thứ ba.' if vi else 'This policy applies to the VOrigin website and the forms, links or contact channels presented on it. It does not automatically apply to third-party websites.', 'Khi bạn chủ động liên hệ, website có thể nhận họ tên, email, công ty, quốc gia, website, nội dung trao đổi và lời nhắn bạn gửi.' if vi else 'When you contact us, the website may receive your name, email, company, country, website, enquiry type and message.']),
+            ('Mục đích sử dụng' if vi else 'How we use information', ['Vorigin sử dụng thông tin để phản hồi yêu cầu, đánh giá khả năng hợp tác, duy trì an toàn website, xử lý lỗi và lưu hồ sơ trao đổi cần thiết.' if vi else 'VOrigin uses information to respond to enquiries, assess potential partnerships, maintain website security, troubleshoot errors and retain necessary correspondence records.', 'Vorigin không bán thông tin cá nhân và không dùng thông tin liên hệ cho hoạt động tiếp thị không liên quan nếu chưa có cơ sở phù hợp.' if vi else 'VOrigin does not sell personal information or use contact details for unrelated marketing without an appropriate basis.']),
+            ('Bên cung cấp dịch vụ' if vi else 'Service providers', ['Thông tin có thể được xử lý bởi nhà cung cấp lưu trữ, bảo mật chống bot, email hoặc hạ tầng kỹ thuật cần thiết để vận hành website. Các nhà cung cấp này chỉ được sử dụng thông tin trong phạm vi dịch vụ tương ứng.' if vi else 'Information may be processed by hosting, anti-bot, email or technical infrastructure providers needed to operate the website. These providers may use information only for the relevant service.']),
+            ('Lưu giữ và bảo vệ' if vi else 'Retention and protection', ['Vorigin chỉ lưu giữ thông tin trong thời gian cần thiết cho mục đích nêu trên hoặc theo yêu cầu pháp luật áp dụng. Chúng tôi áp dụng biện pháp hợp lý để hạn chế truy cập, mất mát hoặc sử dụng trái phép, nhưng không thể bảo đảm an toàn tuyệt đối cho mọi hệ thống truyền qua internet.' if vi else 'VOrigin retains information only as long as needed for the purposes above or as required by applicable law. We use reasonable safeguards to limit unauthorized access, loss or misuse, but no internet system can be guaranteed completely secure.']),
+            ('Cookie và công cụ đo lường' if vi else 'Cookies and analytics', ['Website ưu tiên cookie cần thiết cho hoạt động cơ bản. Tại thời điểm soạn thảo, VOrigin không bật nhà cung cấp phân tích bên thứ ba. Nếu thay đổi, website sẽ cập nhật thông tin phù hợp trước khi áp dụng.' if vi else 'The website prioritizes cookies necessary for basic operation. At the time of drafting, VOrigin does not enable a third-party analytics provider. If this changes, the website will update the relevant information before implementation.']),
+            ('Quyền và liên hệ' if vi else 'Your rights and contact', ['Tùy pháp luật áp dụng, bạn có thể yêu cầu biết, sửa, hạn chế hoặc xóa thông tin của mình, hoặc rút lại yêu cầu liên hệ. Gửi yêu cầu đến contact@vorigin.vn; chúng tôi có thể cần xác minh để bảo vệ dữ liệu.' if vi else 'Depending on applicable law, you may request access, correction, restriction or deletion of your information, or withdraw a contact enquiry. Contact contact@vorigin.vn; we may need to verify the request to protect data.']),
+            ('Thay đổi chính sách' if vi else 'Policy changes', ['Vorigin có thể cập nhật chính sách khi cách vận hành website thay đổi. Phiên bản được công bố trên trang này là phiên bản tham khảo cho đến khi được phê duyệt chính thức.' if vi else 'VOrigin may update this policy when the website operation changes. The version published here is a draft reference until formally approved.'])]
+    else:
+        sections=[
+            ('Phạm vi website' if vi else 'Website scope', ['Website cung cấp thông tin giới thiệu về VOrigin, thương hiệu, năng lực thị trường và kênh liên hệ. Nội dung website không tự động tạo thành báo giá, lời mời đầu tư, cam kết phân phối hoặc hợp đồng.' if vi else 'The website provides information about VOrigin, its brands, market capabilities and contact channels. Website content does not automatically constitute a quotation, investment offer, distribution commitment or contract.']),
+            ('Sử dụng hợp lệ' if vi else 'Permitted use', ['Bạn được xem, lưu và chia sẻ liên kết website cho mục đích hợp pháp. Không được can thiệp, quét gây tải bất thường, truy cập trái phép, giả mạo danh tính hoặc sử dụng website để phát tán mã độc.' if vi else 'You may view, save and share website links for lawful purposes. You must not interfere with the website, create abnormal load, access it without authorization, impersonate another person or distribute malware.']),
+            ('Nội dung và claims' if vi else 'Content and claims', ['Vorigin cố gắng giữ nội dung chính xác và cập nhật, nhưng thông tin sản phẩm, thị trường, bao bì, quy cách hoặc khả năng cung ứng có thể thay đổi. Chỉ các thông tin được xác nhận trong trao đổi chính thức mới dùng làm cơ sở giao dịch.' if vi else 'VOrigin aims to keep content accurate and current, but product, market, packaging, format or availability information may change. Only information confirmed in an official exchange should form the basis of a transaction.', 'Không được suy diễn từ nội dung website thành tuyên bố về sức khỏe, chứng nhận, nguồn gốc, độc quyền hoặc quyền phân phối nếu website không công bố rõ.' if vi else 'Do not infer health, certification, origin, exclusivity or distribution rights from website content unless expressly published.']),
+            ('Sở hữu trí tuệ' if vi else 'Intellectual property', ['Tên, logo, hình ảnh, thiết kế, văn bản và cấu trúc website thuộc VOrigin hoặc bên cấp quyền tương ứng. Không sao chép, sửa đổi, thương mại hóa hoặc tái phân phối ngoài phạm vi pháp luật cho phép khi chưa có chấp thuận bằng văn bản.' if vi else 'Names, logos, images, designs, text and website structure belong to VOrigin or the relevant licensors. Do not copy, modify, commercialize or redistribute them beyond what applicable law permits without written consent.']),
+            ('Yêu cầu liên hệ' if vi else 'Contact enquiries', ['Việc gửi biểu mẫu chỉ là yêu cầu trao đổi, không tạo nghĩa vụ VOrigin phải chấp nhận hợp tác. Bạn chịu trách nhiệm về tính chính xác và quyền cung cấp nội dung mình gửi.' if vi else 'Submitting a form is only a request for discussion and does not require VOrigin to accept a partnership. You are responsible for the accuracy of and your right to provide the content you submit.']),
+            ('Liên kết và tính sẵn sàng' if vi else 'Links and availability', ['Website có thể dẫn đến dịch vụ bên ngoài. VOrigin không kiểm soát và không chịu trách nhiệm cho nội dung, bảo mật hoặc hoạt động của các website đó. Website cũng có thể tạm thời gián đoạn để bảo trì hoặc vì nguyên nhân ngoài kiểm soát.' if vi else 'The website may link to external services. VOrigin does not control and is not responsible for their content, security or operation. The website may also be temporarily unavailable for maintenance or reasons beyond its control.']),
+            ('Giới hạn trách nhiệm' if vi else 'Limitation of liability', ['Trong phạm vi pháp luật cho phép, VOrigin không chịu trách nhiệm cho thiệt hại phát sinh chỉ từ việc sử dụng thông tin website hoặc việc website tạm thời không khả dụng. Điều khoản này không loại trừ trách nhiệm không thể loại trừ theo pháp luật áp dụng.' if vi else 'To the extent permitted by law, VOrigin is not liable for loss arising solely from use of website information or temporary unavailability. This does not exclude liability that cannot be excluded under applicable law.']),
+            ('Luật áp dụng và thay đổi' if vi else 'Governing law and changes', ['Các điều khoản cuối cùng sẽ được VOrigin rà soát để xác định luật áp dụng và cơ chế giải quyết tranh chấp phù hợp. VOrigin có thể cập nhật điều khoản khi website thay đổi; bản được công bố hiện tại vẫn là bản dự thảo.' if vi else 'VOrigin will review the final terms to determine the applicable law and an appropriate dispute-resolution mechanism. VOrigin may update these terms when the website changes; the currently published text remains a draft.']),
+            ('Liên hệ' if vi else 'Contact', ['Nếu có câu hỏi về website hoặc điều khoản, liên hệ contact@vorigin.vn hoặc số 84 913736233.' if vi else 'For questions about the website or these terms, contact contact@vorigin.vn or 84 913736233.'])]
+    rendered=''.join(f'<section class="legal-section"><h2>{e(heading)}</h2>'+''.join(f'<p>{e(paragraph)}</p>' for paragraph in paragraphs)+ '</section>' for heading,paragraphs in sections)
+    body=f'''<section class="page-hero"><div class="shell"><p class="eyebrow">{'PHÁP LÝ' if vi else 'LEGAL'}</p><h1>{e(title)}</h1><p class="lede">{e(lede)}</p></div></section><section class="page-section"><div class="shell legal-copy"><div class="notice"><p>{e(draft_notice)}</p></div>{rendered}</div></section>'''
     return base_page(locale,f'{title} — VOrigin',lede,kind,body,body_class='legal-page')
 
 def write(path, text):

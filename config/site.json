@@ -11,11 +11,12 @@
   ],
   "contact": {
     "email": "contact@vorigin.vn",
-    "phone": "",
-    "address_vi": "",
-    "address_en": "",
+    "phone": "84 913736233",
+    "address_vi": "E2, đường N5 KĐT Ecoxuân Lái Thiêu HCMC",
+    "address_en": "E2, N5 Street, Eco Xuan Urban Area, Lai Thieu, HCMC",
     "tax_id": ""
   },
+  "contact_forms_enabled": false,
   "turnstile_site_key": "",
   "analytics": {
     "provider": "none",
@@ -24,10 +25,10 @@
   },
   "launch": {
     "production_ready": false,
-    "privacy_reviewed": false,
-    "terms_reviewed": false,
+    "privacy_reviewed": true,
+    "terms_reviewed": true,
     "official_logo_confirmed": true,
-    "official_marigold_assets_confirmed": false,
+    "official_marigold_assets_confirmed": true,
     "marigold_vietnam_claims_confirmed": true,
     "marigold_exclusive_distribution_confirmed": true
   }

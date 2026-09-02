@@ -1,9 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" color="#8B6A3F" role="img" aria-labelledby="title">
   <title id="title">Local Expertise</title>
-  <desc id="desc">VOrigin premium website UI icon: Local Expertise</desc>
-  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M12 19.5s5-4.6 5-8.5a5 5 0 1 0-10 0c0 3.9 5 8.5 5 8.5Z"/>
-    <circle cx="12" cy="11" r="1.8"/>
-    <path d="M18.5 19.5h-13"/>
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 8c-8.3 0-15 6.6-15 14.8 0 10.8 15 24.2 15 24.2s15-13.4 15-24.2C47 14.6 40.3 8 32 8Z"/>
+    <circle cx="32" cy="23" r="5.5"/>
+    <path d="M15 45c-4.2 1.5-7 3.6-7 6 0 3.3 10.7 6 24 6s24-2.7 24-6c0-2.4-2.8-4.5-7-6"/>
   </g>
 </svg>

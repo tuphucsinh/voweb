@@ -5,6 +5,22 @@ import sys, re
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'dist'; prod='--production' in sys.argv
 errors=[]; warnings=[]
+DOCUMENTED_IMAGE_GEOMETRY_EXCEPTIONS=set()
+
+def validate_image_geometry(attrs, page):
+    """Return errors for local content images without positive intrinsic geometry."""
+    src=attrs.get('src','')
+    if not src or src.startswith(('http://','https://','//','data:')):
+        return []
+    if src in DOCUMENTED_IMAGE_GEOMETRY_EXCEPTIONS:
+        return []
+    problems=[]
+    for name in ('width','height'):
+        value=attrs.get(name,'')
+        if not value.isdigit() or int(value)<=0:
+            problems.append(f'{page}: local image {src} requires positive {name}')
+    return problems
+
 class P(HTMLParser):
     def __init__(self): super().__init__(); self.links=[]; self.imgs=[]; self.ids=set(); self.title=False; self.meta_desc=False; self.canonical=False; self.h1=0
     def handle_starttag(self,tag,attrs):
@@ -27,6 +43,7 @@ for f in DIST.rglob('*.html'):
     for img in p.imgs:
         if not img.get('alt') and img.get('alt')!='': errors.append(f'{rel}: image missing alt')
         if img.get('src','').startswith('/') and not (DIST/img['src'].lstrip('/')).exists(): errors.append(f'{rel}: missing asset {img["src"]}')
+        errors.extend(validate_image_geometry(img, rel))
     for href in p.links:
         if href.startswith('/') and not href.startswith('//') and not href.startswith('/api/'):
             clean_href=href.split('#',1)[0].split('?',1)[0]

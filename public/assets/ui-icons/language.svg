@@ -1,10 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" color="#8B6A3F" role="img" aria-labelledby="title">
   <title id="title">Language</title>
-  <desc id="desc">VOrigin premium website UI icon: Language</desc>
-  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <circle cx="12" cy="12" r="8.4"/>
-    <path d="M3.8 12h16.4"/>
-    <path d="M12 3.6c2.1 2.2 3.4 5.2 3.4 8.4S14.1 18.2 12 20.4c-2.1-2.2-3.4-5.2-3.4-8.4S9.9 5.8 12 3.6Z"/>
-    <path d="M5.5 7.8h13M5.5 16.2h13"/>
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="32" cy="32" r="23"/>
+    <path d="M9 32h46M32 9c-6.5 6.5-10 14.2-10 23s3.5 16.5 10 23M32 9c6.5 6.5 10 14.2 10 23s-3.5 16.5-10 23"/>
+    <path d="M14 19c11.5 3.7 24.5 3.7 36 0M14 45c11.5-3.7 24.5-3.7 36 0"/>
   </g>
 </svg>

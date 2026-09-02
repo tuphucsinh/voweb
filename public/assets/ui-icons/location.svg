@@ -1,8 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" color="#8B6A3F" role="img" aria-labelledby="title">
   <title id="title">Location</title>
-  <desc id="desc">VOrigin premium website UI icon: Location</desc>
-  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M12 19.5s5-4.6 5-8.5a5 5 0 1 0-10 0c0 3.9 5 8.5 5 8.5Z"/>
-    <circle cx="12" cy="11" r="2"/>
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 7c-9.4 0-17 7.5-17 16.8C15 36.3 32 56 32 56s17-19.7 17-32.2C49 14.5 41.4 7 32 7Z"/>
+    <circle cx="32" cy="24" r="6"/>
   </g>
 </svg>

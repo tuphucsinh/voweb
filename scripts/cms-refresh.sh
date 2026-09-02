@@ -7,6 +7,11 @@ cd "$ROOT"
 node scripts/sync-directus.mjs
 SITE_ENV=production TURNSTILE_SITE_KEY="${TURNSTILE_SITE_KEY:?}" python3 build.py
 python3 scripts/qa_static.py --production
+python3 scripts/copy_qa.py
+python3 scripts/optimize_images.py --check
+python3 scripts/generate_release_manifest.py --write
+python3 scripts/generate_release_manifest.py --check
+sha256sum -c CHECKSUMS.sha256
 mkdir -p "$REL"
 rsync -a --delete dist/ "$REL/"
 ln -sfn "$REL" /srv/vorigin/current.next

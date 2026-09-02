@@ -13,6 +13,11 @@ else
   SITE_ENV=preview TURNSTILE_SITE_KEY="${TURNSTILE_SITE_KEY:-}" python3 "$ROOT/build.py"
   python3 "$ROOT/scripts/qa_static.py"
 fi
+python3 "$ROOT/scripts/copy_qa.py"
+python3 "$ROOT/scripts/optimize_images.py" --check
+python3 "$ROOT/scripts/generate_release_manifest.py" --write
+python3 "$ROOT/scripts/generate_release_manifest.py" --check
+(cd "$ROOT" && sha256sum -c CHECKSUMS.sha256)
 COMPOSE='docker compose'
 if ! docker compose version >/dev/null 2>&1; then COMPOSE='docker-compose'; fi
 $COMPOSE --env-file "$ROOT/ops/.env" -f "$ROOT/ops/docker-compose.yml" up -d --build db directus lead-api

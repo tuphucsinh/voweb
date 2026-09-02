@@ -1,10 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" color="#8B6A3F" role="img" aria-labelledby="title">
   <title id="title">Craft</title>
-  <desc id="desc">VOrigin premium website UI icon: Craft</desc>
-  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M3.5 15.5c1.6-.7 3.3-1 4.8-1h2.9c1 0 1.8.8 1.8 1.8s-.8 1.7-1.8 1.7H8.2"/>
-    <path d="M3.5 15.5 2.5 19h3.2l1.1-2.5"/>
-    <path d="M12.3 13.1c0-3.4 2.2-5.5 5.2-5.5 0 3.1-1.7 5.5-5.2 5.5Z"/>
-    <path d="M12.3 13.1V19"/>
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 39h11c2.7 0 5 .7 7 2l4 2h8.8c4.3 0 7.6 2 9.2 5-4 3-8.4 4.5-13.2 4.5H28c-3 0-5.3-.6-7.5-1.8L14 47.2"/>
+    <path d="M18.5 31.5c6.5-.5 11 1 14.5 5"/>
+    <path d="M31 32c.2-8.8 4.5-14.2 12.7-17.2-.1 8.4-3.9 14.2-11.9 17.5"/>
+    <path d="M34 29c2.8-4.6 5.5-7.7 8.3-9.5"/>
   </g>
 </svg>

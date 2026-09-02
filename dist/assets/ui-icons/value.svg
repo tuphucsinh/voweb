@@ -1,10 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title desc" width="24" height="24">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" color="#8B6A3F" role="img" aria-labelledby="title">
   <title id="title">Value</title>
-  <desc id="desc">VOrigin premium website UI icon: Value</desc>
-  <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M12 4.2 18.8 9 16 18.2H8L5.2 9 12 4.2Z"/>
-    <path d="M8.5 9h7"/>
-    <path d="M10 15.8h4"/>
-    <path d="M9.2 9 12 15.8 14.8 9"/>
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 23l8-10h22l8 10-19 28L13 23Z"/>
+    <path d="M13 23h38M21 13l11 38M43 13 32 51M21 13l11 10 11-10"/>
   </g>
 </svg>
