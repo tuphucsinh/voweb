@@ -1,7 +1,7 @@
 # VOweb Execution Tasks
 
-**Plan:** `.ai/MASTER_PLAN.md` revision 1
-**State:** Phase 1 ready for sequential execution; Phase 2 blocked on owner approval.
+**Plan:** `.ai/MASTER_PLAN.md` revision 3
+**State:** Phase 1 candidate pushed; Phase 2 is deployment-first and blocked on public edge, isolated canary and explicit cutover approval.
 **Global rule:** Runner edits only task-declared source paths, never `tasks.md`, never commits, never deploys. Mika rebuilds `dist/`, verifies, ticks and commits one task at a time.
 
 ## Phase 1: Premium hardening and release integrity
@@ -459,138 +459,202 @@ validate_production_environment(site: dict, claims: dict, env: Mapping[str, str]
 
 ---
 
-## Phase 2: Owner and production closure
-
-## Milestone M1: Approval-gated launch
+## Phase 2: Deployment-first public static launch
+## Milestone M1: Edge and canary boundary
 
 ### [#P2M1T01] [config/site.json, legal content, approved assets] `close_owner_content_gates()`
 
-**Goal:** Replace owner-controlled placeholders with verified business facts, final legal text and explicit asset approval.
+**Goal:** Close only the owner-controlled content and asset gates already approved, without enabling production readiness.
 
 **Depends on:** Phase 1 exit gate
 
 **Parallel-safe:** `no`
 
 **Context hiện có:**
-- Phone and VI address were supplied by the owner and are now present in config; the EN rendering is a working translation.
-- Legal pages contain self-authored bilingual drafts and explicitly state draft status; owner approval for the review flags and official MARIGOLD asset confirmation is now recorded in config.
+- Phone, VI/EN address, legal review flags and official MARIGOLD asset confirmation are recorded in `config/site.json`.
+- `contact_forms_enabled=false` and `launch.production_ready=false` remain intentional.
 
 **Concrete changes:**
-1. Receive exact owner-approved phone/address and final legal text.
-2. Record asset authorization and update only corresponding launch flags.
-3. Rebuild and verify bilingual public pages and claims provenance.
+1. Keep the verified owner facts and claim authority unchanged.
+2. Preserve the forms-disabled launch boundary.
+3. Do not flip `production_ready` in this task.
 
 **Constraints:**
-- `Need approval`: no runner may invent facts, legal wording or authorization.
-- No production flag until all evidence is read back.
+- No invented facts, legal text or authorization.
+- No production deployment, DNS change or service reload.
 
 **Definition of Done:**
-- Owner-approved source evidence is recorded; VI/EN pages match it.
-- Preflight no longer reports these named content/legal/asset gates.
-- Static/copy/browser QA pass; no production deployment occurs.
+- Owner-controlled facts are represented in VI/EN output and the current candidate remains statically verified.
+- `launch.production_ready` remains `false` until the exact launch-candidate approval task.
 - No edit to `tasks.md`, no commit by runner.
 
 **Status:** `[x]`
 
 ---
 
-### [#P2M1T02] [ops/.env, Cloudflare, Directus] `configure_staging_secrets_and_roles()`
+### [#P2M1T02] [scripts/deploy-pi5.sh, ops/nginx/vorigin-staging.conf, tests/test_deploy_script_contract.py, DEPLOY_PI5.md] `establish_edge_and_isolated_canary()`
 
-**Goal:** Configure staging-only Cloudflare/Turnstile/Access and least-privilege Directus credentials without exposing secrets.
+**Goal:** Verify the public edge, enforce deployment integrity by removing manifest self-write, make staging/canary isolated on port 8081 without mutating production `/srv/vorigin/current`, and make data-service refresh opt-in for production only while rejecting it in staging.
 
 **Depends on:** `[#P2M1T01]`
 
 **Parallel-safe:** `no`
 
+**New interface:**
+```text
+staging deploy -> /srv/vorigin/staging/current -> 127.0.0.1:8081 (static-only; rejects RUN_DATA_SERVICES=1)
+production deploy -> /srv/vorigin/current -> 127.0.0.1:8080 (RUN_DATA_SERVICES=1 opt-in with approval)
+```
+
 **Context hiện có:**
-- `.env` is ignored; Compose binds Directus and lead API to loopback.
-- Directus documentation requires separate create-only lead and read-only content tokens.
+- `scripts/deploy-pi5.sh staging` previously wrote the production `current` pointer and reloaded the production Nginx origin; mode-aware paths and `ops/nginx/vorigin-staging.conf` isolate staging completely.
+- `ops/docker-compose.yml` defines a single shared stack (`name: vorigin`); staging must fail closed if `RUN_DATA_SERVICES=1` is passed to prevent mutating production-shared data services.
+- Nginx sources: `ops/nginx/vorigin.conf` (production port 8080), `ops/nginx/vorigin-staging.conf` (staging port 8081); public edge instructions are in `ops/cloudflare/README.md`.
+- Contract tests are in `tests/test_deploy_script_contract.py`.
+- Current Nginx and cloudflared services are active; `vorigin.vn` and `www.vorigin.vn` currently do not resolve from this host.
 
 **Concrete changes:**
-1. Populate secure staging secret store from approved values.
-2. Configure Tunnel/Turnstile/Access and least-privilege Directus roles/tokens.
-3. Verify only presence/scope/fingerprint, never print secret values.
+1. Capture current SHA/status, current release target, release list, active/effective Nginx config, listeners, Docker state and cloudflared status.
+2. Remove `generate_release_manifest.py --write` from `scripts/deploy-pi5.sh` so deploy verifies `generate_release_manifest.py --check` and `sha256sum -c CHECKSUMS.sha256` without mutating workspace integrity metadata.
+3. Use safe variable fallback `TURNSTILE_SITE_KEY="${TURNSTILE_SITE_KEY:-}"` in production build step.
+4. Implement mode-aware deployment paths:
+   - Staging: `APP_ROOT=/srv/vorigin/staging/app`, `RELEASE_ROOT=/srv/vorigin/staging/releases`, `CURRENT_LINK=/srv/vorigin/staging/current`, `NGINX_CONFIG=ops/nginx/vorigin-staging.conf`, `NGINX_SITE=vorigin-staging`, `ORIGIN_PORT=8081`.
+   - Production: `APP_ROOT=/srv/vorigin/app`, `RELEASE_ROOT=/srv/vorigin/releases`, `CURRENT_LINK=/srv/vorigin/current`, `NGINX_CONFIG=ops/nginx/vorigin.conf`, `NGINX_SITE=vorigin`, `ORIGIN_PORT=8080`.
+5. Add dedicated staging Nginx server block `ops/nginx/vorigin-staging.conf` for 127.0.0.1:8081 default_server serving `/srv/vorigin/staging/current` with security headers, without production hostnames or lead API proxying.
+6. Gate docker compose behind `RUN_DATA_SERVICES="${RUN_DATA_SERVICES:-0}"` (validated 0/1); staging rejects `RUN_DATA_SERVICES=1` before build/runtime side effects; production uses explicit command branches for `docker compose` and `docker-compose` without unquoted variables.
+7. Add stdlib contract tests in `tests/test_deploy_script_contract.py` validating manifest check-only integrity, variable expansion, staging rejection of shared data services, explicit production Compose execution branches, isolated roots/pointers/ports, Nginx staging config, and documentation contracts.
+8. Update `DEPLOY_PI5.md` with staging 8081 verification, healthz endpoint, staging static-only boundary rejecting shared data services, and production-only opt-in `RUN_DATA_SERVICES=1` instructions.
+9. With explicit owner approval, configure/verify Cloudflare public hostnames: apex and `www` to the Nginx origin, and `admin` behind Access only.
+10. Verify public DNS, HTTPS, redirects, headers and safe denied-path behavior without reading the tunnel token.
 
 **Constraints:**
-- `Need approval`: credentials, permissions and external configuration.
-- No production DNS/cutover; no secret committed or included in runner prompts.
+- Credentials, Cloudflare changes, Nginx reload and `/srv/vorigin` writes require approval.
+- No secret value in prompts, logs or evidence.
+- If DNS or public-hostname ingress is absent, stop with `BLOCKED_EXTERNAL_ROUTE_CONFIGURATION`.
+- Preserve the existing production release pointer during canary work.
 
 **Definition of Done:**
-- Staging services resolve through approved routes; loopback ports remain non-public.
-- Turnstile and Directus role scopes are read back and verified.
-- Secret scan is clean; rollback instructions are recorded.
-- No edit to `tasks.md`, no commit by runner.
+- Deployment script uses manifest `--check` only and never writes/regenerates manifest during deploy.
+- Staging/canary has distinct release root, pointer and port (8081); canary switch cannot touch `/srv/vorigin/current` or production Nginx config.
+- Staging rejects `RUN_DATA_SERVICES=1` before build/runtime mutation; static deploys run without data service refresh unless `RUN_DATA_SERVICES=1` is explicitly set in production mode.
+- `python3 -m unittest tests/test_deploy_script_contract.py` passes.
+- `sudo nginx -t`, `sudo nginx -T`, listener and Host-header evidence pass when executed.
+- `vorigin.vn` and `www.vorigin.vn` resolve and the approved route is observable, or the exact missing owner action is recorded.
+- No edit to `tasks.md` by runner, no commit by runner.
 
-**Status:** `[BLOCKED — no approved staging credentials/runtime change]`
+**Status:** `[BLOCKED — public DNS/hostname route and isolated canary boundary require approval]`
 
 ---
 
-### [#P2M1T03] [staging runtime] `deploy_and_verify_staging()`
+## Milestone M2: Exact launch candidate
 
-**Goal:** Deploy an atomic staging release and verify real HTTP, browser, performance, lead delivery, backup and rollback behavior.
+### [#P2M1T03] [config/site.json, build.py, dist/, MANIFEST.txt, CHECKSUMS.sha256] `prepare_exact_production_candidate()`
+
+**Goal:** Produce an indexable production artifact whose exact commit, generated output, preflight and rollback identity are known before cutover.
 
 **Depends on:** `[#P2M1T02]`
 
 **Parallel-safe:** `no`
 
 **Context hiện có:**
-- `scripts/deploy-pi5.sh staging` builds services, writes `/srv/vorigin`, updates Nginx and reloads it.
-- This is a system/runtime change and is not authorized by plan approval alone.
+- Current candidate is `ab32d1cf8863cc6c037e114c1159a1114213b095`; its static release is currently preview/noindex and has `production_ready=false`.
+- `ops/.env` exists with mode `600`; `IP_HASH_SALT` is present there but must never be printed.
 
 **Concrete changes:**
-1. Capture backup/current release pointer and approved rollback target.
-2. Deploy staging through the existing atomic release path.
-3. Run real-domain browser matrix, measured Lighthouse/Web Vitals, Turnstile lead E2E with approved fixture, Directus/local-log verification and cleanup.
-4. Exercise rollback/read-back if any gate fails.
+1. Freeze the exact source/status baseline and exclude `Doc/` and `.tmp/` from release scope.
+2. Obtain owner approval for the static-first launch with forms disabled and for public use of the current Privacy/Terms text; if not approved, stop.
+3. Mika changes only `config/site.json` `launch.production_ready` to `true`, then rebuilds through `build.py`; no manual `dist/` edits.
+4. Run production preflight through the same secret-safe environment boundary as the deploy wrapper:
+   `set -a; source ops/.env; set +a; python3 scripts/preflight.py --production`.
+5. Run production build, static/copy/optimizer checks, manifest/checksum checks, Python/Node checks and the browser matrix against an isolated production artifact.
+6. Verify production `robots.txt` is indexable, preview `noindex` is absent, forms remain disabled and VI/EN output matches approved content.
+7. Review diff, diff-check, manifest scope and secret-like paths; create the exact launch commit only after all gates pass.
 
 **Constraints:**
-- `Need approval`: service build/reload, staging external route and test submission.
-- Never use real private customer data.
-- Preserve first failure; maximum one retry with new evidence.
+- `production_ready=true` requires owner approval and exact evidence; it is not a readiness shortcut.
+- Do not print or persist any value from `ops/.env`.
+- Preserve the prior pushed candidate and rollback target.
 
 **Definition of Done:**
-- Health, browser, QA, performance, lead delivery, backup and rollback evidence are all PASS or explicitly owner-excepted.
-- Release ID/path and rollback target are recorded.
-- No production DNS or production flag change.
-- No edit to `tasks.md`, no commit by runner.
+- Production preflight returns `PASS` with `ops/.env` loaded.
+- Production build/static/copy/browser/manifest/checksum gates pass and are bound to the launch SHA.
+- No secret, private `Doc/` file or `.tmp/` artifact is staged.
+- No production service reload or cutover occurs in this task.
 
-**Status:** `[BLOCKED — staging deploy/reload and external E2E require approval]`
+**Status:** `[BLOCKED — exact launch candidate and owner public-content approval pending]`
 
 ---
 
+## Milestone M3: Production cutover and public verification
+
 ### [#P2M1T04] [production runtime] `approve_and_cut_over_production()`
 
-**Goal:** Perform the final production build/cutover only after every code, content, security, staging and rollback gate is verified.
+**Goal:** Atomically publish the approved launch SHA on `vorigin.vn`, verify application/host/runtime/edge separately and retain a tested rollback target.
 
 **Depends on:** `[#P2M1T03]`
 
 **Parallel-safe:** `no`
 
 **Context hiện có:**
-- Production preflight currently fails four runtime gates.
-- Deployment touches Docker, Nginx, `/srv/vorigin/current` and public Cloudflare routing.
+- `/srv/vorigin/current` points to `20260831T035626Z-production`, which differs from the repository candidate HTML.
+- Nginx/cloudflared/Docker are active, but public DNS is currently unresolved and health/backup timers are not installed/enabled.
 
 **Concrete changes:**
-1. Obtain explicit owner production approval tied to the exact commit/release evidence.
-2. Set `launch.production_ready=true` only after all prerequisites pass.
-3. Run production preflight/build/QA, atomic deploy and post-deploy read-back.
-4. Monitor health/lead path and roll back on any critical regression.
+1. Obtain explicit cutover approval tied to the exact launch SHA, release path, maintenance window and rollback command.
+2. Capture the immediate pre-cutover release/config/listener/container/cloudflared/disk/log baseline.
+3. Run the approved backup path and verify archive listing/metadata before mutation.
+4. Run the audited production deploy wrapper for the exact SHA; preserve the first useful failure and do not retry without new evidence.
+5. Read back the current pointer, release files, effective Nginx config, listeners, health endpoint, container state and startup/fatal logs.
+6. Verify public apex/www HTTPS routes, TLS, redirects, security headers, denied paths and no origin-port exposure.
+7. Run read-only browser smoke at mobile/tablet/desktop sizes; assert the forms-disabled contract.
+8. On a critical failure, stop and perform only the approved rollback, then re-verify all four boundaries and the release pointer.
 
 **Constraints:**
-- `Need approval`: production, public DNS/external impact and service changes.
-- No approval inference from Phase 1/2 technical PASS.
-- No destructive cleanup of old releases until retention policy allows it.
+- Production, public DNS, service reload, Docker state and rollback are separate approval boundaries.
+- No data migration, lead submission, credential exposure or destructive old-release cleanup.
+- A running container without native health evidence is reported as `running`, not `healthy`.
 
 **Definition of Done:**
-- `scripts/preflight.py --production`, production build, static/copy/browser/security checks and health probes pass.
-- Exact live release matches approved commit/checksums and rollback is proven.
-- Owner receives evidence, residual risks and monitoring action.
+- `application_state=PASS`, `host_state=PASS`, `runtime_state=PASS`, `edge_state=PASS`, `rollback_state=PASS` with evidence paths.
+- Public `vorigin.vn` serves the approved launch SHA and `www` follows the approved canonical behavior.
+- Previous release and backup are read back and remain available.
 - No edit to `tasks.md`, no commit by runner.
 
-**Status:** `[BLOCKED — production approval and all prerequisites missing]`
+**Status:** `[BLOCKED — exact launch SHA, public DNS and explicit production cutover approval missing]`
 
 ---
 
+## Phase 3: Post-launch lead and CMS enablement
+
+### [#P3M1T01] [Turnstile, services/lead-api/, services/directus/] `enable_lead_and_cms_after_static_launch()`
+
+**Goal:** Enable online enquiries and CMS publishing only after the static public launch is stable.
+
+**Depends on:** `[#P2M1T04]`
+
+**Parallel-safe:** `no`
+
+**Context hiện có:**
+- Public forms are intentionally disabled; Turnstile and Directus credentials are not launch prerequisites.
+- Directus must remain private and use separate least-privilege lead/create and content/read scopes.
+
+**Concrete changes:**
+1. Configure approved Turnstile widget/secret through the secure runtime store.
+2. Create/read back Directus roles and token scopes without exposing values.
+3. Enable forms only with an owner-approved fixture, real-domain E2E, exact-ID cleanup and multidimensional baseline verification.
+4. Enable content sync only after publish/rollback behavior is proven.
+
+**Constraints:**
+- No production data mutation or broad cleanup; no real customer data.
+- Preserve local lead durability if optional sinks fail.
+
+**Definition of Done:**
+- Lead/CMS evidence, cleanup, rollback and monitoring are separately reviewed and pass.
+- This phase cannot be used to justify bypassing the static launch gates.
+
+**Status:** `[DEFERRED — static launch first]`
+
+---
 ## Execution reconciliation
 
 ### T13 — Phase 1 exit-gate review

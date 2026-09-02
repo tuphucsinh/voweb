@@ -135,6 +135,7 @@ ops/.env.example
 ops/cloudflare/README.md
 ops/docker-compose.yml
 ops/logrotate/vorigin
+ops/nginx/vorigin-staging.conf
 ops/nginx/vorigin.conf
 ops/security/bootstrap-pi5.sh
 ops/security/harden-pi5.sh
@@ -240,4 +241,5 @@ tasks.md
 tests/browser-assert.mjs
 tests/browser-verify.sh
 tests/lead-api.test.mjs
+tests/test_deploy_script_contract.py
 tools/ai_content_assistant.py

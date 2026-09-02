@@ -6,7 +6,7 @@ dba76d58dad1043b65aa55aebc57251eec9a3bd2b7007a0f76166d63684d5203  ./BRAND_ASSET_
 93e382795f6ba9866bee0a05a1db4205e43a598f197b935879c273f770b8e26b  ./CONTENT_GOVERNANCE.md
 dc0c19da68b0e002fbc0bfa53161234560e005b3b5b060a7bfafc8d4814e5b72  ./COPY_AUDIT.md
 1dc024aa5e6b3d0b8c842fec020269ba26dc58b504c964f4c7c4e9cfcbae05ff  ./CURRENT_BLOCKERS.md
-6c05ff74abb937b31dba452c79845db1d838f48a3903ebf3178e1e57fbc78ee4  ./DEPLOY_PI5.md
+f1c76af8b85c6ee501e7a875ad0f84c2eb3ae9eb9c1457bd7924b6f302b7eef7  ./DEPLOY_PI5.md
 39a1b882c13cebc79fdd07bb35931f0b2b46729e83c0aef2b0fc2eb4d71860d4  ./DEPLOY_READINESS_REPORT.md
 c6d9b6536bdb20eb27aa1f79fccbce6948b4e1d9f39cad86175919c9d566004d  ./MARIGOLD_CLAIMS_PROVENANCE.md
 76b76794d797614fda01bc7d4d4dc39a204960d53bd596405fa68035367d36a9  ./Makefile
@@ -133,6 +133,7 @@ c2dbe3b3df87e09bacdbb7c6d07c541ba67c21bd5f80d8a516217fbef0fc90e0  ./ops/.env.exa
 acc1c158e35647a3aa639a748f379b7bba65c345e5bc22d55d97a206101a0bc9  ./ops/cloudflare/README.md
 75daa694789b7b65b4e00d3513c5c3a47c1876ba85cceda660d8be3584565bba  ./ops/docker-compose.yml
 ffdb5034ff26428123d03da1ff452ec7410ffca92dc34f1ca440cba7f48455b6  ./ops/logrotate/vorigin
+d17da3c70aeaa19faa58e8c5e5b8864703f42650065b04afe65f55dd3f380efb  ./ops/nginx/vorigin-staging.conf
 55d337a72e39e8932e7a8e5323c6fe6ce1efb646bcb34d2aa514523dc53ab18b  ./ops/nginx/vorigin.conf
 c245bea0020e186f43b45bfa5dae328397bdd56fc69d557c2afc532a9f998a04  ./ops/security/bootstrap-pi5.sh
 f3859b510d2c1d7161baf6c7fb07108e8adc346643575897e1e2b67bfc7bb52d  ./ops/security/harden-pi5.sh
@@ -213,7 +214,7 @@ ea428b82b3d01b5be6afdf77f876a2074ecc712671a97478b58ecae4c0ac72cf  ./scripts/brow
 03480fcd140e50ad28867dcb144686b2e38ce6da7fcec9a86bfccdf26218839c  ./scripts/build-production.sh
 ef6d2f4744b8a50ed84d0db064c7ff83c8d316e1842ab86db60a405513d93f26  ./scripts/cms-refresh.sh
 e49c191998e01c97d886111dfd81cddf496eb638c4f45acb416bbf425b6a0972  ./scripts/copy_qa.py
-98a7c91eadf081c3bea1a591089ece547ba1468cc581c91dc8962bfb681538dc  ./scripts/deploy-pi5.sh
+8c9f4bc0f831d9c50b8c33461f4547f43ff729c9399e73e457dd70df39fa378b  ./scripts/deploy-pi5.sh
 79c0563eac3fb5d2a46dd02182363d4b9b5e5f9a5a2f0f7efb0ad5e95dc9d030  ./scripts/generate_release_manifest.py
 af71e6e0a2f5ec0f981dcdf5a105287361de9ed7116ba72b34a03010c836df52  ./scripts/healthcheck.sh
 50837ea7f3c791598145ccd5e6c463680257d598c3cdaa9acd4cb0bfe780ed09  ./scripts/init-pi5-env.sh
@@ -234,8 +235,9 @@ f54a453af343c20a37c6a63b33a2a4f5b45a9cfa329f913ed1d1edb1b36e2f7a  ./source-asset
 34e90ffa2e288fad3dad8d057e877d82d5d6de4c197b8b419b941d951436bccc  ./source-assets/branding-v4/06_VORIGIN_Wordmark_Charcoal.svg
 d5fec9cb27fc46b2774595e5f7ae71a29c6e4962b6f3f7b1e2a990a6a9226ee0  ./source-assets/branding-v4/12_VORIGIN_Icon_Bronze.svg
 95b1a4c653078ffeffb3917c5249b42851ff89c4cfec20cac0e6f81d1875cdd2  ./source-assets/hero-marigold-premium-rc7.png
-724084e25ea78367ee3ec3f184fa2d762ae677f0a5e216b4f65ba5ca523c4249  ./tasks.md
+693f988d82298eb4aa15d5557fc8e4905da3c507ad7618a9583fab31f73dabf2  ./tasks.md
 18b2284779009a2f8aec380411e0b9e049636c3e3e08415c943d9903ffb464d0  ./tests/browser-assert.mjs
 d337d235be4247e26334f466fe4b79e92f65841c13d86a05ab1f42f9fbae6988  ./tests/browser-verify.sh
 a8bbe5be57e59c1661b9805b699d58bff045092a1c64811e041e1f8eb82dd633  ./tests/lead-api.test.mjs
+59a9cd1940f80a0c5bfac11aaf909fa182fbf3022c31e4ac32ef9759072388fb  ./tests/test_deploy_script_contract.py
 d008498bcbfbf1b6bc74f68d5786a5f5ef856938180539b61990c2607137d583  ./tools/ai_content_assistant.py

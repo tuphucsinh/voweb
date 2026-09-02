@@ -1,220 +1,354 @@
 # VOweb Master Plan
 
-**Revision:** 2
-**Status:** Phase 1 candidate implemented; exit review PARTIAL; Phase 2 blocked on owner/runtime gates
-**Baseline HEAD:** `ea21c1b5b6374621492db8c91018e0fab48e3ac6`
-**Pre-existing diff hash:** `cd29a4fb0185317e7e5a37721a26b9fbb4c47d3578e7ad65a5ba8f4b3d2cf04c`
+**Revision:** 3
+**Last reviewed:** 2026-09-02
+**Status:** Deployment-first; static public launch is the priority, but the public edge and isolated-canary gates are still blocked.
+**Current candidate commit:** `ab32d1cf8863cc6c037e114c1159a1114213b095`
+**Confidence:** CAO
 
 ## 1. Goal
 
-Bring VOweb from a strong but uneven premium preview to a verified, maintainable and production-gated release without redesigning the visual system.
+Đưa bản VOweb static rc7 hiện tại lên public canonical domain `https://vorigin.vn` theo đường ngắn nhất an toàn, không biến commit/push hoặc `production_ready=true` thành bằng chứng deploy thành công.
 
-Observable outcome:
+### Launch outcome
 
-- Homepage, MARIGOLD, Partners and Contact are consistently premium at 390, 768 and 1440 px.
-- No text is baked into hero photography where HTML already supplies that copy.
-- Mobile users see product or form value without avoidable multi-screen whitespace.
-- Large images have responsive delivery; content images reserve layout space.
-- Unversioned assets are not cached as immutable.
-- Release manifests/checksums are deterministic and verifiable.
-- Static QA, browser QA and lead API tests cover the defects found in the audit.
-- Production remains blocked until owner facts, legal approval, credentials and staging evidence are complete.
+- `https://vorigin.vn/vi/` and `/en/` return the intended production pages over HTTPS.
+- `https://www.vorigin.vn/*` follows the approved canonical apex redirect without exposing `:8080` or downgrading to HTTP.
+- Production HTML is indexable only after the exact launch candidate is approved; preview/staging remains `noindex`.
+- Nginx, Docker services and Cloudflare Tunnel retain loopback/private boundaries.
+- `/srv/vorigin/current` points to the exact approved timestamped release.
+- A fresh backup, rollback target and post-cutover evidence exist before the public switch.
+- Contact and partnership forms remain intentionally disabled for this first static launch. Turnstile, lead delivery and Directus publishing are a later phase.
 
-## 2. Verified starting state
+## 2. Strongest pushback and optimality check
 
-- Static bilingual VI/EN generator: `build.py` → `dist/`.
-- `python3 scripts/qa_static.py`: PASS, 32 HTML pages.
-- `python3 scripts/copy_qa.py`: PASS, 28 VI/EN pages.
-- Chrome 151 rendered current `dist/` at 390×844, 768×1024 and 1440×900 with no serious render log errors.
-- Core visual direction is strong; Homepage and MARIGOLD are approximately 8.3–8.7/10.
-- Partners hero is materially degraded by `b2b-vorigin-premium.webp`, which contains embedded copy and is cropped under HTML copy.
-- MARIGOLD mobile delays the product visual; Contact mobile delays the form.
-- `dist/` is 2,255,959 bytes; `b2b-vorigin-partner.png` is 1,155,665 bytes.
-- Across generated HTML: 246 `<img>` tags, 48 missing width/height, zero `srcset`.
-- Nginx sets 30-day `immutable` caching on unversioned asset names.
-- `CHECKSUMS.sha256` fails for three entries; the `.gitignore` mismatch is a stale manifest defect because worktree equals HEAD.
-- Lead API syntax passes, but optional Directus/webhook delivery does not reject HTTP error status.
-- Production preflight currently fails seven owner/runtime gates; phone and address were supplied in the current owner instruction, while legal review, MARIGOLD asset authorization, Turnstile credentials, IP hash salt and the production flag remain unresolved.
-- No existing `tasks.md`, `.ai/MASTER_PLAN.md` or `.ai/DECISIONS_LOG.md` existed before this revision.
+### Rejected: deploy directly now
 
-## 3. Design contract
+This is not safe or verifiable at the current state:
 
-**Surface:** bilingual corporate brand/catalogue website for Vietnamese consumers and international B2B partners.
-**Design read:** restrained editorial premium; credible provenance and market-entry capability; product warmth without luxury theatre.
-**Authority:** `design-taste-frontend` for aesthetics; `browser-screenshot-verification` for rendered evidence.
-**Implementation:** existing Python static generator, HTML/CSS/vanilla JS; no framework migration.
-**Three dials:** variance 7/10, motion 4/10, density 3/10.
-**Composition:** preserve current light editorial journey and light→dark B2B transition.
-**Asset rule:** supplied/canonical assets remain source-of-truth; derive compressed variants without inventing logos, claims or product imagery. Copy must remain HTML, not baked into hero images.
-**Responsive evidence:** 390×844, 768×1024, 1440×900; VI and EN; real Chrome stable.
-**Accessibility posture:** visible focus, reduced motion, readable supporting text, reserved image geometry, semantic labels.
+- `vorigin.vn` and `www.vorigin.vn` currently do not resolve from this host.
+- `launch.production_ready` is `false` in `config/site.json`.
+- `python3 scripts/preflight.py --production` without the deployment environment fails on missing `IP_HASH_SALT` and the production flag; the secret value must remain in `ops/.env` and is never printed.
+- No exact public HTTPS/DNS evidence exists for the candidate.
+- No explicit production cutover approval is attached to the current SHA.
 
-## 4. Scope
+### Rejected: run the existing staging command as-is
 
-### In scope
+`scripts/deploy-pi5.sh staging` currently writes `/srv/vorigin/current`, uses the same `127.0.0.1:8080` Nginx origin and reloads the same Nginx service. It is not an isolated staging path and can replace the release currently serving the origin.
 
-- B2B hero asset cleanup and responsive integration.
-- MARIGOLD mobile fold and Contact mobile conversion order.
-- Small-text accessibility hardening without changing the visual identity.
-- Deterministic image optimization using installed Pillow; no new dependency.
-- Image dimensions, responsive variants and `srcset`/`sizes` for high-impact assets.
-- Safe cache policy for unversioned files.
-- Deterministic manifest/checksum generation and verification.
-- Browser QA harness for critical routes/viewports.
-- Lead API optional-delivery status handling, bounded rate-bucket cleanup and built-in Node tests.
-- Stronger production preflight and removal of stale dual-authority claim flags.
-- Approval-gated staging and production closure.
+### Chosen route: deployment-first static launch
 
-### Out of scope
+1. Establish and verify the Cloudflare public edge for `vorigin.vn`/`www`.
+2. Make the staging/canary path physically separate from production.
+3. Prepare an exact production artifact and obtain approval tied to its SHA.
+4. Run production preflight with the wrapper's environment, then atomically cut over.
+5. Verify the public edge independently and keep rollback ready.
+6. Enable forms, Turnstile and CMS only after the static launch is stable.
 
-- Full redesign, framework migration, CMS redesign or AI feature expansion.
-- New brands, invented claims, synthetic testimonials or new product data.
-- Production credentials, public DNS, deploy, service restart, database migration or external form submission without explicit approval.
-- Replacing official logo/MARIGOLD assets without owner authorization.
-- Manual edits to generated `dist/` as source-of-truth.
+This is materially faster than the old plan because forms are already disabled, so staging Turnstile/lead submission and Directus service-token setup are not launch blockers. It is safer than a direct deploy because the public edge, artifact identity and rollback remain independently proven.
 
-## 5. Global constraints
+## 3. Verified starting state
 
-1. Preserve all pre-existing dirty changes; never reset the repo or overwrite concurrent user edits.
-2. Before each task, Mika records current `HEAD`, status path set and allowed write paths.
-3. Source changes occur in `build.py`, `public/`, `scripts/`, `services/` or `ops/`; `dist/` is regenerated only by `build.py`.
-4. Runner does not edit `tasks.md`, commit, push, deploy or access secrets.
-5. One task = one Mika-verified commit.
-6. UI task acceptance requires Chrome screenshots, not source plausibility.
-7. Production and credential tasks remain `Need approval` until the owner gate is explicit.
-8. Existing claims remain governed by `content/claims.json`; no task may broaden public wording.
+### 3.1 Repository and candidate
+
+**VERIFIED_NOW:**
+
+- Root: `/home/pi5/projects/VOweb`
+- Branch: `main`
+- Local HEAD and `origin/main`: `ab32d1cf8863cc6c037e114c1159a1114213b095`
+- Tracked/staged product changes: none after the pushed candidate.
+- Untracked paths: `Doc/` and `.tmp/`; these remain excluded from release/commit and must not be deleted by this plan.
+- `config/site.json`: `contact_forms_enabled=false`, `launch.production_ready=false`.
+- `ops/.env`: exists with mode `600`; values are not read into reports.
+
+**RECORDED_EVIDENCE_BOUND_TO_CURRENT_COMMIT:**
+
+- Build/static/copy and preflight contract checks passed for the candidate; production preflight remains blocked while the launch flag is false or the wrapper environment is absent.
+- Browser matrix recorded `24/24` route/viewport results at `390x844`, `768x1024` and `1440x900` in `/home/pi5/hermes-artifacts/browser-evidence/VOweb/commit-verify`.
+- Release manifest and SHA-256 verification passed after the final candidate reconciliation.
+- The numeric CDP overflow probe remains `BLOCKED_BROWSER_LAYOUT`; screenshots are not numeric overflow proof.
+
+### 3.2 Host and runtime
+
+**VERIFIED_NOW:**
+
+- `nginx`: active and enabled.
+- `cloudflared`: active and enabled.
+- Docker services: `vorigin-db-1` is healthy; Directus and lead-api are running; Directus is published only at `127.0.0.1:8055`, lead-api only at `127.0.0.1:8787`.
+- Nginx is listening at `127.0.0.1:8080`.
+- `/srv/vorigin/current` is a valid symlink to `/srv/vorigin/releases/20260831T035626Z-production`.
+- Existing current release is older than the candidate: hashes for `vi/index.html` and `en/index.html` differ from the repository `dist/` versions.
+- `/etc/cloudflared/token` exists with mode `600`; the token value was not read.
+- `vorigin-health.timer`, `vorigin-backup.timer` and `vorigin-content-sync.timer` are not installed/enabled on this host.
+
+### 3.3 Edge
+
+**BLOCKED_NOW:**
+
+- `getent ahostsv4 vorigin.vn` and `www.vorigin.vn` return no address.
+- HTTPS requests to both domains fail at DNS resolution.
+- An active `cloudflared` process proves connector health only; it does not prove DNS or a public-hostname ingress route.
+
+### 3.4 Source-of-truth paths
+
+- Static generator: `build.py`
+- Production gates: `scripts/preflight.py`, `scripts/test_preflight.py`
+- Deployment wrapper: `scripts/deploy-pi5.sh`
+- Browser verification: `scripts/browser_matrix.py`, `tests/browser-verify.sh`
+- Public origin: `ops/nginx/vorigin.conf`
+- Private services: `ops/docker-compose.yml`
+- Edge instructions: `ops/cloudflare/README.md`
+- Backup/health: `scripts/backup.sh`, `scripts/healthcheck.sh`, `ops/systemd/`
+- Rollback runbook: `OPERATIONS.md`, `DEPLOY_PI5.md`
+
+## 4. Architecture and boundaries
+
+```text
+visitor
+  -> Cloudflare HTTPS/WAF
+  -> Cloudflare Tunnel (outbound from Pi)
+  -> Nginx 127.0.0.1:8080
+  -> /srv/vorigin/current (static release)
+
+admin.vorigin.vn
+  -> Cloudflare Access
+  -> 127.0.0.1:8055 Directus
+  -> private Docker network -> PostgreSQL
+```
+
+- No router port-forwarding and no public database/Directus/lead-api binding.
+- The first launch serves static pages with contact/partnership forms disabled.
+- Do not expose `admin.vorigin.vn` without Cloudflare Access.
+- Do not read, print, commit or place Cloudflare, Directus, Turnstile or env secret values in prompts/evidence.
+
+## 5. Scope and non-goals
+
+### In scope now
+
+- Cloudflare DNS/public-hostname verification for `vorigin.vn` and `www.vorigin.vn`.
+- Safe, physically isolated local canary path.
+- Deployment-wrapper boundary needed to avoid accidental production overwrite or unrelated service restart.
+- Exact production build, manifest/checksum and preflight evidence.
+- Backup, atomic production cutover, public HTTPS verification and rollback readiness.
+- Installation and verification of health/backup timers only when separately approved and scoped.
+
+### Deferred until after static launch
+
+- Turnstile widget and secret configuration.
+- Enabling public lead/contact forms.
+- Directus role/token creation, CMS sync and real lead delivery.
+- Monitoring hostname exposure and content-sync timer.
+- Lighthouse/Web Vitals optimization beyond a launch smoke baseline.
+
+### Explicitly out of scope
+
+- Full redesign, framework migration, database migration or schema change.
+- Router/firewall port forwarding.
+- Deleting old releases or `Doc/`/`.tmp/`.
+- Production DNS/cutover, service reload, credential or permission changes without explicit approval.
+- Inventing legal text, contact facts, claims or asset authorization.
 
 ## 6. Phase 1 — Premium hardening and release integrity
 
-### Milestone M1 — Visible premium blockers
+**Status:** DONE for the current candidate; technical evidence is recorded, while public launch was intentionally not performed.
 
-Tasks: `P1M1T01`–`P1M1T05`.
+The Phase 1 candidate preserves the approved visual system and includes the B2B hero cleanup, mobile fold/order fixes, responsive image contracts, safe cache behavior, deterministic release metadata, browser matrix, lead API reliability tests and fail-closed production preflight. The detailed historical task evidence remains in `.ai/PHASE1_EXIT_REVIEW.md` and the completed entries in `tasks.md`.
 
-Deliverables:
+Phase 1 does not prove public edge readiness, production approval or a deployed release.
 
-- Preserve canonical B2B PNG hash `5aabfff04d20b85499e4d6ea22eeba2b4b6924293e72134896677a3e93cc48f5` under `source-assets/`.
-- Deterministically derive 640w and 1020w WebP variants with Pillow.
-- Partners/Home use clean imagery with HTML copy; no embedded duplicate copy.
-- MARIGOLD product visual appears in the first mobile experience without a dead gap.
-- Contact mobile prioritizes the form ahead of the supporting card.
-- Essential labels/footer/trust copy remain readable without losing the restrained visual language.
+## 7. Phase 2 — Deployment-first public static launch
 
-Milestone acceptance:
+### Milestone M1 — Edge and canary boundary
 
-- VI/EN critical routes pass static/copy QA.
-- 390, 768 and 1440 screenshots have no overflow, clipped text or broken asset.
-- Partners hero has no duplicated/cropped embedded copy.
-- At 390×844, MARIGOLD shows product imagery within the initial viewport or immediately at its lower boundary.
-- At 390 px, Contact exposes the first form field before the supporting card.
+#### [#P2M1T01] [config/site.json, legal content, approved assets] `close_owner_content_gates()`
 
-Rollback: revert only the milestone commits; rebuild `dist/`; verify original source asset hash remains intact.
+**Goal:** Close only the owner-controlled content and asset gates already approved, without enabling production readiness.
 
-### Milestone M2 — Delivery, layout stability and release integrity
+**Status:** DONE. Owner-controlled facts (phone, bilingual address, legal review flags, and official MARIGOLD assets) are confirmed in `config/site.json`. `contact_forms_enabled=false` and `launch.production_ready=false` remain intentionally set for static launch.
 
-Tasks: `P1M2T01`–`P1M2T04`.
+#### [#P2M1T02] [scripts/deploy-pi5.sh, ops/nginx/vorigin-staging.conf, tests/test_deploy_script_contract.py, DEPLOY_PI5.md] `establish_edge_and_isolated_canary()`
 
-Deliverables:
+**Goal:** Prove the public edge, enforce deployment integrity by removing manifest self-writing, make staging/canary physically unable to overwrite `/srv/vorigin/current` or production Nginx config, and make data-service refresh opt-in for production only while rejecting it in staging.
 
-- Generated content images have intrinsic width/height.
-- High-impact hero, lineup, B2B and product imagery have responsive WebP variants and correct `srcset`/`sizes`.
-- No LCP image is lazy-loaded; below-fold imagery remains lazy where appropriate.
-- Unversioned assets no longer receive unsafe immutable caching.
-- `MANIFEST.txt` and `CHECKSUMS.sha256` are generated deterministically and pass verification.
+**Depends on:** `[#P2M1T01]` — complete.
 
-Milestone acceptance:
+**Parallel-safe:** `no`
 
-- `qa_static.py` fails on missing local dimensions and malformed responsive-image contracts.
-- Generated HTML contains expected `srcset`/`sizes` on high-impact imagery.
-- All production manifest entries exist; no unexpected deployable file is silently omitted.
-- `sha256sum -c CHECKSUMS.sha256` returns exit 0 after generation.
-- Full static/copy QA and browser matrix remain green.
+**Concrete changes and checks:**
 
-Rollback: restore previous cache config and generated artifacts from task commits; no service reload in Phase 1.
+1. Capture a read-only baseline: current Git SHA/status, `/srv/vorigin/current` target, release directory list, active Nginx symlink/effective config, listeners, Docker status and Cloudflare service status.
+2. Enforce check-only deployment integrity: remove `generate_release_manifest.py --write` from `scripts/deploy-pi5.sh` so deployment only verifies `generate_release_manifest.py --check` and `sha256sum -c CHECKSUMS.sha256` without mutating workspace integrity metadata.
+3. Safe variable expansion: use `TURNSTILE_SITE_KEY="${TURNSTILE_SITE_KEY:-}"` in `scripts/deploy-pi5.sh` so absent optional keys cannot cause `set -u` failures.
+4. Mode-aware deployment wrapper & isolated paths:
+   - Staging: `APP_ROOT=/srv/vorigin/staging/app`, `RELEASE_ROOT=/srv/vorigin/staging/releases`, `CURRENT_LINK=/srv/vorigin/staging/current`, `NGINX_CONFIG=ops/nginx/vorigin-staging.conf`, `NGINX_SITE=vorigin-staging`, `ORIGIN_PORT=8081`.
+   - Production: `APP_ROOT=/srv/vorigin/app`, `RELEASE_ROOT=/srv/vorigin/releases`, `CURRENT_LINK=/srv/vorigin/current`, `NGINX_CONFIG=ops/nginx/vorigin.conf`, `NGINX_SITE=vorigin`, `ORIGIN_PORT=8080`.
+5. Dedicated staging Nginx configuration `ops/nginx/vorigin-staging.conf`: listens on `127.0.0.1:8081 default_server`, serves `/srv/vorigin/staging/current`, excludes production hostnames (`vorigin.vn`, `www.vorigin.vn`), omits `/api/lead` proxy, and preserves all production security headers and hidden/config denial rules.
+6. Opt-in data services & staging fail-closed boundary: default `RUN_DATA_SERVICES="${RUN_DATA_SERVICES:-0}"` with strict `0|1` validation; staging rejects `RUN_DATA_SERVICES=1` before build or runtime side effects because the Compose stack is shared. Production-only opt-in runs explicit `docker compose` or `docker-compose` branches without dynamic unquoted command variables.
+7. Contract tests: add side-effect-free `tests/test_deploy_script_contract.py` verifying manifest check-only integrity, variable expansion, staging rejection of `RUN_DATA_SERVICES=1`, explicit production Compose fallback branches, isolated roots/pointers/ports, Nginx staging config, and documentation contracts.
+8. Runbook documentation: update `DEPLOY_PI5.md` to document staging port `8081`, healthz verification, staging static-only boundary rejecting shared data services, and production-only opt-in `RUN_DATA_SERVICES=1` instructions.
+9. With owner-approved Cloudflare access, configure/verify:
+   - `vorigin.vn` public hostname -> HTTP `127.0.0.1:8080`;
+   - `www.vorigin.vn` -> the same origin or an approved edge redirect;
+   - `admin.vorigin.vn` -> HTTP `127.0.0.1:8055` behind Access only.
+10. Query public DNS and make safe HTTPS GET/redirect/header checks. If DNS or public-hostname ingress is absent, stop with `BLOCKED_EXTERNAL_ROUTE_CONFIGURATION`; do not inspect or mutate the tunnel token.
 
-### Milestone M3 — Automated quality and lead reliability
+**Definition of Done:**
 
-Tasks: `P1M3T01`–`P1M3T03`.
+- Deployment wrapper eliminates manifest self-writing and enforces verification-only integrity.
+- Staging/canary has distinct release root (`/srv/vorigin/staging/releases`), pointer (`/srv/vorigin/staging/current`), port (`8081`), and Nginx site (`vorigin-staging`); a canary deploy cannot touch `/srv/vorigin/current` or production Nginx site.
+- Staging rejects `RUN_DATA_SERVICES=1` before build/runtime mutation; production allows data service refresh only when `RUN_DATA_SERVICES=1` is explicitly provided and approved.
+- `python3 -m unittest tests/test_deploy_script_contract.py` passes.
+- Effective Nginx behavior and loopback listener scope are evidenced.
+- `vorigin.vn` and `www.vorigin.vn` resolve and the approved public route is observable, or the task remains blocked with the exact missing Cloudflare owner action.
+- Existing production release pointer is unchanged by canary work.
+- No secret value appears in command output/evidence.
 
-Deliverables:
+**Rollback:** remove only the staging include/pointer and restore the prior Nginx symlink/config; production current pointer must remain untouched.
 
-- Project-local browser smoke harness covers Homepage, MARIGOLD, Partners and Contact in VI/EN at 390/768/1440.
-- Assertions cover status, expected text, missing images, horizontal overflow, mobile menu accessibility and critical ordering.
-- Lead API has built-in Node tests and treats Directus/webhook non-2xx responses as explicit delivery failure telemetry while preserving local append-only storage.
-- Rate-limit buckets are bounded/expired.
-- Production preflight requires a non-placeholder IP hash salt and enforces the single claim authority.
+**Approval:** external Cloudflare changes, Nginx reload, filesystem writes under `/srv/vorigin` and any deployment-wrapper execution require explicit approval before execution.
 
-Milestone acceptance:
+### Milestone M2 — Exact launch candidate
 
-- `node --test services/lead-api/*.test.mjs` exits 0.
-- Browser smoke matrix exits 0 using `/usr/bin/google-chrome-stable`.
-- Preview preflight remains PASS with named warnings; production preflight remains FAIL until owner gates are complete.
-- No secret value is printed or committed.
+#### [#P2M1T03] [config/site.json, build.py, dist/, MANIFEST.txt, CHECKSUMS.sha256] `prepare_exact_production_candidate()`
 
-Phase 1 exit gate:
+**Goal:** Produce a production-indexable artifact whose exact commit, generated output and preflight result are known before cutover.
 
-- `python3 build.py`
-- `python3 scripts/qa_static.py`
-- `python3 scripts/copy_qa.py`
-- `python3 scripts/preflight.py`
-- `node --check services/lead-api/server.mjs`
-- `node --test services/lead-api/*.test.mjs`
-- project browser matrix at 390/768/1440
-- `sha256sum -c CHECKSUMS.sha256`
-- `git diff --check`
-- Mika adversarial audit: three most serious remaining issues versus requirements
+**Depends on:** `[#P2M1T02]`
 
-Expected route: STANDARD for visual/static tasks; CONTROLLED for lead/security or production-related tasks.
+**Parallel-safe:** `no`
 
-## 7. Phase 2 — Owner and production closure
+**Concrete changes and checks:**
 
-### Milestone M1 — Owner-controlled launch gates
+1. Freeze the source baseline and confirm no `Doc/`/`.tmp/` material is entering the release.
+2. Obtain owner approval to publish the current static release with forms disabled and to enable the production flag for the launch candidate. If the current Privacy/Terms draft notice is not approved for public use, stop and record the required final text instead.
+3. Mika changes only `config/site.json` `launch.production_ready` to `true` after that approval; rebuild through `build.py`, never edit `dist/` manually.
+4. Run production preflight with the same secret-safe environment boundary as the wrapper:
 
-Tasks: `P2M1T01`–`P2M1T04`.
+   ```bash
+   set -a; source ops/.env; set +a
+   python3 scripts/preflight.py --production
+   ```
 
-This phase is not authorized for execution by plan approval alone.
+   Values from `ops/.env` must not be printed, copied into prompts or persisted in evidence.
+5. Run the production build and gates: `python3 build.py`, `python3 scripts/qa_static.py --production`, `python3 scripts/copy_qa.py`, optimizer check, manifest generation/check, `sha256sum -c CHECKSUMS.sha256`, Python/Node checks and the browser matrix against an isolated local production artifact.
+6. Verify `dist/robots.txt` is indexable, preview `noindex` is absent from production HTML, forms remain absent, and the generated pages match the approved VI/EN content.
+7. Review `git diff`, `git diff --check`, manifest scope and secret-like paths. Create the exact launch commit only after all checks pass; the cutover approval must reference that resulting SHA.
 
-Required owner inputs/approvals:
+**Definition of Done:**
 
-- official business phone;
-- official VI/EN business address;
-- final Privacy Policy and Terms of Use;
-- MARIGOLD production asset authorization;
-- Cloudflare Tunnel, Turnstile and Access credentials/configuration;
-- Directus production roles/tokens;
-- staging acceptance;
-- explicit production cutover approval.
+- `scripts/preflight.py --production` returns `PASS` with the wrapper environment.
+- Production build/static/copy/browser/manifest/checksum gates pass; exact evidence is bound to the launch SHA.
+- `production_ready=true` exists only in the owner-approved launch candidate, not as a standalone readiness claim.
+- No secret, private `Doc/` file or `.tmp/` artifact is staged.
 
-Phase acceptance:
+**Rollback:** revert the launch-flag/generated-artifact candidate commit before cutover; keep the previous pushed candidate available.
 
-- `scripts/preflight.py --production` PASS.
-- Staging browser matrix and measured Lighthouse/Web Vitals evidence satisfy the approved thresholds or has an explicit exception.
-- Real-domain Turnstile/lead delivery is verified with owner-approved test data and cleanup.
-- Backup and rollback paths are read back and tested before production cutover.
-- Production deploy, DNS or service changes occur only under explicit approval.
+**Approval:** owner approval for public content/flag and separate approval for creating the exact launch commit.
 
-## 8. Verification matrix
+### Milestone M3 — Production cutover and public verification
 
-- **Visual premium:** Chrome screenshots at 390/768/1440; VI/EN; Home/MARIGOLD/Partners/Contact.
-- **Responsive:** no horizontal overflow; menu usable; long VI/EN text not clipped; form/product priority verified.
-- **Accessibility observations:** focus visibility, semantic controls, reduced motion, readable supporting copy.
-- **Static correctness:** metadata, H1, canonical, hreflang, local links/assets, claims guard, image geometry.
-- **Performance evidence:** asset byte budgets and responsive contracts in Phase 1; Lighthouse only when an approved reachable HTTP target exists.
-- **API:** built-in Node tests, malformed/oversize input, host/content-type/rate limit, Turnstile stub, local persistence, optional sink non-2xx.
-- **Release:** deterministic MANIFEST/CHECKSUMS, source/dist parity and clean scoped diff.
-- **Production:** preflight, Nginx syntax, staging health, real browser, lead E2E, backup/rollback, explicit approval.
+#### [#P2M1T04] [production runtime] `approve_and_cut_over_production()`
 
-## 9. Risks and stop conditions
+**Goal:** Atomically publish the approved launch SHA on `vorigin.vn`, verify all four runtime boundaries, and retain a tested rollback target.
 
-Stop and report when:
+**Depends on:** `[#P2M1T03]`
 
-- working-tree path set changes outside the current task;
-- canonical asset hash differs unexpectedly;
-- Pillow output is visibly degraded or non-deterministic;
-- the same browser/test failure repeats twice without new evidence;
-- a task requires credentials, production access, public messaging, service restart or destructive cleanup without approval;
-- a generated `dist/` diff cannot be explained by source changes;
-- independent review is non-PASS for lead/security/production scope.
+**Parallel-safe:** `no`
 
-## 10. Optimality check
+**Concrete changes and checks:**
 
-A full redesign would add risk without addressing the actual blockers. The selected route preserves the strongest current work and fixes the small number of high-impact defects first. Content-hashed asset infrastructure was also rejected for this phase as unnecessary complexity; safe cache headers plus deterministic release manifests solve the current failure mode with lower maintenance cost.
+1. Obtain explicit cutover approval tied to the exact launch SHA, release path, maintenance window and rollback command. This is not inferred from Phase 1 or preflight PASS.
+2. Capture the immediately-before baseline: current release symlink/hash, Nginx effective config, listeners, Docker status/restart counts, cloudflared status, disk space and recent startup/fatal logs.
+3. Run the approved backup path before mutation. Verify the backup directory, archive listing, expected config/content/dist artifacts and backup metadata; do not claim backup success from a final log line alone.
+4. Run the audited production deploy wrapper for the exact SHA. Preserve the first useful failure. Do not retry without new evidence.
+5. Independently read back `/srv/vorigin/current`, release files, Nginx syntax/effective config, listeners, health endpoint, container state and logs. `Up` is not treated as native health unless the service exposes a health check.
+6. Verify public edge behavior from outside the local origin boundary:
+   - apex `/`, `/vi/`, `/en/`;
+   - `www` redirect behavior;
+   - HTTPS/TLS and security headers;
+   - safe hidden/source path denials;
+   - no `:8080` exposure and no HTTP downgrade.
+7. Run read-only browser smoke on the exact public routes at mobile/tablet/desktop sizes. Assert forms are intentionally disabled and no Turnstile script is loaded.
+8. If a critical gate fails, stop public verification, preserve raw evidence, and perform only the approved rollback to the previous release. Re-verify release pointer, Nginx, listeners, health and public edge after rollback.
+
+**Definition of Done:**
+
+- `application_state=PASS`, `host_state=PASS`, `runtime_state=PASS`, `edge_state=PASS` with exact evidence paths.
+- Public `vorigin.vn` serves the approved launch SHA; `www` follows the approved canonical behavior.
+- Previous release and rollback procedure are read back and remain available.
+- No data migration, lead submission, public credential exposure or unrelated service change occurred.
+
+**Approval:** explicit production cutover approval is mandatory immediately before execution; backup/rollback and public edge changes are separate approval boundaries.
+
+## 8. Phase 3 — Post-launch lead and CMS enablement
+
+**Status:** DEFERRED until the static public launch is stable.
+
+1. Configure Turnstile only after an approved widget/domain and secret-safe runtime store exist.
+2. Enable forms only after a real-domain E2E contract, owner-approved fixture, exact-ID cleanup and multidimensional baseline verification exist.
+3. Configure Directus least-privilege roles/tokens and verify scopes without exposing token values.
+4. Enable content sync only after draft/review/publish and rollback are tested.
+5. Add external monitoring only with an approved hostname and access policy.
+
+This phase must not block the first public static launch while forms remain disabled.
+
+## 9. Verification contract
+
+Report the following independently; never collapse them into one readiness boolean:
+
+```text
+application_state: PASS|FAIL|BLOCKED + command/evidence
+host_state: PASS|FAIL|BLOCKED + config/listener evidence
+runtime_state: PASS|FAIL|BLOCKED + process/container/health evidence
+edge_state: PASS|FAIL|BLOCKED + DNS/HTTPS/redirect evidence
+rollback_state: PASS|FAIL|BLOCKED + previous release/backup evidence
+residual_blocker: exact owner/action or NONE
+```
+
+### Required commands by gate
+
+- Source: `git status --short --branch`, `git rev-parse HEAD`, `git diff --check`.
+- Application: `python3 build.py`, static/copy QA, `python3 scripts/preflight.py --production` with `ops/.env`, manifest/checksum checks, Node tests.
+- Host: `sudo nginx -t`, `sudo nginx -T`, active-site symlink, `ss -ltnp`.
+- Runtime: `docker compose --env-file ops/.env -f ops/docker-compose.yml ps --all`, `systemctl is-active`, safe health probes, restart/log inspection.
+- Edge: public DNS queries, `curl -sSIL`/safe GET to exact HTTPS routes and redirect/header assertions.
+- Browser: `/usr/bin/google-chrome-stable` through the project browser harness; evidence must identify the tested base URL and launch SHA.
+- Rollback: previous release target, backup archive listing, approved pointer restore and post-restore read-back.
+
+### Performance and accessibility
+
+- Launch gate: static HTTP/HTTPS correctness, browser render, content order, asset availability and security headers.
+- Lighthouse/Web Vitals: `Monitor` after the public static launch because no approved Lighthouse evidence is currently available; record a baseline against the live exact SHA before prioritizing optimization.
+- Numeric layout overflow: remain `UNKNOWN/BLOCKED_BROWSER_LAYOUT` until the CDP capability is fixed; do not convert screenshots into a numeric PASS.
+
+## 10. Risks and stop conditions
+
+Stop immediately and preserve the first useful evidence when:
+
+- DNS or public-hostname ingress is absent or points somewhere unexpected.
+- Canary and production share a release pointer, root or port.
+- `production_ready` is enabled without the owner/content approval recorded for the exact candidate.
+- Production preflight fails or is run without the wrapper's environment.
+- Exact launch SHA, release files or checksum manifest do not match.
+- Nginx effective config differs from the reviewed source or a non-loopback service listener appears.
+- Docker restart counts/logs show an unexplained regression.
+- Any credential, cookie, token or private data appears in output/evidence.
+- The same failure repeats twice without new operational evidence.
+- Rollback target or backup cannot be read back.
+
+## 11. Open decisions / owner actions
+
+1. **Static-first launch approval:** confirm public launch is allowed with `contact_forms_enabled=false` and direct contact details only.
+2. **Legal final-use approval:** confirm current Privacy/Terms text is approved for public use, or provide final bilingual text before enabling `production_ready`.
+3. **Cloudflare edge action:** configure/confirm DNS and public hostnames for `vorigin.vn` and `www.vorigin.vn`; protect `admin.vorigin.vn` with Access.
+4. **Canary/cutover approval:** approve the isolated canary host changes, exact launch SHA and production maintenance window.
+5. **Monitoring decision:** choose an external uptime monitor only after the public edge is live; do not expose the local monitor port.
+
+## 12. Plan self-review
+
+- Every launch acceptance criterion maps to P2M1T02, P2M1T03 or P2M1T04 and to an observable command/evidence type.
+- The old unsafe staging behavior is explicitly blocked and assigned a bounded correction.
+- Forms/Turnstile/Directus are not silently required for a static launch, but their later safety gates remain explicit.
+- Credentials, Cloudflare, Nginx, Docker, public DNS, service reload and production cutover retain separate approval boundaries.
+- No task authorizes a secret value, direct port exposure, irreversible deletion or unverified rollback.
+- The plan remains under the 600-line project-doc limit and is ready for WBS execution only after the owner actions above are approved.

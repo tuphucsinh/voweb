@@ -91,3 +91,9 @@
 **Status:** Accepted
 **Evidence:** `IP_HASH_SALT` was generated with `openssl rand -hex 32`, stored in `ops/.env`, and the file was set to mode `600`; only format/length/permission were reported.
 **Consequence:** The value is never printed, committed, included in manifests or copied into reports.
+
+## D016 — Deployment-first static launch with isolated canary
+
+**Status:** Accepted for planning; not a production authorization
+**Evidence:** Current candidate is pushed at `ab32d1cf8863cc6c037e114c1159a1114213b095`; Nginx and cloudflared are active; `/srv/vorigin/current` still points to `20260831T035626Z-production`; `vorigin.vn` and `www.vorigin.vn` do not currently resolve; and `scripts/deploy-pi5.sh staging` writes the same production current pointer.
+**Consequence:** Prioritize a static public launch with forms disabled. First separate staging/canary from production, establish and verify the Cloudflare edge, prepare an exact production-indexable candidate, then cut over only with explicit approval, backup and rollback evidence. Turnstile, lead delivery and Directus roles move to a post-launch phase.

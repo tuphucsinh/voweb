@@ -66,12 +66,17 @@ Only then change the corresponding `launch.*` fields and `production_ready` to t
 
 ## F. Staging on the Pi
 
+Deploying staging uses an isolated root `/srv/vorigin/staging/current`, a dedicated Nginx server block (`ops/nginx/vorigin-staging.conf`), and port `8081`:
+
 ```bash
 ./scripts/deploy-pi5.sh staging
-curl -I http://127.0.0.1:8080/vi/
+curl -I http://127.0.0.1:8081/vi/
+curl -fsS http://127.0.0.1:8081/healthz
 ```
 
 A staging build is `noindex`.
+
+Staging is static-only and rejects `RUN_DATA_SERVICES=1` because the current Compose stack is shared (`name: vorigin`, shared volumes, and loopback ports `8055`/`8787`). Staging commands cannot restart data services until a physically isolated staging service stack is configured.
 
 ## G. Production preflight
 
@@ -88,7 +93,13 @@ This must print `PASS`.
 ./scripts/deploy-pi5.sh production
 ```
 
-The deploy uses a timestamped release and atomically switches `/srv/vorigin/current`, making rollback easy.
+The deploy uses a timestamped release and atomically switches `/srv/vorigin/current` serving on loopback port `8080`, making rollback easy.
+
+Static deploys do not restart data services by default (`RUN_DATA_SERVICES=0`). Running data services is an opt-in, separate approved production operation:
+
+```bash
+RUN_DATA_SERVICES=1 ./scripts/deploy-pi5.sh production
+```
 
 ## I. Cloudflare routes
 
