@@ -233,7 +233,10 @@ def home(locale):
       ('Giá trị dài hạn' if vi else 'Long-term Value','Ưu tiên nền tảng bền vững hơn những mục tiêu ngắn hạn.' if vi else 'We favour enduring value over short-term momentum.'),
       ('Cách làm chỉn chu' if vi else 'Considered Approach','Chọn lọc kỹ, tiêu chuẩn rõ và triển khai với sự cẩn trọng cần thiết.' if vi else 'Careful selection, clear standards and the discipline to execute well.'),
       ('Cùng phát triển' if vi else 'Grow Together','Mỗi quan hệ hợp tác đều hướng đến sự tăng trưởng ổn định và lâu dài.' if vi else 'Each partnership is built with steady, long-term growth in mind.')]
-    benefits=''.join(f'<article class="benefit reveal"><span class="benefit-icon" aria-hidden="true">{icon_img(icon, "benefit-icon-svg")}</span><h3>{e(a)}</h3><p>{e(b)}</p></article>' for icon,(a,b) in zip(['trusted-partner','local-expertise','long-term-value','premium-approach','grow-together'],partner_copy))
+    benefits=''.join(
+      f'<article class="why-value-row reveal" role="listitem"><div class="why-value-meta"><span class="why-value-number">0{i+1}</span><span class="why-value-icon" aria-hidden="true">{icon_img(icon, "why-value-icon-svg")}</span></div><div class="why-value-copy"><h3>{e(a)}</h3><p>{e(b)}</p></div></article>'
+      for i,(icon,(a,b)) in enumerate(zip(['trusted-partner','local-expertise','long-term-value','premium-approach','grow-together'],partner_copy))
+    )
     hero_eyebrow='NGUỒN GỐC ĐÁNG TIN. GIÁ TRỊ BỀN LÂU.' if vi else 'TRUSTED ORIGINS. LASTING VALUE.'
     story_eyebrow='TUYỂN CHỌN BỞI VORIGIN' if vi else 'CURATED BY VORIGIN'
     featured_label='THƯƠNG HIỆU NỔI BẬT' if vi else 'FEATURED BRAND'
@@ -246,8 +249,8 @@ def home(locale):
 <section class="story section-light" id="story" aria-labelledby="story-title"><div class="shell"><div class="section-heading story-heading reveal"><p class="eyebrow">{story_eyebrow}</p><h2 id="story-title">{e(t['story_title'])}</h2><i class="bronze-rule"></i></div><div class="story-grid">
 {story_card('story-origin.png','Nguồn gốc' if vi else 'Origin',t['origin'],'origin','01','story-card-origin')}{story_card('story-nature.png','Tự nhiên' if vi else 'Nature',t['nature'],'nature','02','story-card-nature')}{story_card('story-craft.png','Tiêu chuẩn' if vi else 'Craft',t['craft'],'craft','03','story-card-craft')}{story_card('story-value.png','Giá trị' if vi else 'Value',t['value'],'value','04','story-card-value')}</div></div></section>
 <section class="featured section-soft" id="brands"><div class="shell featured-grid"><div class="featured-copy reveal"><div class="featured-copy-inner"><p class="eyebrow">{featured_label}</p><h2>MARIGOLD</h2><p>{e(t['featured_copy'])}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['discover_marigold'])}<span>→</span></a></div></div><figure class="lineup reveal"><div class="lineup-surface"><img class="lineup-image" src="/assets/Brand1.png" alt="MARIGOLD Fruit Drink Apple, Orange, Mango and Grape" width="1672" height="941" loading="lazy" decoding="async"></div></figure></div></section>
-<section class="portfolio section-light"><div class="shell portfolio-grid"><div class="portfolio-copy reveal"><p class="eyebrow">{portfolio_label}</p><h2>{portfolio_title}</h2><p>{e(t['portfolio_copy'])}</p><a class="button button-outline" href="{r['brands']}">{e(t['portfolio_cta'])}<span>→</span></a></div><div class="portfolio-cards" role="list">{portfolio_cards(locale)}</div></div></section>
-<section class="why-partner section-light" id="partners"><div class="leaf-ornament leaf-left">⌁⌁⌁</div><div class="leaf-ornament leaf-right">⌁⌁⌁</div><div class="shell"><div class="section-heading centered reveal"><h2>{e(t['why'])}</h2><i class="bronze-rule transition-rule"></i></div><div class="benefit-grid">{benefits}</div></div></section>
+<section class="portfolio section-light"><div class="shell portfolio-grid"><div class="portfolio-copy reveal"><div class="portfolio-copy-header"><p class="eyebrow">{portfolio_label}</p><h2>{portfolio_title}</h2></div><div class="portfolio-copy-meta"><p>{e(t['portfolio_copy'])}</p><a class="button button-outline" href="{r['brands']}">{e(t['portfolio_cta'])}<span>→</span></a></div></div><div class="portfolio-cards" role="list">{portfolio_cards(locale)}</div></div></section>
+<section class="why-partner section-light" id="partners" aria-labelledby="why-title"><div class="shell why-value-index"><div class="why-value-intro reveal"><h2 id="why-title">{e(t['why'])}</h2><i class="bronze-rule transition-rule"></i></div><div class="why-value-list" role="list">{benefits}</div></div></section>
 <section class="market section-dark" id="market"><div class="shell market-grid"><figure class="market-visual reveal">{render_market_visual(locale)}</figure><div class="market-copy reveal"><p class="eyebrow">{global_label}</p><h2>YOUR BRAND<br>OUR MARKET</h2><p>{e(t['market_copy'])}</p><div class="services">{service_html}</div><a class="button button-gold" href="{r['partners']}">{e(t['market_cta'])}<span>→</span></a></div></div></section>'''
     return base_page(locale,'VOrigin — From Origins to Value',t['hero_lead'],'home',body)
 
@@ -284,12 +287,12 @@ def story_card(img,title,copy,icon,index='01',modifier=''):
 
 def portfolio_cards(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
-    dirs=([('Đồ uống chọn lọc','Đồ uống','premium-beverages'),('Thực phẩm tuyển chọn','Thực phẩm','fine-foods'),('Tự nhiên & Sống khỏe','Sống khỏe','natural-wellness'),('Quà tặng & Phong cách sống','Phong cách sống','gifting-lifestyle')] if vi else [('Premium Beverages','Beverages','premium-beverages'),('Fine Foods','Food','fine-foods'),('Natural & Wellness','Wellness','natural-wellness'),('Gifting & Lifestyle','Lifestyle','gifting-lifestyle')])
-    featured='Thương hiệu nổi bật' if vi else 'Featured brand'
-    direction='Định hướng danh mục' if vi else 'Portfolio direction'
-    cards=f'''<a class="brand-card real reveal" role="listitem" href="{r['marigold']}"><div class="brand-card-visual marigold-card"><span class="marigold-mark">MARIGOLD</span><div class="fruit-cluster">● ● ●</div></div><h3>MARIGOLD</h3><p>Fruit Drinks</p><span class="tag">{featured}</span></a>'''
-    for name,tag,sym in dirs:
-        cards += f'<article class="brand-card direction reveal" role="listitem"><div class="category-symbol">{icon_img(sym, "category-icon-svg")}</div><h3>{e(name)}</h3><p>{direction}</p><span class="tag">{e(tag)}</span></article>'
+    dirs=([('02','Đồ uống chọn lọc','PREMIUM BEVERAGES'),('03','Thực phẩm tuyển chọn','FINE FOODS'),('04','Tự nhiên & Sống khỏe','NATURAL & WELLNESS')] if vi else [('02','Premium Beverages','PREMIUM BEVERAGES'),('03','Fine Foods','FINE FOODS'),('04','Natural & Wellness','NATURAL & WELLNESS')])
+    featured='THƯƠNG HIỆU NỔI BẬT' if vi else 'FEATURED BRAND'
+    direction='ĐỊNH HƯỚNG DANH MỤC' if vi else 'PORTFOLIO DIRECTION'
+    cards=f'''<a class="brand-card brand-card-featured reveal" role="listitem" aria-label="MARIGOLD — {featured}" href="{r['marigold']}"><div class="brand-card-top"><span class="brand-card-index">01</span><span class="brand-card-kicker">{featured}</span></div><div class="brand-card-content brand-card-identity"><img class="marigold-logo-img" src="/assets/marigold-logo-premium-transparent.png" alt="MARIGOLD" width="1600" height="531" loading="lazy" decoding="async"></div><div class="brand-card-bottom"><p class="brand-card-meta">Fruit Drinks</p><span class="brand-card-cta" aria-hidden="true">{e(t['discover_marigold'])} <span>→</span></span></div></a>'''
+    for index,name,english in dirs:
+        cards += f'<article class="brand-card brand-card-direction reveal" role="listitem"><div class="brand-card-top"><span class="brand-card-index">{index}</span><span class="brand-card-kicker">{english}</span></div><div class="brand-card-content"><h3>{e(name)}</h3></div><div class="brand-card-bottom"><p class="direction-label">{direction}</p></div></article>'
     return cards
 
 def simple_page(locale,key,title,lede,sections):
