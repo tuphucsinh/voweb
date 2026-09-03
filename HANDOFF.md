@@ -1,0 +1,15 @@
+# VOweb Handoff
+- Date: 2026-09-03; session closed after approved commit, push and production deploy.
+- Commit: `d93a44fe6ca74614d6d19f6599f9a546099f323b`; `main` equals `origin/main`.
+- Release: `/srv/vorigin/releases/20260903T013840Z-production` is `/srv/vorigin/current`.
+- Prior release `/srv/vorigin/releases/20260902T114252Z-production` remains available for rollback.
+- Application: production preflight/build/static/copy/optimizer/manifest/checksum PASS.
+- Runtime: Nginx and cloudflared active; health `ok`; origin remains `127.0.0.1:8080`.
+- Edge: DNS, TLS 1.3/SAN, apex/www redirects, headers and 31/31 assets PASS.
+- Routes: VI/EN listing and MARIGOLD detail return HTTP 200 with `Brand1.png`.
+- Browser: public VI/EN smoke rendered; console and JS errors were zero.
+- Candidate: homepage, Brands and MARIGOLD detail reuse approved 48/52, 46/54, mobile stack and alpha-mask system.
+- Forms and data services were not enabled or refreshed; no Cloudflare route changes made.
+- `Doc/` and `.tmp/` remain excluded, unstaged pre-existing residue; no secrets committed.
+- Local PC preview server on `192.168.1.230:8090` was stopped.
+- Next: monitor public release; Phase 3 admin/lead/CMS remains deferred and needs separate approval.

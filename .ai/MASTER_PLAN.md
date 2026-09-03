@@ -1,9 +1,9 @@
 # VOweb Master Plan
 
-**Revision:** 7
-**Last reviewed:** 2026-09-02
-**Status:** Production SHA `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee` is live through the Cloudflare apex/www routes; public HTTPS, VI/EN, assets, headers, TLS and loopback boundary are verified. Phase 2 static launch is complete; admin remains deferred.
-**Current candidate:** `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`
+**Revision:** 8
+**Last reviewed:** 2026-09-03
+**Status:** Production SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b` is live through the Cloudflare apex/www routes; public HTTPS, VI/EN, assets, headers, TLS and loopback boundary are verified. Phase 2 static launch and the MARIGOLD visual integration are complete; admin remains deferred.
+**Current candidate:** `d93a44fe6ca74614d6d19f6599f9a546099f323b`
 **Confidence:** CAO
 
 ## 1. Goal and launch boundary
@@ -26,8 +26,8 @@ Launch must prove, independently:
 ### Repository
 
 - Root: `/home/pi5/projects/VOweb`
-- Branch: `main`; local `HEAD` is `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`; local branch is ahead of `origin/main` by one commit.
-- Candidate commit contains the isolated deployment wrapper, staging Nginx config, contract tests and reconciled runbook/plan.
+- Branch: `main`; local `HEAD` and `origin/main` are `d93a44fe6ca74614d6d19f6599f9a546099f323b`.
+- Candidate history contains the isolated deployment wrapper, staging Nginx config, contract tests, reconciled runbook/plan and the MARIGOLD visual integration.
 - `Doc/` and `.tmp/` are pre-existing excluded paths; never stage or delete them.
 - `config/site.json`: `contact_forms_enabled=false`, `launch.production_ready=true` for the production candidate.
 - `ops/.env` exists with restricted permissions; values are never printed or committed.
@@ -36,7 +36,7 @@ Launch must prove, independently:
 
 - `make build`, static/copy QA, optimizer check, deployment contract tests `8/8`, preflight unit tests `3/3`, Node syntax/tests `5/5`, manifest and checksum checks passed for the candidate.
 - `nginx` and `cloudflared` are active.
-- `/srv/vorigin/current` still points to `/srv/vorigin/releases/20260831T035626Z-production`.
+- `/srv/vorigin/current` points to `/srv/vorigin/releases/20260903T013840Z-production`; prior release `/srv/vorigin/releases/20260902T114252Z-production` remains available for rollback.
 - Production origin remains loopback-bound at `127.0.0.1:8080`; Directus (`127.0.0.1:8055`) and lead API (`127.0.0.1:8787`) remain private loopback services.
 - Isolated staging canary is deployed and verified on `127.0.0.1:8081`; only the staging Nginx site was reloaded. Production public cutover is verified separately below.
 
@@ -47,7 +47,7 @@ Launch must prove, independently:
 - **Phase 3 deferred scope (intentional):** `admin.vorigin.vn` is NXDOMAIN, which is expected deferred scope for Phase 3 and NOT a Phase 2 blocker.
 - `cloudflared active` proves connector liveness only; it does not prove public-hostname ingress.
 
-Production candidate/preflight PASS was provided by the owner for SHA `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`; this session did not rebuild or rerun production gates.
+Production preflight, build/static/copy/optimizer QA, manifest/checksum integrity and deploy wrapper PASS were rerun for SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b` on 2026-09-03.
 
 ## 3. Architecture and invariants
 
@@ -85,13 +85,19 @@ Source boundary is committed in `b9d39f92cc16c02a1e8e095d2a1455123db6ceed`; P2M1
 
 ### P2M1T03 — exact production candidate
 
-The exact production candidate and release gates were completed before public routing; the owner reported production PASS for SHA `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`. This session did not rebuild or rerun production gates.
+The exact production candidate and release gates were completed before public routing; the latest production PASS is bound to SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b` and was independently rerun in this session.
 
 ### P2M1T04 — apex/www edge, cutover and public verification
 
-Phase 2 public scope is strictly apex `vorigin.vn` and `www.vorigin.vn`. The owner-created Cloudflare routes and public edge are VERIFIED for production SHA `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`.
+Phase 2 public scope is strictly apex `vorigin.vn` and `www.vorigin.vn`. The owner-created Cloudflare routes and public edge are VERIFIED for production SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b`.
 
-Public evidence, `2026-09-02T15:31:27+07:00`: DNS resolved from the local resolver, Cloudflare DoH and Google DoH; `https://vorigin.vn/` returned `302`, `/vi/` and `/en/` returned `200`; `www.vorigin.vn` returned `301 Location: https://vorigin.vn/`; TLS certificate validation passed with SAN match using TLS 1.3; 31/31 referenced static assets loaded; all five checked security headers were present; `127.0.0.1:8080` remained loopback-only. No `admin.vorigin.vn` route was created.
+Public evidence, `2026-09-03`: DNS resolved from the local resolver, Cloudflare DoH and Google DoH; apex `/` returned `302`, `/vi/` and `/en/` returned `200`; `www.vorigin.vn` returned `301 Location: https://vorigin.vn/`; TLS certificate validation passed with SAN match using TLS 1.3; 31/31 referenced static assets loaded; all five checked security headers were present; exact public listing/detail routes returned `200` with `Brand1.png`; `127.0.0.1:8080` remained loopback-only. No `admin.vorigin.vn` route was created.
+
+### P3T05 — MARIGOLD featured visual integration
+
+The approved homepage visual system was reused for the homepage, Brands listing and MARIGOLD detail surfaces. Source changes are in `build.py` and `public/styles.css`; generated output and `Brand1.png`/`Hero1.png` assets are in `dist/` and `public/assets/`. The contract is desktop `48/52`, tablet `46/54`, exact `1672/941` artwork geometry, alpha-mask transition, and text-first mobile stacking with the horizontal mask disabled.
+
+Technical/browser verification passed before release: production build/preflight/QA, asset chain, public edge checks, exact VI/EN listing/detail routes and browser smoke with zero console errors. Commit/push/deploy was owner-authorized; release is `d93a44fe6ca74614d6d19f6599f9a546099f323b` at `/srv/vorigin/releases/20260903T013840Z-production`. Forms/data services were not enabled or refreshed.
 
 ### P3M1T01 — admin route, lead and CMS
 
@@ -146,7 +152,7 @@ Stop and preserve the first useful evidence if:
 4. [DONE] Cloudflare public routes for Phase 2 were created by the owner:
    - `vorigin.vn` -> `http://127.0.0.1:8080`;
    - `www.vorigin.vn` -> `http://127.0.0.1:8080`.
-5. [DONE] Public cutover evidence passed for exact SHA `1c1b618d6fce151f0a21623fd91e06c9e8e7ebee`; no admin route was created.
+5. [DONE] Public cutover evidence passed for exact SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b`; no admin route was created.
 6. (Phase 3 deferred) Approve Cloudflare Tunnel + Access route for `admin.vorigin.vn` -> `http://127.0.0.1:8055`, Turnstile keys and form enablement.
 
 ## 8. History and source of truth
