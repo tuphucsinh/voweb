@@ -32,6 +32,8 @@ content/products/mango.json
 content/products/orange.json
 dist/404.html
 dist/app.js
+dist/assets/Brand1.png
+dist/assets/Hero1.png
 dist/assets/apple-touch-icon.png
 dist/assets/b2b-vorigin-partner-1020w.webp
 dist/assets/b2b-vorigin-partner-640w.webp
@@ -147,6 +149,8 @@ ops/systemd/vorigin-content-sync.timer
 ops/systemd/vorigin-health.service
 ops/systemd/vorigin-health.timer
 public/app.js
+public/assets/Brand1.png
+public/assets/Hero1.png
 public/assets/apple-touch-icon.png
 public/assets/b2b-vorigin-partner-1020w.webp
 public/assets/b2b-vorigin-partner-640w.webp
