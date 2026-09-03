@@ -319,16 +319,12 @@ def about(locale):
 
 def brands(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
-    directions=([('premium-beverages','Đồ uống chọn lọc','Đồ uống'),('fine-foods','Thực phẩm tuyển chọn','Thực phẩm'),('natural-wellness','Tự nhiên & Sống khỏe','Sống khỏe'),('gifting-lifestyle','Quà tặng & Phong cách sống','Phong cách sống')] if vi else [('premium-beverages','Premium Beverages','Beverages'),('fine-foods','Fine Foods','Food'),('natural-wellness','Natural & Wellness','Wellness'),('gifting-lifestyle','Gifting & Lifestyle','Lifestyle')])
-    card_eyebrow='ĐỊNH HƯỚNG DANH MỤC' if vi else 'PORTFOLIO DIRECTION'
-    card_note='Những nhóm sản phẩm VOrigin đang nghiên cứu để mở rộng danh mục một cách có chọn lọc. Đây chưa phải thương hiệu đối tác.' if vi else 'Categories VOrigin is exploring as part of a carefully considered portfolio expansion. These are not signed brand partnerships.'
-    cards=''.join(f'''<article class="portfolio-direction-card reveal"><span class="portfolio-direction-icon">{icon_img(ic,"portfolio-direction-svg")}</span><p class="eyebrow">{card_eyebrow}</p><h3>{e(name)}</h3><span>{e(card_note)}</span></article>''' for ic,name,tag in directions)
     page_label='DANH MỤC CHỌN LỌC' if vi else 'CURATED PORTFOLIO'; feature_label='THƯƠNG HIỆU NỔI BẬT' if vi else 'FEATURED BRAND'
     feature_copy='Thương hiệu nổi bật đầu tiên trong danh mục VOrigin, mở đầu cho một hành trình danh mục được xây dựng có chọn lọc.' if vi else 'The first featured brand in VOrigin’s portfolio, marking the beginning of a carefully built brand journey.'
-    next_label='DANH MỤC ĐANG MỞ RỘNG' if vi else 'A GROWING PORTFOLIO'; next_title='Những hướng danh mục VOrigin đang tìm hiểu' if vi else 'Areas VOrigin is exploring'
+    next_label='DANH MỤC ĐANG MỞ RỘNG' if vi else 'A GROWING PORTFOLIO'; next_title='Danh mục chọn lọc,<br>lớn lên từng bước' if vi else 'A growing portfolio<br>of carefully chosen brands'
     body=page_hero(locale,page_label,t['brands_title'],t['brands_lede'],f'<a href="{r["home"]}">{t["home"]}</a> / {t["brands"]}')
     body+=f'''<section class="featured section-soft"><div class="shell featured-grid"><div class="featured-copy reveal"><div class="featured-copy-inner"><p class="eyebrow">{feature_label}</p><h2>MARIGOLD</h2><p>{e(feature_copy)}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['view'])}<span>→</span></a></div></div><figure class="lineup reveal"><div class="lineup-surface"><img class="lineup-image" src="/assets/Brand1.png" alt="MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape" width="1672" height="941" loading="lazy" decoding="async"></div></figure></div></section>'''
-    body+=f'''<section class="page-section alt"><div class="shell"><div class="section-heading centered"><p class="eyebrow">{next_label}</p><h2>{e(next_title)}</h2><i class="bronze-rule"></i></div><div class="portfolio-direction-grid">{cards}</div></div></section>'''
+    body+=f'''<section class="portfolio section-light"><div class="shell"><div class="section-heading centered"><p class="eyebrow">{next_label}</p><h2>{next_title}</h2><i class="bronze-rule"></i></div><div class="portfolio-cards" role="list">{portfolio_cards(locale)}</div></div></section>'''
     return base_page(locale,f'{t["brands"]} — VOrigin',t['brands_lede'],'brands',body,body_class='brands-page')
 
 def marigold(locale):
