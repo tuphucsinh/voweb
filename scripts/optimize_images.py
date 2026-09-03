@@ -52,9 +52,9 @@ RESPONSIVE_SPECS = {
     ),
 }
 for _flavor in ("apple", "orange", "mango", "grape"):
-    _key = f"marigold-{_flavor}-premium"
+    _key = f"marigold-{_flavor}-real"
     RESPONSIVE_SPECS[_key] = ResponsiveAsset(
-        _key, f"{_key}.webp", (780, 840),
+        _key, f"{_key}.webp", (1122, 1402),
         (Variant(390, f"{_key}-390w.webp", 80, 45_000),
          Variant(640, f"{_key}-640w.webp", 80, 90_000)),
     )
