@@ -9,6 +9,7 @@ COPY_AUDIT.md
 CURRENT_BLOCKERS.md
 DEPLOY_PI5.md
 DEPLOY_READINESS_REPORT.md
+HANDOFF.md
 MANIFEST.txt
 MARIGOLD_CLAIMS_PROVENANCE.md
 Makefile
@@ -33,6 +34,7 @@ content/products/orange.json
 dist/404.html
 dist/app.js
 dist/assets/Brand1.png
+dist/assets/Container1.png
 dist/assets/Hero1.png
 dist/assets/apple-touch-icon.png
 dist/assets/b2b-vorigin-partner-1020w.webp
@@ -63,9 +65,13 @@ dist/assets/marigold-orange-premium-390w.webp
 dist/assets/marigold-orange-premium-640w.webp
 dist/assets/marigold-orange-premium.webp
 dist/assets/marigold-web3.png
+dist/assets/story-craft.png
 dist/assets/story-craft.webp
+dist/assets/story-nature.png
 dist/assets/story-nature.webp
+dist/assets/story-origin.png
 dist/assets/story-origin.webp
+dist/assets/story-value.png
 dist/assets/story-value.webp
 dist/assets/ui-icons/arrow-right-circle.svg
 dist/assets/ui-icons/brand-localization.svg
@@ -150,6 +156,7 @@ ops/systemd/vorigin-health.service
 ops/systemd/vorigin-health.timer
 public/app.js
 public/assets/Brand1.png
+public/assets/Container1.png
 public/assets/Hero1.png
 public/assets/apple-touch-icon.png
 public/assets/b2b-vorigin-partner-1020w.webp
@@ -180,9 +187,13 @@ public/assets/marigold-orange-premium-390w.webp
 public/assets/marigold-orange-premium-640w.webp
 public/assets/marigold-orange-premium.webp
 public/assets/marigold-web3.png
+public/assets/story-craft.png
 public/assets/story-craft.webp
+public/assets/story-nature.png
 public/assets/story-nature.webp
+public/assets/story-origin.png
 public/assets/story-origin.webp
+public/assets/story-value.png
 public/assets/story-value.webp
 public/assets/ui-icons/arrow-right-circle.svg
 public/assets/ui-icons/brand-localization.svg
