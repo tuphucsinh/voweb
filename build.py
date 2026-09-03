@@ -237,18 +237,44 @@ def home(locale):
     services=[('market-entry','Gia nhập<br>thị trường' if vi else 'Market Entry'),('import-compliance','Nhập khẩu &amp;<br>tuân thủ' if vi else 'Import &amp;<br>Compliance'),('distribution-development','Phát triển<br>phân phối' if vi else 'Distribution<br>Development'),('brand-localization','Bản địa hóa<br>thương hiệu' if vi else 'Brand<br>Localisation'),('trade-marketing','Tiếp thị<br>thương mại' if vi else 'Trade<br>Marketing')]
     service_html=''.join(f'<span><i class="service-icon">{icon_img(ic,"service-icon-svg")}</i><small>{label}</small></span>' for ic,label in services)
     body=f'''<section class="hero section-light"><div class="hero-grid"><div class="hero-copy reveal"><div class="hero-copy-inner"><p class="eyebrow">{hero_eyebrow}</p><h1><span class="hero-title-line">From Origins</span> <span class="hero-title-line hero-title-accent">to Value.</span></h1><p class="hero-lead">{e(t['hero_lead'])}</p><div class="hero-actions"><a href="{r['about']}" class="button button-solid">{e(t['hero_primary'])}<span>→</span></a><a href="{r['brands']}" class="text-action"><span class="play">{icon_img("play-circle","play-icon-svg")}</span>{e(t['hero_secondary'])}</a></div></div></div><figure class="hero-visual reveal"><figcaption class="visual-label">{featured_label} — MARIGOLD</figcaption><img src="/assets/Hero1.png" alt="MARIGOLD Orange Fruit Drink" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high"></figure></div></section>
-<section class="story section-light" id="story"><div class="shell"><div class="section-heading centered reveal"><p class="eyebrow">{story_eyebrow}</p><h2>{e(t['story_title'])}</h2><i class="bronze-rule"></i></div><div class="story-grid">
-{story_card('story-origin.webp','Nguồn gốc' if vi else 'Origin',t['origin'],'origin')}{story_card('story-nature.webp','Tự nhiên' if vi else 'Nature',t['nature'],'nature')}{story_card('story-craft.webp','Tiêu chuẩn' if vi else 'Craft',t['craft'],'craft')}{story_card('story-value.webp','Giá trị' if vi else 'Value',t['value'],'value')}</div></div></section>
+<section class="story section-light" id="story" aria-labelledby="story-title"><div class="shell"><div class="section-heading story-heading reveal"><p class="eyebrow">{story_eyebrow}</p><h2 id="story-title">{e(t['story_title'])}</h2><i class="bronze-rule"></i></div><div class="story-grid">
+{story_card('story-origin.png','Nguồn gốc' if vi else 'Origin',t['origin'],'origin','01','story-card-origin')}{story_card('story-nature.png','Tự nhiên' if vi else 'Nature',t['nature'],'nature','02','story-card-nature')}{story_card('story-craft.png','Tiêu chuẩn' if vi else 'Craft',t['craft'],'craft','03','story-card-craft')}{story_card('story-value.png','Giá trị' if vi else 'Value',t['value'],'value','04','story-card-value')}</div></div></section>
 <section class="featured section-soft" id="brands"><div class="shell featured-grid"><div class="featured-copy reveal"><div class="featured-copy-inner"><p class="eyebrow">{featured_label}</p><h2>MARIGOLD</h2><p>{e(t['featured_copy'])}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['discover_marigold'])}<span>→</span></a></div></div><figure class="lineup reveal"><div class="lineup-surface"><img class="lineup-image" src="/assets/Brand1.png" alt="MARIGOLD Fruit Drink Apple, Orange, Mango and Grape" width="1672" height="941" loading="lazy" decoding="async"></div></figure></div></section>
 <section class="portfolio section-light"><div class="shell portfolio-grid"><div class="portfolio-copy reveal"><p class="eyebrow">{portfolio_label}</p><h2>{portfolio_title}</h2><p>{e(t['portfolio_copy'])}</p><a class="button button-outline" href="{r['brands']}">{e(t['portfolio_cta'])}<span>→</span></a></div><div class="portfolio-cards" role="list">{portfolio_cards(locale)}</div></div></section>
 <section class="why-partner section-light" id="partners"><div class="leaf-ornament leaf-left">⌁⌁⌁</div><div class="leaf-ornament leaf-right">⌁⌁⌁</div><div class="shell"><div class="section-heading centered reveal"><h2>{e(t['why'])}</h2><i class="bronze-rule transition-rule"></i></div><div class="benefit-grid">{benefits}</div></div></section>
 <section class="market section-dark" id="market"><div class="sunset-bleed"></div><div class="shell market-grid"><figure class="market-visual reveal">{render_b2b_picture('market-visual-image', 'VOrigin branded container at a port at sunset')}</figure><div class="market-copy reveal"><p class="eyebrow">{global_label}</p><h2>YOUR BRAND.<br>OUR MARKET.</h2><p>{e(t['market_copy'])}</p><div class="services">{service_html}</div><a class="button button-gold" href="{r['partners']}">{e(t['market_cta'])}<span>→</span></a></div></div></section>'''
     return base_page(locale,'VOrigin — From Origins to Value',t['hero_lead'],'home',body)
 
-def story_card(img,title,copy,icon):
-    dimensions={'story-origin.webp':(210,132),'story-nature.webp':(210,132),'story-craft.webp':(210,132),'story-value.webp':(215,132)}
-    width,height=dimensions[img]
-    return f'<article class="story-card reveal"><img src="/assets/{img}" alt="{e(title)}" width="{width}" height="{height}" loading="lazy"><div class="story-body"><span class="round-icon">{icon_img(icon, "round-icon-svg")}</span><h3>{e(title)}</h3><p>{e(copy)}</p></div></article>'
+def story_card(img,title,copy,icon,index='01',modifier=''):
+    if not modifier:
+        modifier = f'story-card-{icon}'
+    dimensions = {
+        'story-origin.png': (1774, 887),
+        'story-nature.png': (1774, 887),
+        'story-craft.png': (1774, 887),
+        'story-value.png': (1774, 887),
+        'story-origin.webp': (210, 132),
+        'story-nature.webp': (210, 132),
+        'story-craft.webp': (210, 132),
+        'story-value.webp': (215, 132),
+    }
+    width, height = dimensions.get(img, (1774, 887))
+    return (
+        f'<article class="story-card {e(modifier)} reveal">'
+        f'<div class="story-media">'
+        f'<img src="/assets/{img}" alt="{e(title)}" width="{width}" height="{height}" loading="lazy" decoding="async">'
+        f'</div>'
+        f'<div class="story-body">'
+        f'<div class="story-meta">'
+        f'<span class="story-index">{e(index)}</span>'
+        f'<span class="story-hairline" aria-hidden="true"></span>'
+        f'<span class="story-icon" aria-hidden="true">{icon_img(icon, "story-icon-svg")}</span>'
+        f'</div>'
+        f'<h3 class="story-title">{e(title)}</h3>'
+        f'<p class="story-copy">{e(copy)}</p>'
+        f'</div>'
+        f'</article>'
+    )
 
 def portfolio_cards(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
