@@ -165,6 +165,13 @@ class DeployScriptContractTests(unittest.TestCase):
         self.assertNotRegex(self.styles, r'html\[lang="vi"\]\s+h2\s*\{')
         self.assertNotIn('html[lang="vi"] .standard-card h3', self.styles)
 
+    def test_static_root_fallback_matches_global_english_default(self):
+        """The static fallback must not contradict the Nginx English root default."""
+        root = (ROOT / "dist" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('<html lang="en">', root)
+        self.assertIn('content="0;url=/en/"', root)
+        self.assertIn('<a href="/vi/">Tiếng Việt</a> · <a href="/en/">English</a>', root)
+
 
 if __name__ == "__main__":
     unittest.main()
