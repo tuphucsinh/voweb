@@ -2,6 +2,12 @@
   const menuButton = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.primary-nav');
   if (menuButton && nav) {
+    const closeMenu = (restoreFocus = false) => {
+      menuButton.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+      if (restoreFocus) menuButton.focus();
+    };
     menuButton.addEventListener('click', () => {
       const next = menuButton.getAttribute('aria-expanded') !== 'true';
       menuButton.setAttribute('aria-expanded', String(next));
@@ -9,10 +15,13 @@
       document.body.classList.toggle('menu-open', next);
     });
     nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      menuButton.setAttribute('aria-expanded', 'false');
-      nav.classList.remove('is-open');
-      document.body.classList.remove('menu-open');
+      closeMenu();
     }));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
+        closeMenu(true);
+      }
+    });
   }
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

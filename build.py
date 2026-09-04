@@ -169,16 +169,20 @@ def marigold_assurance_cards(locale):
 def alt_url(locale, route_key, suffix=''):
     return BASE + ROUTES[locale][route_key] + suffix
 
-def nav(locale, alt_path_vi=None, alt_path_en=None):
+def nav(locale, alt_path_vi=None, alt_path_en=None, route_key=None):
     t=LANG[locale]; r=ROUTES[locale]
     vi_target=alt_path_vi or ROUTES['vi']['home']; en_target=alt_path_en or ROUTES['en']['home']
     menu_label='Mở menu' if locale=='vi' else 'Open menu'
     nav_label='Điều hướng chính' if locale=='vi' else 'Primary navigation'
+    active_key='brands' if route_key in ('marigold','product') else route_key
+    def nav_link(key):
+        current=' aria-current="page"' if active_key == key else ''
+        return f'<a href="{r[key]}"{current}>{t[key]}</a>'
     return f'''<header class="site-header" id="top"><div class="shell nav-wrap">
 <a class="brand-lockup" href="{r['home']}" aria-label="VOrigin — From Origins to Value"><img src="/assets/vorigin-logo-primary.svg" alt="VOrigin" width="700" height="173"><span class="brand-tagline">FROM ORIGINS TO VALUE</span></a>
 <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="{menu_label}"><span></span><span></span></button>
 <nav class="primary-nav" id="primary-nav" aria-label="{nav_label}">
-<a href="{r['about']}">{t['about']}</a><a href="{r['brands']}">{t['brands']}</a><a href="{r['cap']}">{t['cap']}</a><a href="{r['partners']}">{t['partners']}</a><a href="{r['insights']}">{t['insights']}</a><a href="{r['contact']}">{t['contact']}</a></nav>
+{nav_link('about')}{nav_link('brands')}{nav_link('cap')}{nav_link('partners')}{nav_link('insights')}{nav_link('contact')}</nav>
 <div class="nav-actions"><div class="lang-switch locale-nav"><a href="{vi_target}" {'aria-current="page"' if locale=='vi' else ''}>VI</a><span>|</span><a href="{en_target}" {'aria-current="page"' if locale=='en' else ''}>EN</a></div><a class="button button-outline nav-cta" href="{r['partners']}">{t['cta']}</a></div></div></header>'''
 
 def footer(locale):
@@ -224,7 +228,7 @@ def base_page(locale, title, description, route_key=None, body='', canonical_pat
     if alt_path_en: head += f'<link rel="alternate" hreflang="en" href="{BASE}{alt_path_en}">'
     head += f'''<link rel="alternate" hreflang="x-default" href="{BASE}/vi/"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(description)}"><meta property="og:type" content="website"><meta property="og:url" content="{e(canonical)}"><meta property="og:image" content="{BASE}/assets/hero-marigold-premium.webp"><meta name="twitter:card" content="summary_large_image"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"><script type="application/ld+json">{json.dumps(ld,ensure_ascii=False)}</script>{extra_head}{analytics()}</head>'''
     skip='Chuyển đến nội dung' if locale=='vi' else 'Skip to content'
-    return head + f'<body class="{e(body_class)}"><a class="skip-link" href="#main">{skip}</a>{nav(locale,alt_path_vi,alt_path_en)}<main id="main">{body}</main>{footer(locale)}<script src="/app.js" defer></script></body></html>'
+    return head + f'<body class="{e(body_class)}"><a class="skip-link" href="#main">{skip}</a>{nav(locale,alt_path_vi,alt_path_en,route_key)}<main id="main">{body}</main>{footer(locale)}<script src="/app.js" defer></script></body></html>'
 
 def page_hero(locale, eyebrow, title, lede, breadcrumbs=''):
     return f'''<section class="page-hero"><div class="shell"><div class="breadcrumb">{breadcrumbs}</div><p class="eyebrow">{e(eyebrow)}</p><h1>{title}</h1><p class="lede">{e(lede)}</p></div></section>'''
@@ -378,7 +382,7 @@ def product_page(locale,p):
     body+=f'''<section class="product-assurance page-section alt-soft"><div class="shell editorial-grid"><div><p class="eyebrow">{assurance_eyebrow}</p><h2>{e(assurance_title)}</h2></div><div class="content-block"><p>{e(assurance_copy)}</p><div class="manufacturer-note"><strong>{'Nhà sản xuất & hệ thống chất lượng' if vi else 'Manufacturer & quality systems'}</strong><p>{e(claim_text('manufacturer_accreditations',locale))}</p></div></div></div></section>'''
     body+=f'''<section class="other-flavors page-section alt"><div class="shell"><div class="section-heading"><p class="eyebrow">{explore_label}</p><h2>{other_title}</h2></div><div class="mini-flavor-grid">{sibling}</div></div></section>'''
     extra=f'<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"Product","name":p["name"],"brand":{"@type":"Brand","name":"MARIGOLD"},"category":"Fruit Drink","url":BASE+path},ensure_ascii=False)}</script>'
-    return base_page(locale,f'{p["name"]} — VOrigin',hero_lede,body=body,canonical_path=path,alt_path_vi=alt_vi,alt_path_en=alt_en,extra_head=extra,body_class=f'product-page product-{slug}')
+    return base_page(locale,f'{p["name"]} — VOrigin',hero_lede,route_key='product',body=body,canonical_path=path,alt_path_vi=alt_vi,alt_path_en=alt_en,extra_head=extra,body_class=f'product-page product-{slug}')
 
 def capabilities(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'

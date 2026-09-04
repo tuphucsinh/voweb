@@ -325,7 +325,7 @@ All public copy aligns with Revision 9 while factual/legal claim meaning is pres
 
 ## [#P3M2T08] `polish_mobile_accessibility_and_navigation()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Owner:** Mika  
 **Runner:** agy  
 **Depends on:** `P3M2T03`, `P3M2T06`  
