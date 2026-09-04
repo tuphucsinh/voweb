@@ -1,163 +1,638 @@
 # VOweb Master Plan
 
-**Revision:** 8
-**Last reviewed:** 2026-09-03
-**Status:** Production SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b` is live through the Cloudflare apex/www routes; public HTTPS, VI/EN, assets, headers, TLS and loopback boundary are verified. Phase 2 static launch and the MARIGOLD visual integration are complete; admin remains deferred.
-**Current candidate:** `d93a44fe6ca74614d6d19f6599f9a546099f323b`
-**Confidence:** CAO
+**Revision:** 9  
+**Last reviewed:** 2026-09-04  
+**Status:** Public static site is live; Premium Production Closure is the active workstream. Admin/lead/CMS remains deferred.  
+**Recorded production baseline:** `d93a44fe6ca74614d6d19f6599f9a546099f323b` from Revision 8. Mika must re-read `HEAD`, `origin/main` and `/srv/vorigin/current` before execution and bind all new evidence to the actual current SHA.  
+**Confidence:** CAO after closure gates pass.
 
-## 1. Goal and launch boundary
+---
 
-Publish the approved VOweb static release at `https://vorigin.vn` (and `https://www.vorigin.vn`) safely. The first launch keeps contact and partnership forms disabled (`contact_forms_enabled=false`, `launch.production_ready=true`); Turnstile, lead delivery, Directus publishing and `admin.vorigin.vn` ingress are deferred to Phase 3.
+## 1. Goal
 
-Launch must prove, independently:
+Keep the approved VOrigin visual system and close the remaining gap between **premium concept** and **premium production**.
 
-- exact approved source/release identity;
-- indexable production HTML and approved VI/EN content;
-- loopback-only Pi services and isolated staging;
-- Cloudflare HTTPS/Tunnel routing for apex and `www` without router port forwarding;
-- backup, rollback and post-cutover evidence;
-- no secret, private `Doc/` file or `.tmp/` artifact in the release.
+Target perception:
 
-`git commit`, `production_ready=true`, DNS resolution and an active `cloudflared` process are not deploy-success evidence by themselves.
+> A refined, trustworthy international trade business with judgement, restraint, commercial intelligence and evidence discipline.
 
-## 2. Current verified state
+Core rule:
 
-### Repository
+> **Subtraction before decoration. Trust before polish. Reuse before rebuild.**
 
-- Root: `/home/pi5/projects/VOweb`
-- Branch: `main`; local `HEAD` and `origin/main` are `d93a44fe6ca74614d6d19f6599f9a546099f323b`.
-- Candidate history contains the isolated deployment wrapper, staging Nginx config, contract tests, reconciled runbook/plan and the MARIGOLD visual integration.
-- `Doc/` and `.tmp/` are pre-existing excluded paths; never stage or delete them.
-- `config/site.json`: `contact_forms_enabled=false`, `launch.production_ready=true` for the production candidate.
-- `ops/.env` exists with restricted permissions; values are never printed or committed.
+The upgrade must improve:
+- bilingual copy and brand voice;
+- trust/credibility;
+- image performance and LCP;
+- Partners information architecture;
+- mobile art direction;
+- accessibility and navigation completeness;
+- governance consistency.
 
-### Application and host
+No redesign is required.
 
-- `make build`, static/copy QA, optimizer check, deployment contract tests `8/8`, preflight unit tests `3/3`, Node syntax/tests `5/5`, manifest and checksum checks passed for the candidate.
-- `nginx` and `cloudflared` are active.
-- `/srv/vorigin/current` points to `/srv/vorigin/releases/20260903T013840Z-production`; prior release `/srv/vorigin/releases/20260902T114252Z-production` remains available for rollback.
-- Production origin remains loopback-bound at `127.0.0.1:8080`; Directus (`127.0.0.1:8055`) and lead API (`127.0.0.1:8787`) remain private loopback services.
-- Isolated staging canary is deployed and verified on `127.0.0.1:8081`; only the staging Nginx site was reloaded. Production public cutover is verified separately below.
+---
 
-### Public edge
-
-- **Delegation PASS:** authoritative nameservers are `peter.ns.cloudflare.com` and `shubhi.ns.cloudflare.com`.
-- **Phase 2 public edge PASS:** owner-created Cloudflare Tunnel routes publish `vorigin.vn` and `www.vorigin.vn` to `http://127.0.0.1:8080`; both names resolve through the local resolver, Cloudflare DoH and Google DoH.
-- **Phase 3 deferred scope (intentional):** `admin.vorigin.vn` is NXDOMAIN, which is expected deferred scope for Phase 3 and NOT a Phase 2 blocker.
-- `cloudflared active` proves connector liveness only; it does not prove public-hostname ingress.
-
-Production preflight, build/static/copy/optimizer QA, manifest/checksum integrity and deploy wrapper PASS were rerun for SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b` on 2026-09-03.
-
-## 3. Architecture and invariants
+## 2. Current architecture and invariants
 
 ```text
-public visitor (apex / www)
+public visitor
   -> Cloudflare HTTPS/WAF
   -> Cloudflare Tunnel
   -> Nginx 127.0.0.1:8080
   -> /srv/vorigin/current
 
-local staging canary
+local staging
   -> Nginx 127.0.0.1:8081
   -> /srv/vorigin/staging/current
 
-Phase 3 admin (deferred)
+deferred admin
   -> Cloudflare Access
   -> Cloudflare Tunnel
   -> Directus 127.0.0.1:8055
-  -> private Docker network -> PostgreSQL
 ```
 
-- No router port forwarding and no public database, Directus or lead-api listener.
-- Staging uses `/srv/vorigin/staging/app`, `/srv/vorigin/staging/releases`, `/srv/vorigin/staging/current`, Nginx site `vorigin-staging` and port `8081`.
-- Production uses `/srv/vorigin/app`, `/srv/vorigin/releases`, `/srv/vorigin/current`, Nginx site `vorigin` and port `8080`.
-- Staging rejects `RUN_DATA_SERVICES=1`; shared data services are production-only and explicit.
-- Deployment verifies manifest/checksum; it never regenerates release metadata during deploy.
-- Forms remain disabled until a separate post-launch approval and real-domain test in Phase 3.
-- Never read, print, commit or persist Cloudflare, Directus, Turnstile or environment secret values.
+Invariants:
+- no router port forwarding;
+- no public DB/Directus/lead-api listener;
+- `Doc/`, `.tmp/`, secrets and private source material never enter a release;
+- production deploy uses manifest/checksum evidence and preserves rollback;
+- claims remain source-gated;
+- no public visual may imply ownership of assets VOrigin does not own/operate.
 
-## 4. Execution sequence
+---
 
-### P2M1T02 — isolated canary and deployment boundary
+## 3. Execution control
 
-Source boundary is committed in `b9d39f92cc16c02a1e8e095d2a1455123db6ceed`; P2M1T02 staging and boundary read-back are verified. Staging remains local-only on `/srv/vorigin/staging/current` and `127.0.0.1:8081` with `RUN_DATA_SERVICES=0`. Do not configure public DNS or Cloudflare mutations here. Evidence covers the staging root, pointer, port, Nginx site, browser routes and unchanged production pointer.
+### Mika — controller/reviewer
+Mika owns:
+- reading current repo state;
+- selecting/delegating one bounded task at a time;
+- acceptance criteria;
+- task status in `tasks.md`;
+- diff/evidence review;
+- requesting rework or independent review when needed;
+- commits/pushes;
+- staging/production approval preparation.
 
-### P2M1T03 — exact production candidate
+### agy — implementation runner
+Runner: **agy (`gemini-3.8-flash-high`)**
 
-The exact production candidate and release gates were completed before public routing; the latest production PASS is bound to SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b` and was independently rerun in this session.
+agy may:
+- inspect allowed repo files;
+- implement the delegated task;
+- run bounded local tests/builds;
+- return exact changed files, commands, results and residual risk.
 
-### P2M1T04 — apex/www edge, cutover and public verification
+agy must not:
+- edit `.ai/MASTER_PLAN.md` or `tasks.md`;
+- commit, push or deploy;
+- mutate Cloudflare/DNS;
+- read/print/persist secrets;
+- stage `Doc/` or private artifacts;
+- broaden scope beyond the delegated task.
 
-Phase 2 public scope is strictly apex `vorigin.vn` and `www.vorigin.vn`. The owner-created Cloudflare routes and public edge are VERIFIED for production SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b`.
-
-Public evidence, `2026-09-03`: DNS resolved from the local resolver, Cloudflare DoH and Google DoH; apex `/` returned `302`, `/vi/` and `/en/` returned `200`; `www.vorigin.vn` returned `301 Location: https://vorigin.vn/`; TLS certificate validation passed with SAN match using TLS 1.3; 31/31 referenced static assets loaded; all five checked security headers were present; exact public listing/detail routes returned `200` with `Brand1.png`; `127.0.0.1:8080` remained loopback-only. No `admin.vorigin.vn` route was created.
-
-### P3T05 — MARIGOLD featured visual integration
-
-The approved homepage visual system was reused for the homepage, Brands listing and MARIGOLD detail surfaces. Source changes are in `build.py` and `public/styles.css`; generated output and `Brand1.png`/`Hero1.png` assets are in `dist/` and `public/assets/`. The contract is desktop `48/52`, tablet `46/54`, exact `1672/941` artwork geometry, alpha-mask transition, and text-first mobile stacking with the horizontal mask disabled.
-
-Technical/browser verification passed before release: production build/preflight/QA, asset chain, public edge checks, exact VI/EN listing/detail routes and browser smoke with zero console errors. Commit/push/deploy was owner-authorized; release is `d93a44fe6ca74614d6d19f6599f9a546099f323b` at `/srv/vorigin/releases/20260903T013840Z-production`. Forms/data services were not enabled or refreshed.
-
-### P3M1T01 — admin route, lead and CMS
-
-Deferred until static launch is stable. Route contract: `admin.vorigin.vn` -> Directus `127.0.0.1:8055` through Cloudflare Tunnel + Cloudflare Access, with least-privilege roles/tokens and secret-safe verification. Configure Turnstile, enable forms, and enable CMS content sync only with separate evidence and approval.
-
-## 5. Acceptance and evidence contract
-
-Report these states separately; never collapse them into one readiness flag:
+### Mika verification loop
 
 ```text
-application_state: PASS | FAIL | BLOCKED + build/content evidence
-host_state:        PASS | FAIL | BLOCKED + Nginx/listener evidence
-runtime_state:     PASS | FAIL | BLOCKED + process/container/health evidence
-edge_state:        PASS | FAIL | BLOCKED + DNS/HTTPS/redirect evidence
-rollback_state:    PASS | FAIL | BLOCKED + backup/previous-release evidence
-residual_blocker:  exact owner/action or NONE
+Mika reads state
+  -> delegates one task to agy
+  -> agy implements + reports evidence
+  -> Mika checks diff + tests + rendered result
+  -> if needed: Mika asks agy to rework or asks for a focused review
+  -> Mika marks task complete
+  -> Mika commits/pushes only after acceptance
 ```
 
-Required evidence by stage:
+---
 
-- source: `git status --short --branch`, exact SHA, `git diff --check`, scope/secret scan;
-- application: build, static/copy/optimizer QA, production preflight, manifest/checksum and Node/Python tests;
-- staging: `sudo nginx -t`, effective config, port `8081`, `/healthz`, browser matrix and production-pointer read-back;
-- edge: at least two public recursive DNS resolvers plus local resolver, exact HTTPS routes for `vorigin.vn` and `www.vorigin.vn`, canonical redirect, security headers, denied paths and no `:8080` exposure;
-- rollback: verified backup listing, previous release, approved restore command and post-restore read-back.
+## 4. Scope priorities
 
-Lighthouse/Web Vitals is `Monitor` after public launch. Numeric overflow remains `UNKNOWN/BLOCKED_BROWSER_LAYOUT` until the CDP probe is fixed; screenshots are not numeric proof.
+### P0 — hard gates
 
-## 6. Approval and stop gates
+1. **Trust imagery**
+   - replace/remove misleading VOrigin-branded ship/container imagery.
 
-Explicit approval is required for:
+2. **Performance**
+   - reuse the existing responsive-image infrastructure;
+   - remove hardcoded multi-MB LCP PNG delivery.
 
-- writes under `/srv/vorigin`, Nginx reload or deployment-wrapper execution;
-- Cloudflare DNS, Tunnel or public-hostname changes;
-- changing `production_ready`, public content/legal release and creating the exact launch commit;
-- production deploy, backup, rollback or public cutover.
+3. **Contact production state**
+   - never show a disabled/incomplete form experience.
 
-Stop and preserve the first useful evidence if:
+4. **Core copy**
+   - apply approved V2 copy to Homepage and About;
+   - render and review VI/EN immediately.
 
-- DNS delegation, records or ingress point somewhere unexpected;
-- staging and production share a root, pointer, port or Nginx site;
-- preflight fails, exact SHA/checksum does not match or preview `noindex` remains in production;
-- a non-loopback listener, unexplained restart/log regression or missing backup appears;
-- a secret/private artifact is exposed;
-- the same failure repeats twice without new operational evidence.
+5. **Partners architecture**
+   - reduce repeated semantic modules;
+   - do not duplicate the full Capabilities process.
 
-## 7. Owner actions
+6. **Functional accessibility**
+   - fix primary CTA contrast.
 
-1. Approve the static-first launch with forms disabled.
-2. Confirm the current Privacy/Terms text is approved for public use, or provide final text.
-3. Retain the verified isolated staging run and its Nginx/filesystem rollback path.
-4. [DONE] Cloudflare public routes for Phase 2 were created by the owner:
-   - `vorigin.vn` -> `http://127.0.0.1:8080`;
-   - `www.vorigin.vn` -> `http://127.0.0.1:8080`.
-5. [DONE] Public cutover evidence passed for exact SHA `d93a44fe6ca74614d6d19f6599f9a546099f323b`; no admin route was created.
-6. (Phase 3 deferred) Approve Cloudflare Tunnel + Access route for `admin.vorigin.vn` -> `http://127.0.0.1:8055`, Turnstile keys and form enablement.
+### P1 — premium completion
 
-## 8. History and source of truth
+- Brands/Capabilities/Insights/Contact copy;
+- mobile-specific art direction;
+- active nav + keyboard essentials;
+- readable micro-typography;
+- governance/source-of-truth sync;
+- old audit supersession;
+- dead-code/CSS cleanup after proof.
 
-- Phase 1 is complete for the current candidate; detailed evidence is in `.ai/PHASE1_EXIT_REVIEW.md` and Git history.
-- Decision rationale is in `.ai/DECISIONS_LOG.md` (`D016`).
-- Operational instructions are in `DEPLOY_PI5.md`, `OPERATIONS.md` and `ops/cloudflare/README.md`.
-- Active executable work is only in `tasks.md`; completed task specifications do not remain there.
+### P2 — optional/closure polish
+
+- MARIGOLD closing-section cleanup;
+- dedicated OG artwork;
+- verified Organization schema enrichment;
+- advanced semantic tooling.
+
+---
+
+## 5. Explicit non-goals
+
+### No Proof of Execution section yet
+
+There is currently **no verified public-safe execution data** for:
+- number of outlets;
+- distribution footprint;
+- shipment milestones;
+- penetration/growth metrics;
+- case-study performance.
+
+Therefore:
+- do not create a Track Record / Proof of Execution block;
+- do not invent, infer or pad metrics;
+- reopen only when verified data exists and is approved for public use.
+
+### No mandatory CRM migration
+
+Lead API may remain if it is the simplest reliable approved path. The hard requirement is a finished Contact UX, not a specific vendor.
+
+### No Insights CMS refactor now
+
+Keep current architecture until actual publishing volume creates a real operational need.
+
+---
+
+## 6. Owner-provided replacement logistics sources
+
+Private source files:
+
+```text
+/home/pi5/projects/VOweb/Doc/Marigold pics/Container1-nologo.png
+/home/pi5/projects/VOweb/Doc/Marigold pics/tau1-nologo.png
+```
+
+Contract:
+- treat them as private source inputs;
+- never stage/commit `Doc/`;
+- create approved public/optimized derivatives under `public/assets/`;
+- update code/alt text to the no-logo versions;
+- after verification, ensure generated production HTML no longer references misleading branded ship/container assets.
+
+---
+
+## 7. Approved copy contract
+
+The text below is the implementation source-of-truth. VI and EN preserve intent, not sentence structure.
+
+### 7.1 Homepage
+
+#### Hero
+
+VI eyebrow:
+> **NGUỒN GỐC ĐÁNG TIN. LỰA CHỌN CÓ CƠ SỞ.**
+
+EN eyebrow:
+> **TRUSTED ORIGINS. CONSIDERED CHOICES.**
+
+H1:
+> **From Origins to Value.**
+
+VI lead:
+> **VOrigin tìm kiếm những sản phẩm có nền tảng đáng tin, bản sắc rõ nét và tiềm năng thực sự tại Việt Nam. Từ lựa chọn ban đầu đến cách thương hiệu bước vào thị trường, mỗi quyết định đều được cân nhắc với một tầm nhìn dài hơn.**
+
+EN lead:
+> **VOrigin identifies distinctive international brands with credible foundations and genuine relevance to Vietnam, then shapes a considered route from first entry to enduring market presence.**
+
+CTA:
+- VI: **Khám phá VOrigin** / **Danh mục thương hiệu**
+- EN: **Discover VOrigin** / **Explore our portfolio**
+
+#### Story
+
+VI eyebrow:
+> **CÁCH VORIGIN LỰA CHỌN**
+
+EN eyebrow:
+> **HOW WE CHOOSE**
+
+VI title:
+> **Giá trị được định hình từ những lựa chọn đầu tiên.**
+
+EN title:
+> **Value is shaped long before a product reaches the market.**
+
+Cards:
+
+1. **Nguồn gốc đáng tin**  
+   Nơi sản phẩm bắt đầu cũng là nơi niềm tin bắt đầu.
+
+   **Trusted Origin**  
+   Where a product begins matters to how confidently it can be represented.
+
+2. **Bản sắc sản phẩm**  
+   Những đặc tính đủ rõ để tạo nên một lý do lựa chọn.
+
+   **Product Character**  
+   Distinctive qualities that give people a genuine reason to choose it.
+
+3. **Tiêu chuẩn lựa chọn**  
+   Chất lượng, tính nhất quán và những gì có thể kiểm chứng.
+
+   **Selection Standards**  
+   Consistency, substance and information that can stand up to scrutiny.
+
+4. **Giá trị thị trường**  
+   Khả năng tìm được một vị trí phù hợp và phát triển theo thời gian.
+
+   **Market Potential**  
+   A credible place to build, not simply a product to place on shelf.
+
+#### Featured MARIGOLD
+
+VI:
+> **MARIGOLD Fruit Drinks mở đầu danh mục VOrigin với bốn hương vị Apple, Orange, Mango và Grape. Dòng sản phẩm phản ánh những điều chúng tôi coi trọng ở một thương hiệu: nền tảng đáng tin, thông tin có thể đối chiếu và một đề xuất sản phẩm dễ được hiểu trên thị trường.**
+
+EN:
+> **MARIGOLD Fruit Drinks opens the VOrigin portfolio with four flavours: Apple, Orange, Mango and Grape. It reflects what we value in a brand: a credible foundation, verifiable product information and a proposition people can readily understand.**
+
+#### Portfolio
+
+VI title:
+> **Một danh mục được xây dựng có chủ đích.**
+
+VI body:
+> **VOrigin không mở rộng danh mục để chạy theo số lượng. Mỗi hướng mới chỉ đáng theo đuổi khi sản phẩm có nền tảng phù hợp với tiêu chuẩn của chúng tôi và một khoảng trống đủ rõ để tạo dựng tại Việt Nam. Các nhóm bên dưới là những định hướng đang được nghiên cứu, không phải danh sách đối tác đã ký kết.**
+
+EN title:
+> **A portfolio built with intent.**
+
+EN body:
+> **We would rather build the right portfolio slowly than a large one quickly. New categories are explored only where there is a credible product case and a meaningful place to build in Vietnam. The areas below are directions under consideration, not signed brand partnerships.**
+
+#### Why VOrigin
+
+Section:
+- VI: **Điều định hình cách VOrigin làm việc.**
+- EN: **What shapes the way we work.**
+
+Items:
+1. **Minh bạch trong cam kết / Clarity in commitments**
+2. **Am hiểu thị trường / Local judgement**
+3. **Góc nhìn dài hơn / A longer view**
+4. **Kỷ luật trong thực thi / Disciplined execution**
+5. **Hợp tác thay vì giao dịch / Partnership over transaction**
+
+#### International brands
+
+H2:
+> **YOUR BRAND. OUR MARKET.**
+
+VI:
+> **VOrigin hỗ trợ các thương hiệu quốc tế xây dựng lộ trình vào Việt Nam — từ đánh giá cơ hội, tuân thủ nhập khẩu và phát triển phân phối đến bản địa hóa thương hiệu và tiếp thị thương mại.**
+
+EN:
+> **VOrigin helps international brands turn market ambition into a workable route through Vietnam — from assessment and compliance to distribution, localisation and trade marketing.**
+
+Homepage only teases capabilities; it does not own the full process explanation.
+
+---
+
+### 7.2 About
+
+VI H1:
+> **Giá trị được định hình từ những lựa chọn ban đầu.**
+
+VI lead:
+> **Khởi Nguyên là điểm bắt đầu. Với VOrigin, đó cũng là một cách nhìn về giá trị: trước một thương hiệu luôn có một nguồn gốc; trước một quyết định thương mại luôn cần một lý do đủ vững chắc.**
+
+EN H1:
+> **Lasting value is shaped by the choices made at the start.**
+
+EN lead:
+> **Our Vietnamese name, Khởi Nguyên, speaks to beginnings — and to the belief that enduring value starts with what a business chooses to stand behind.**
+
+VOrigin Standard:
+- **Nguồn gốc / Origin** — Đủ rõ để kiểm chứng. / Traceable and credible.
+- **Chất lượng / Quality** — Nhất quán và có cơ sở. / Consistent, with substance behind it.
+- **Thị trường / Market** — Có một lý do thuyết phục để hiện diện. / A convincing reason to be here.
+- **Bản sắc / Character** — Có điều riêng đủ để được ghi nhớ. / Something distinctive enough to remember.
+- **Tiềm năng / Potential** — Có khả năng phát triển theo thời gian. / Room to build over time.
+
+Replace generic Vision with:
+
+VI eyebrow:
+> **CÁCH VORIGIN LÀM VIỆC**
+
+VI H2:
+> **Được tin cậy bởi chất lượng của những lựa chọn và cách chúng tôi thực hiện chúng.**
+
+EN eyebrow:
+> **HOW WE WANT TO BE KNOWN**
+
+EN H2:
+> **For the quality of our judgement and the discipline of our execution.**
+
+---
+
+### 7.3 Brands
+
+VI H1:
+> **Một danh mục được xây dựng có chủ đích.**
+
+VI lead:
+> **MARIGOLD là điểm khởi đầu. Từ đó, VOrigin mở rộng theo một nguyên tắc đơn giản nhưng nghiêm ngặt: chỉ theo đuổi những thương hiệu có nền tảng đủ vững, bản sắc đủ rõ và một lý do thuyết phục để phát triển tại Việt Nam.**
+
+EN H1:
+> **A portfolio built with intent.**
+
+EN lead:
+> **MARIGOLD is where the portfolio begins. From there, VOrigin grows selectively, pursuing brands with credible foundations, distinctive character and a convincing reason to belong in Vietnam.**
+
+Future portfolio:
+- VI: **NHỮNG HƯỚNG TIẾP THEO** / **Mở rộng từng bước, với cùng một kỷ luật lựa chọn.**
+- EN: **WHAT WE ARE EXPLORING NEXT** / **Selective growth, guided by the same discipline.**
+
+Future category cards must remain visibly described as directions under consideration, not signed partnerships.
+
+---
+
+### 7.4 MARIGOLD / Products
+
+Keep factual product claims source-gated.
+
+Rename:
+- `BẢO CHỨNG SẢN PHẨM` → **THÔNG TIN & NGUỒN THAM CHIẾU**
+- `PRODUCT ASSURANCE` → **PRODUCT FACTS & SOURCES**
+
+MARIGOLD assurance:
+- VI: **Niềm tin đến từ những điều có thể đối chiếu.**
+- EN: **Trust is stronger when the facts can be traced.**
+
+Delete or repurpose the repetitive MARIGOLD closing editorial block; factual manufacturer context is acceptable.
+
+---
+
+### 7.5 Capabilities — canonical full process
+
+Capabilities is the only page that owns the detailed five-stage Route to Market.
+
+VI H1:
+> **Từ quyết định gia nhập đến hiện diện trên thị trường.**
+
+EN H1:
+> **From market decision to market presence.**
+
+Five stages:
+1. **Gia nhập thị trường / Market Entry**
+2. **Nhập khẩu & Tuân thủ / Import & Compliance**
+3. **Phát triển phân phối / Distribution Development**
+4. **Bản địa hóa thương hiệu / Brand Localisation**
+5. **Tiếp thị thương mại / Trade Marketing**
+
+Do not repeat the full five-stage explanation on Homepage or Partners.
+
+---
+
+### 7.6 Partners — four modules only
+
+Target:
+
+```text
+Hero
+What We Look For
+How We Approach the Market
+How Partnership Begins
+```
+
+Hero VI:
+> **VOrigin tìm kiếm những thương hiệu có nền tảng đủ vững để xây dựng một vị trí lâu dài tại Việt Nam. Cách tiếp cận của chúng tôi có chọn lọc, có kỷ luật và luôn nhìn xa hơn lô hàng đầu tiên.**
+
+Hero EN:
+> **We work with brands built on substance — and with the ambition to establish a meaningful place in Vietnam. Our approach is selective, disciplined and designed to look beyond the first shipment.**
+
+What We Look For:
+1. **Nguồn gốc có thể kiểm chứng / Traceable origins**
+2. **Chất lượng có tính nhất quán / Consistent quality**
+3. **Một lý do thực sự để hiện diện / A genuine reason to be here**
+4. **Dư địa để xây dựng thương hiệu / Room to build a brand**
+
+High-level market approach only:
+1. **Đánh giá sự phù hợp / Assess the fit**
+2. **Chuẩn bị lộ trình vào thị trường / Prepare the market route**
+3. **Xây dựng hiện diện thương mại / Build the commercial presence**
+
+Link to Capabilities for full process.
+
+Final module:
+- VI: **CÁCH MỘT QUAN HỆ HỢP TÁC BẮT ĐẦU** / **Hiểu đúng trước khi cam kết.**
+- EN: **HOW PARTNERSHIP BEGINS** / **Understand first. Commit second.**
+
+---
+
+### 7.7 Insights
+
+VI H1:
+> **Những gì đáng cân nhắc trước khi một thương hiệu bước vào thị trường.**
+
+EN H1:
+> **Perspectives on what makes a brand worth building in Vietnam.**
+
+Topics:
+- **Nhìn phía sau sản phẩm / Look behind the product**
+- **Đọc thị trường Việt Nam / Read Vietnam beyond the headline numbers**
+- **Từ sản phẩm nhập khẩu đến một thương hiệu được nhớ đến / From imported product to remembered brand**
+
+Do not add a CMS or Proof of Execution content.
+
+---
+
+### 7.8 Contact
+
+VI H1:
+> **Bắt đầu bằng một cuộc trao đổi có trọng tâm.**
+
+EN H1:
+> **Start with a focused conversation.**
+
+If forms are disabled:
+- render no disabled form;
+- render no “Tạm thời chưa nhận liên hệ trực tuyến” notice;
+- show a complete minimal contact experience with verified email, phone, company identity and direct CTA.
+
+If forms are later enabled:
+- require real-domain Turnstile + backend evidence before changing the production flag.
+
+---
+
+## 8. Image/performance contract
+
+The repo already contains responsive-image abstractions. Reuse them.
+
+Required order:
+1. audit `responsive_picture()`, `ImagePolicy`, `RESPONSIVE_POLICIES`;
+2. map heavy call sites;
+3. generate only missing variants;
+4. replace hardcoded PNG calls;
+5. verify crop and output HTML;
+6. measure LCP;
+7. remove dead duplicate helpers only after success.
+
+Priority:
+1. Homepage hero;
+2. Partners hero/no-logo ship replacement;
+3. MARIGOLD lineup;
+4. homepage B2B/no-logo container replacement.
+
+Targets:
+- LCP < 2.5s
+- CLS < 0.1
+- INP < 200ms
+- Lighthouse mobile >= 90
+- desktop >= 95
+
+---
+
+## 9. UI/UX and accessibility contract
+
+Keep:
+- Cormorant Garamond + Manrope;
+- ivory/cream/bronze/navy;
+- restrained motion;
+- subtle grain;
+- editorial grids;
+- current overall design language.
+
+Do not add:
+- glassmorphism;
+- decorative gradients/blobs;
+- animated counters;
+- autoplay video;
+- heavy parallax;
+- new module bloat.
+
+Accessibility:
+- functional small-text CTA uses `#906630` or another verified AA-compliant treatment;
+- light bronze remains decorative;
+- increase or hide unreadable 5.5–6.5px tagline on mobile;
+- add `aria-current="page"` to main nav;
+- Escape closes mobile menu;
+- focus returns to toggle;
+- add only the focus containment/body-scroll behaviour the actual menu needs.
+
+Mobile:
+- Partners hero first priority;
+- use portrait crop / `object-fit: cover`, not a tiny contained 16:9 strip;
+- homepage/B2B imagery receives dedicated crop only where it materially improves focus;
+- About mobile hero remains the benchmark.
+
+---
+
+## 10. Governance and cleanup
+
+One canonical truth is required for:
+- asset approval;
+- claim approval;
+- exclusivity visibility;
+- contact state;
+- production readiness.
+
+Old self-audits such as `PREMIUM_MAX_AUDIT.md` / `COPY_AUDIT.md` must be marked `SUPERSEDED` or archived as historical evidence so agents do not treat old 9.x scores as current truth.
+
+Clean unused helpers/CSS/assets only after Mika verifies the active replacement.
+
+---
+
+## 11. Editorial QA contract
+
+After copy is rendered:
+
+### Vocabulary audit
+Review families:
+- rõ ràng / clear;
+- bền lâu / long-term / lasting;
+- nguồn gốc / provenance;
+- tiêu chuẩn / standards;
+- giá trị / value;
+- chọn lọc / curated;
+- hành trình / journey.
+
+### Rhetorical-pattern audit
+Review repeated structures:
+- `X thay vì Y`;
+- `from X to Y`;
+- `before X...`;
+- `not simply X, but Y`;
+- `built on...`;
+- `shaped by...`;
+- `considered...`.
+
+### Human checks
+- read VI aloud;
+- read EN independently;
+- apply the “20-company test”;
+- check adjacent sections for semantic duplication.
+
+Copy V2 is approved for implementation first; these checks are a post-render refinement gate, not a new rewrite project.
+
+---
+
+## 12. Acceptance and closure
+
+Required before `VORIGIN PREMIUM OPTIMIZATION = CLOSED`:
+
+- no misleading branded ship/container asset;
+- no hardcoded multi-MB LCP delivery where responsive pipeline should apply;
+- Homepage/About V2 applied;
+- Partners reduced to four semantic modules;
+- Capabilities owns the full five-stage process;
+- no disabled Contact notice in production;
+- functional CTA contrast passes;
+- mobile critical hero art direction passes;
+- governance flags are consistent;
+- VI/EN editorial gates pass;
+- production build/static/copy tests pass;
+- browser matrix passes;
+- Lighthouse/Web Vitals targets pass or any exception is explicitly documented;
+- rollback evidence remains valid.
+
+Visual QA automation must scroll and wait for lazy assets before calling an image broken.
+
+---
+
+## 13. Approval and release boundary
+
+Mika may prepare and verify the release candidate.
+
+Explicit owner approval is still required before:
+- production deploy;
+- Nginx production reload if required;
+- Cloudflare mutation;
+- changing deferred admin/form scope;
+- rollback/cutover.
+
+`admin.vorigin.vn`, CMS publishing and online form enablement remain deferred until separately approved.
+
+---
+
+## 14. Source of truth
+
+- Strategic/acceptance contract: `.ai/MASTER_PLAN.md`
+- Active executable work only: `tasks.md`
+- Operational docs: `DEPLOY_PI5.md`, `OPERATIONS.md`, `ops/cloudflare/README.md`
+- Historical evidence: `.ai/PHASE1_EXIT_REVIEW.md`, old audit files, Git history
+
+Completed task specifications must not remain in `tasks.md`.
