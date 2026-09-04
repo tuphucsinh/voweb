@@ -111,14 +111,14 @@ class ImagePolicy:
 
 RESPONSIVE_POLICIES = {
     'home_hero': ImagePolicy((480, 768, 1024, 1440), '(max-width: 820px) 100vw, 58vw', 'eager', 'high', 'hero-responsive'),
-    'lineup': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 72vw', 'lazy', 'auto', 'lineup-responsive'),
-    'featured_lineup': ImagePolicy((480, 768, 1024, 1440), '(max-width: 820px) 100vw, 72vw', 'lazy', 'auto', 'lineup-image'),
-    'marigold_hero': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 64vw', 'eager', 'high', 'marigold-lineup-responsive'),
+    'lineup': ImagePolicy((480, 768, 1024, 1440), '(max-width: 820px) calc(100vw - 64px), (max-width: 1199px) 54vw, min(52vw, 614px)', 'lazy', 'auto', 'lineup-image'),
+    'featured_lineup': ImagePolicy((480, 768, 1024, 1440), '(max-width: 820px) calc(100vw - 64px), (max-width: 1199px) 54vw, 52vw', 'lazy', 'auto', 'lineup-image'),
+    'marigold_hero': ImagePolicy((480, 768, 1024, 1440), '(max-width: 820px) calc(100vw - 64px), (max-width: 1199px) 54vw, 52vw', 'eager', 'high', 'lineup-image'),
     'product_hero': ImagePolicy((390, 640), '(max-width: 820px) 100vw, 54vw', 'eager', 'high', 'product-responsive'),
-    'flavor_card': ImagePolicy((390, 640), '(max-width: 580px) 80vw, 25vw', 'lazy', 'auto', 'flavor-responsive'),
+    'flavor_card': ImagePolicy((390, 640), '(max-width: 580px) 80vw, (max-width: 1199px) 50vw, 25vw', 'lazy', 'auto', 'flavor-responsive'),
     'mini_flavor': ImagePolicy((390, 640), '(max-width: 580px) 74vw, 30vw', 'lazy', 'auto', 'mini-flavor-responsive'),
-    'home_market': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 48vw', 'lazy', 'auto', 'market-visual-image'),
-    'partners_hero': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 52vw', 'eager', 'high', 'partners-hero-image'),
+    'home_market': ImagePolicy((480, 768, 1024, 1440), '(max-width: 820px) 100vw, (max-width: 1199px) 50vw, 100vw', 'lazy', 'auto', 'market-visual-image'),
+    'partners_hero': ImagePolicy((480, 768, 1024, 1440, 1672), '100vw', 'eager', 'high', 'partners-hero-image'),
     'story_card': ImagePolicy((480, 768), '(max-width: 820px) 86vw, 25vw', 'lazy', 'auto', 'story-card-image'),
 }
 
@@ -139,7 +139,7 @@ def responsive_picture(asset_key: str, alt: str, policy: ImagePolicy) -> str:
     priority = f' fetchpriority="{e(policy.fetchpriority)}"' if policy.fetchpriority in {'high', 'low'} else ''
     css_class = e(policy.css_class)
     return (
-        f'<picture class="responsive-picture {css_class}">'
+        f'<picture class="responsive-picture">'
         f'<source type="image/webp" srcset="{srcset}" sizes="{e(policy.sizes)}">'
         f'<img class="{css_class}" src="/assets/{spec.source_filename}" '
         f'alt="{e(alt)}" width="{spec.source_size[0]}" height="{spec.source_size[1]}" '
@@ -344,7 +344,7 @@ def brands(locale):
     feature_copy='Thương hiệu nổi bật đầu tiên trong danh mục VOrigin, mở đầu cho một hành trình danh mục được xây dựng có chọn lọc.' if vi else 'The first featured brand in VOrigin’s portfolio, marking the beginning of a carefully built brand journey.'
     next_label='NHỮNG HƯỚNG TIẾP THEO' if vi else 'WHAT WE ARE EXPLORING NEXT'; next_title='Mở rộng từng bước, với cùng một kỷ luật lựa chọn.' if vi else 'Selective growth, guided by the same discipline.'
     body=page_hero(locale,page_label,t['brands_title'],t['brands_lede'],f'<a href="{r["home"]}">{t["home"]}</a> / {t["brands"]}')
-    body+=f'''<section class="featured section-soft"><div class="shell featured-grid"><div class="featured-copy reveal"><div class="featured-copy-inner"><p class="eyebrow">{feature_label}</p><h2>MARIGOLD</h2><p>{e(feature_copy)}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['view'])}<span>→</span></a></div></div><figure class="lineup reveal"><div class="lineup-surface">{responsive_picture('marigold-lineup-premium', 'MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['lineup'])}</div></figure></div></section>'''
+    body+=f'''<section class="featured section-soft"><div class="shell featured-grid"><div class="featured-copy reveal"><div class="featured-copy-inner"><p class="eyebrow">{feature_label}</p><h2>MARIGOLD</h2><p>{e(feature_copy)}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['view'])}<span>→</span></a></div></div><figure class="lineup reveal"><div class="lineup-surface">{responsive_picture('marigold-featured-premium', 'MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['lineup'])}</div></figure></div></section>'''
     body+=f'''<section class="portfolio section-light"><div class="shell"><div class="section-heading centered"><p class="eyebrow">{next_label}</p><h2>{next_title}</h2><i class="bronze-rule"></i></div><div class="portfolio-cards" role="list">{portfolio_cards(locale)}</div></div></section>'''
     return base_page(locale,f'{t["brands"]} — VOrigin',t['brands_lede'],'brands',body,body_class='brands-page')
 
@@ -358,7 +358,7 @@ def marigold(locale):
         flavor_cards+=f'''<a class="flavor-card flavor-{slug} reveal" href="{path}" style="--flavor:{color}"><div class="flavor-visual">{responsive_picture(f'marigold-{slug}-real', f'MARIGOLD {label} Fruit Drink', RESPONSIVE_POLICIES['flavor_card'])}</div><div class="flavor-copy"><p class="eyebrow">{e(p['pack'])}</p><h3>{label}</h3><span>{e(t['view'])} →</span></div></a>'''
     feature_label='THƯƠNG HIỆU NỔI BẬT' if vi else 'FEATURED BRAND'; flavour_label='KHÁM PHÁ HƯƠNG VỊ' if vi else 'EXPLORE THE FLAVOURS'
     flavour_title='Bốn hương vị, mỗi vị một nét riêng.' if vi else 'Four flavours, each with its own character.'
-    body=f'''<section class="featured section-soft marigold-detail-featured"><div class="shell featured-grid"><div class="featured-copy marigold-hero-copy reveal"><div class="featured-copy-inner"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / <a href="{r['brands']}">{t['brands']}</a> / MARIGOLD</div><p class="eyebrow">{feature_label}</p><h1>MARIGOLD</h1><p class="lede">{e(summary)}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a class="source-link" href="{e(BRAND['source_url'])}" rel="noopener noreferrer">{t['source']} ↗</a></div></div><figure class="lineup reveal"><div class="lineup-surface">{responsive_picture('marigold-lineup-premium', 'MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['marigold_hero'])}</div></figure></div></section>'''
+    body=f'''<section class="featured section-soft marigold-detail-featured"><div class="shell featured-grid"><div class="featured-copy marigold-hero-copy reveal"><div class="featured-copy-inner"><div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / <a href="{r['brands']}">{t['brands']}</a> / MARIGOLD</div><p class="eyebrow">{feature_label}</p><h1>MARIGOLD</h1><p class="lede">{e(summary)}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a class="source-link" href="{e(BRAND['source_url'])}" rel="noopener noreferrer">{t['source']} ↗</a></div></div><figure class="lineup reveal"><div class="lineup-surface">{responsive_picture('marigold-featured-premium', 'MARIGOLD Fruit Drinks Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['marigold_hero'])}</div></figure></div></section>'''
     assurance_eyebrow='NGUỒN GỐC & BẢO CHỨNG' if vi else 'PROVENANCE & ASSURANCE'
     assurance_title='Niềm tin đến từ những điều có thể đối chiếu.' if vi else 'Trust is stronger when the facts can be traced.'
     assurance_intro='VOrigin trình bày những thông tin cốt lõi của MARIGOLD Fruit Drinks dựa trên các nguồn chính thức của MARIGOLD và Malaysia Dairy Industries.' if vi else 'VOrigin presents the core facts behind MARIGOLD Fruit Drinks using official information from MARIGOLD and Malaysia Dairy Industries.'

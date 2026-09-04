@@ -24,7 +24,14 @@ const routes = [
   ['vi-insights', '/vi/goc-nhin/', 'vi', '/vi/goc-nhin/'], ['en-insights', '/en/insights/', 'en', '/en/insights/'],
   ['vi-contact', '/vi/lien-he/', 'vi', '/vi/lien-he/'], ['en-contact', '/en/contact/', 'en', '/en/contact/'],
 ];
-const viewports = [[390, 844], [430, 900], [768, 1024], [1024, 900], [1440, 900], [1920, 1080]];
+const routeStart = Number(args.get('--route-start') || 0);
+const routeEnd = Number(args.get('--route-end') || routes.length);
+const selectedRoutes = routes.slice(routeStart, routeEnd);
+const allViewports = [[390, 844], [430, 900], [768, 1024], [1024, 900], [1440, 900], [1920, 1080]];
+const requestedViewportWidths = args.get('--viewports')?.split(',').map(value => Number(value)).filter(Number.isFinite);
+const viewports = requestedViewportWidths?.length
+  ? allViewports.filter(([width]) => requestedViewportWidths.includes(width))
+  : allViewports;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const isKnownExternalCspWarning = message => message.includes('https://static.cloudflareinsights.com/beacon.min.js/') && message.includes('Content Security Policy directive');
 
@@ -97,10 +104,11 @@ class CdpClient {
     await this.ready;
     const id = ++this.nextId;
     return new Promise((resolve, reject) => {
+      const timeoutMs = method === 'Runtime.evaluate' ? 45000 : 15000;
       const timer = setTimeout(() => {
         this.pending.delete(id);
         reject(new Error(`CDP timeout: ${method}`));
-      }, 15000);
+      }, timeoutMs);
       this.pending.set(id, {resolve, reject, timer});
       this.ws.send(JSON.stringify({id, method, params}));
     });
@@ -154,7 +162,7 @@ try {
     if (url.startsWith(base) && params.response.status >= 400) networkBadResponses.push(`${params.response.status}: ${url}`);
   });
 
-  for (const [name, route, locale, activeHref] of routes) {
+  for (const [name, route, locale, activeHref] of selectedRoutes) {
     for (const [width, height] of viewports) {
       runtimeErrors.length = 0;
       networkFailures.length = 0;
@@ -166,12 +174,37 @@ try {
       await sleep(900);
       const state = await evaluate(cdp, `(async () => {
         const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-        for (let y = 0; y <= document.body.scrollHeight; y += Math.max(1, innerHeight)) {
+        for (const image of document.images) image.loading = 'eager';
+        for (let y = 0; y <= Math.max(0, document.body.scrollHeight - innerHeight); y += Math.max(1, innerHeight)) {
           window.scrollTo(0, y);
           await wait(70);
         }
+        window.scrollTo(0, Math.max(0, document.body.scrollHeight - innerHeight));
         await wait(500);
-        const localImages = [...document.images].filter(image => image.currentSrc && !/^https?:\\/\\//.test(image.currentSrc));
+        const isFirstPartyUrl = value => {
+          try { return new URL(value, location.href).origin === location.origin; }
+          catch { return false; }
+        };
+        const localImages = [...document.images].filter(image => isFirstPartyUrl(image.currentSrc || image.src));
+        const imageRecords = localImages.map(image => {
+          const rect = image.getBoundingClientRect();
+          const currentSrc = image.currentSrc || image.src;
+          const candidate = currentSrc.match(/-(\\d+)w\\.webp(?:$|[?#])/);
+          return {
+            src: image.getAttribute('src'),
+            currentSrc,
+            renderedWidth: Math.round(rect.width),
+            renderedHeight: Math.round(rect.height),
+            naturalWidth: image.naturalWidth,
+            naturalHeight: image.naturalHeight,
+            devicePixelRatio,
+            candidateWidth: candidate ? Number(candidate[1]) : null,
+          };
+        });
+        const fidelityFailures = imageRecords.filter(image => {
+          const deliveredWidth = image.candidateWidth ?? image.naturalWidth;
+          return image.renderedWidth > 0 && deliveredWidth > 0 && deliveredWidth + 1 < image.renderedWidth * devicePixelRatio * 0.9;
+        });
         const rectRight = Math.max(document.documentElement.clientWidth, ...[...document.querySelectorAll('*')].map(node => {
           const rect = node.getBoundingClientRect();
           return Number.isFinite(rect.right) ? rect.right : 0;
@@ -194,7 +227,9 @@ try {
           bodyWidth: document.body.scrollWidth,
           clientWidth: document.documentElement.clientWidth,
           rectRight: Math.ceil(rectRight),
-          badImages: localImages.filter(image => !image.complete || image.naturalWidth === 0).map(image => image.currentSrc),
+          badImages: localImages.filter(image => !image.complete || image.naturalWidth === 0).map(image => image.currentSrc || image.src),
+          images: imageRecords,
+          fidelityFailures,
           current,
           keyboard,
           formCount: document.querySelectorAll('form').length,
@@ -205,6 +240,7 @@ try {
       if (state.lang !== locale) failures.push(`lang=${state.lang}`);
       if (state.docWidth > state.clientWidth || state.bodyWidth > state.clientWidth) failures.push(`overflow=${state.docWidth}/${state.bodyWidth}>${state.clientWidth}`);
       if (state.badImages.length) failures.push(`badImages=${state.badImages.join(',')}`);
+      if (state.fidelityFailures.length) failures.push(`undersizedImages=${state.fidelityFailures.map(image => `${image.currentSrc} natural=${image.naturalWidth} rendered=${image.renderedWidth} dpr=${image.devicePixelRatio}`).join('|')}`);
       if (activeHref && (state.current.length !== 1 || state.current[0] !== activeHref)) failures.push(`aria-current=${JSON.stringify(state.current)} expected ${activeHref}`);
       if (!state.keyboard.ok) failures.push(`keyboard=${state.keyboard.reason || 'focus return failed'}`);
       if ((route.endsWith('/doi-tac/') || route.endsWith('/partners/')) && !state.hasPartnersHero) failures.push('missing .partners-hero');
@@ -222,7 +258,16 @@ try {
       const screenshot = await cdp.send('Page.captureScreenshot', {format: 'png'});
       await fs.mkdir(evidence, {recursive: true});
       await fs.writeFile(path.join(evidence, `${name}-${width}x${height}.png`), Buffer.from(screenshot.data, 'base64'));
-      results.push({name, route, viewport: `${width}x${height}`, failures, knownExternalWarnings});
+      results.push({
+        name,
+        route,
+        viewport: `${width}x${height}`,
+        failures,
+        knownExternalWarnings,
+        applicationRuntimeErrors,
+        firstPartyNetworkFailures: [...networkFailures, ...networkBadResponses],
+        state,
+      });
       const warningNote = knownExternalWarnings.length ? ` — KNOWN_EXTERNAL_WARNING=${knownExternalWarnings.length}` : '';
       console.log(`${failures.length ? 'FAIL' : 'PASS'} ${name} ${width}x${height}${failures.length ? ` — ${failures.join(', ')}` : ''}${warningNote}`);
     }
@@ -239,5 +284,12 @@ try {
 }
 const failed = results.filter(result => result.failures.length).length;
 const externalCspWarnings = results.reduce((total, result) => total + result.knownExternalWarnings.length, 0);
+await fs.mkdir(evidence, {recursive: true});
+await fs.writeFile(path.join(evidence, 'matrix-results.json'), JSON.stringify({
+  cases: results.length,
+  failures: failed,
+  external_csp_warnings: externalCspWarnings,
+  results,
+}, null, 2));
 console.log(JSON.stringify({cases: results.length, failures: failed, external_csp_warnings: externalCspWarnings, evidence}));
 if (process.exitCode === undefined) process.exitCode = failed ? 1 : 0;

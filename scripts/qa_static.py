@@ -2,10 +2,22 @@
 from pathlib import Path
 from html.parser import HTMLParser
 import sys, re
+from collections import Counter
+from urllib.parse import urlsplit
 ROOT=Path(__file__).resolve().parents[1]
 DIST=ROOT/'dist'; prod='--production' in sys.argv
 errors=[]; warnings=[]
 DOCUMENTED_IMAGE_GEOMETRY_EXCEPTIONS=set()
+CANONICAL_VISUALS={
+    'vi/index.html': ('hero-marigold-premium', 'marigold-featured-premium', 'logistics-container-nologo'),
+    'en/index.html': ('hero-marigold-premium', 'marigold-featured-premium', 'logistics-container-nologo'),
+    'vi/thuong-hieu/index.html': ('marigold-featured-premium',),
+    'en/brands/index.html': ('marigold-featured-premium',),
+    'vi/thuong-hieu/marigold/index.html': ('marigold-featured-premium',),
+    'en/brands/marigold/index.html': ('marigold-featured-premium',),
+    'vi/doi-tac/index.html': ('logistics-ship-nologo',),
+    'en/partners/index.html': ('logistics-ship-nologo',),
+}
 
 def validate_image_geometry(attrs, page):
     """Return errors for local content images without positive intrinsic geometry."""
@@ -22,19 +34,48 @@ def validate_image_geometry(attrs, page):
     return problems
 
 class P(HTMLParser):
-    def __init__(self): super().__init__(); self.links=[]; self.imgs=[]; self.ids=set(); self.title=False; self.meta_desc=False; self.canonical=False; self.h1=0
+    def __init__(self): super().__init__(); self.links=[]; self.imgs=[]; self.srcsets=[]; self.ids=[]; self.hreflangs=[]; self.og_images=[]; self.title=False; self.meta_desc=False; self.canonical=False; self.h1=0
     def handle_starttag(self,tag,attrs):
         d=dict(attrs)
-        if 'id' in d: self.ids.add(d['id'])
+        if d.get('id'): self.ids.append(d['id'])
         if tag=='a' and d.get('href'): self.links.append(d['href'])
         if tag=='img': self.imgs.append(d)
+        if tag=='source' and d.get('srcset'): self.srcsets.append(d['srcset'])
         if tag=='title': self.title=True
         if tag=='meta' and d.get('name')=='description' and d.get('content'): self.meta_desc=True
+        if tag=='meta' and d.get('property')=='og:image' and d.get('content'): self.og_images.append(d['content'])
         if tag=='link' and d.get('rel')=='canonical': self.canonical=True
+        if tag=='link' and d.get('rel')=='alternate' and d.get('hreflang') and d.get('href'): self.hreflangs.append((d['hreflang'],d['href']))
         if tag=='h1': self.h1+=1
+
+def local_target(ref):
+    parsed=urlsplit(ref)
+    if parsed.scheme or parsed.netloc or not parsed.path.startswith('/'):
+        return None
+    target=DIST/parsed.path.lstrip('/')
+    if parsed.path.endswith('/'): target=target/'index.html'
+    elif not target.suffix: target=target/'index.html'
+    return target
+
+def srcset_urls(value):
+    return [entry.strip().split()[0] for entry in value.split(',') if entry.strip()]
+
+def ids_for(path):
+    parser=P(); parser.feed(path.read_text(encoding='utf-8'))
+    return set(parser.ids)
+
+def page_locale(rel):
+    if rel.parts and rel.parts[0] in {'vi','en'}: return rel.parts[0]
+    return None
 for f in DIST.rglob('*.html'):
     p=P(); txt=f.read_text(encoding='utf-8'); p.feed(txt)
     rel=f.relative_to(DIST)
+    required_visuals=CANONICAL_VISUALS.get(rel.as_posix(), ())
+    for visual in required_visuals:
+        if visual not in txt: errors.append(f'{rel}: canonical visual missing {visual}')
+    if len(p.ids)!=len(set(p.ids)):
+        duplicates=sorted(id_ for id_,count in Counter(p.ids).items() if count>1)
+        errors.append(f'{rel}: duplicate ids {duplicates}')
     if f.name!='404.html':
         if not p.title: errors.append(f'{rel}: missing title')
         if not p.meta_desc and rel.name!='index.html': warnings.append(f'{rel}: missing meta description')
@@ -44,15 +85,30 @@ for f in DIST.rglob('*.html'):
         if not img.get('alt') and img.get('alt')!='': errors.append(f'{rel}: image missing alt')
         if img.get('src','').startswith('/') and not (DIST/img['src'].lstrip('/')).exists(): errors.append(f'{rel}: missing asset {img["src"]}')
         errors.extend(validate_image_geometry(img, rel))
+    for srcset in p.srcsets:
+        for candidate in srcset_urls(srcset):
+            target=local_target(candidate)
+            if target is not None and not target.exists(): errors.append(f'{rel}: missing srcset asset {candidate}')
+    for image in p.og_images:
+        target=local_target(image)
+        if target is not None and not target.exists(): errors.append(f'{rel}: missing og:image asset {image}')
+    locale=page_locale(rel)
+    if locale:
+        hreflang_codes={code for code,_ in p.hreflangs}
+        if hreflang_codes != {'vi-VN','en','x-default'}: errors.append(f'{rel}: expected vi-VN/en/x-default hreflang set, got {sorted(hreflang_codes)}')
+        for code,href in p.hreflangs:
+            target=local_target(href)
+            if target is not None and not target.exists(): errors.append(f'{rel}: missing hreflang target {href}')
     for href in p.links:
         if href.startswith('/') and not href.startswith('//') and not href.startswith('/api/'):
             clean_href=href.split('#',1)[0].split('?',1)[0]
             if not clean_href: continue
-            target=DIST/clean_href.lstrip('/')
-            if clean_href.endswith('/'): target=target/'index.html'
-            elif not target.suffix: target=target/'index.html'
+            target=local_target(clean_href)
+            if target is None: continue
             if not target.exists() and href not in ('/privacy/','/terms/'):
                 errors.append(f'{rel}: broken internal link {href}')
+            elif '#' in href and target.exists() and urlsplit(href).fragment and urlsplit(href).fragment not in ids_for(target):
+                errors.append(f'{rel}: broken internal fragment {href}')
 # unsafe placeholders
 for f in DIST.rglob('*.html'):
     txt=f.read_text(encoding='utf-8')

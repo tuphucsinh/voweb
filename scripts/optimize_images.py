@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import io
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -62,12 +63,17 @@ RESPONSIVE_SPECS = {
     "logistics-container-nologo": ResponsiveAsset(
         "logistics-container-nologo", "logistics-container-nologo.png", (1672, 941),
         (Variant(480, "logistics-container-nologo-480w.webp", 80, 120_000),
-         Variant(768, "logistics-container-nologo-768w.webp", 80, 190_000)),
+         Variant(768, "logistics-container-nologo-768w.webp", 80, 190_000),
+         Variant(1024, "logistics-container-nologo-1024w.webp", 84, 400_000),
+         Variant(1440, "logistics-container-nologo-1440w.webp", 86, 700_000)),
     ),
     "logistics-ship-nologo": ResponsiveAsset(
         "logistics-ship-nologo", "logistics-ship-nologo.png", (1672, 941),
         (Variant(480, "logistics-ship-nologo-480w.webp", 80, 120_000),
-         Variant(768, "logistics-ship-nologo-768w.webp", 80, 190_000)),
+         Variant(768, "logistics-ship-nologo-768w.webp", 80, 190_000),
+         Variant(1024, "logistics-ship-nologo-1024w.webp", 84, 400_000),
+         Variant(1440, "logistics-ship-nologo-1440w.webp", 86, 700_000),
+         Variant(1672, "logistics-ship-nologo-1672w.webp", 88, 900_000)),
     ),
 }
 for _story in ("origin", "nature", "craft", "value"):
@@ -170,8 +176,18 @@ def expected_variant_paths() -> set[Path]:
 
 
 def check_file_set() -> None:
-    actual = {path for path in PUBLIC.glob("*.webp") if any(path.name == candidate.name for candidate in expected_variant_paths())}
     expected = expected_variant_paths()
+    managed_prefixes = tuple(
+        {spec.key for spec in RESPONSIVE_SPECS.values()}
+        | {"b2b-vorigin-partner"}
+        | {f"marigold-{flavor}-premium" for flavor in ("apple", "orange", "mango", "grape")}
+    )
+    managed_suffix = re.compile(r"-\d+w\.webp$")
+    actual = {
+        path for path in PUBLIC.glob("*.webp")
+        if managed_suffix.search(path.name)
+        and any(path.name.startswith(f"{prefix}-") for prefix in managed_prefixes)
+    }
     if actual != expected:
         missing = sorted(str(path.relative_to(ROOT)) for path in expected - actual)
         extra = sorted(str(path.relative_to(ROOT)) for path in actual - expected)

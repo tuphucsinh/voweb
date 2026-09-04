@@ -1216,7 +1216,7 @@ body::before {
   color: var(--bronze);
   opacity: .90;
 }
-.assurance-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.assurance-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 .assurance-card { min-height:230px; padding:34px 24px 30px; text-align:center; position:relative; }
 .assurance-card + .assurance-card { border-left:1px solid var(--line); }
 .assurance-card > span { width:42px; height:42px; display:grid; place-items:center; margin:0 auto 18px; color:var(--bronze); }
@@ -1937,6 +1937,9 @@ body::before {
 
 .partners-page .partners-hero-image {
   width: 100%;
+  max-width: 1672px;
+  margin-left: auto;
+  margin-right: 0;
   height: 100%;
   aspect-ratio: auto;
   object-fit: cover;
@@ -1955,6 +1958,31 @@ body::before {
 .partners-page .partners-hero-image:hover {
   transform: none;
   filter: none;
+}
+
+@media (min-width: 1673px) {
+  .partners-page .partners-hero-image {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.18) 12%,
+      rgba(0, 0, 0, 0.64) 22%,
+      #000 34%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.18) 12%,
+      rgba(0, 0, 0, 0.64) 22%,
+      #000 34%,
+      #000 100%
+    );
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
 }
 
 /* Restrained deep-navy horizontal scrim: preserve the open sunrise and port atmosphere */
