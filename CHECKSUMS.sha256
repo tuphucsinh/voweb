@@ -170,7 +170,7 @@ ce710ccb751241ba31ca5703416f5716ae03b4eb59bf5fd02af43c00f4426c52  ./dist/fonts.c
 1d252632e67a684ee298678f7b00c8572b15e73b71208e3fcebcc605077e93c8  ./dist/privacy/index.html
 331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1  ./dist/robots.txt
 d82abd127b236fba27be6f2e836c1adccb37eb39f1ef8b219f03f71361e5f001  ./dist/sitemap.xml
-0e7dce293635e04d1284e494ef52f6049363091a89b286d5ebda10ce42be5d59  ./dist/styles.css
+d98b562721dc972e49dc6ffaf269d22bc93e38449da3bcecee6ff10379b47a01  ./dist/styles.css
 9ba7ff8703b986ef1965bccaea514f3c317848fc3d66dc60e9fb22864b2c83ed  ./dist/terms/index.html
 30737933f13640dca7dc5e044ce6043ec5d702a4ea4f74f10055f19794e3f6b1  ./dist/vi/chinh-sach-quyen-rieng/index.html
 1fa00a0e5ccc057a6620a690975339cef91cb400db9eb4742475fa710b094f2e  ./dist/vi/dieu-khoan-su-dung/index.html
@@ -190,8 +190,8 @@ c2dbe3b3df87e09bacdbb7c6d07c541ba67c21bd5f80d8a516217fbef0fc90e0  ./ops/.env.exa
 acc1c158e35647a3aa639a748f379b7bba65c345e5bc22d55d97a206101a0bc9  ./ops/cloudflare/README.md
 75daa694789b7b65b4e00d3513c5c3a47c1876ba85cceda660d8be3584565bba  ./ops/docker-compose.yml
 ffdb5034ff26428123d03da1ff452ec7410ffca92dc34f1ca440cba7f48455b6  ./ops/logrotate/vorigin
-d17da3c70aeaa19faa58e8c5e5b8864703f42650065b04afe65f55dd3f380efb  ./ops/nginx/vorigin-staging.conf
-55d337a72e39e8932e7a8e5323c6fe6ce1efb646bcb34d2aa514523dc53ab18b  ./ops/nginx/vorigin.conf
+2fd5e88f6d4c3c94c973cb2bf1f54696e28493e701e53838c31b1c5bbedc8bc3  ./ops/nginx/vorigin-staging.conf
+be6414a4f9ecc8ae600d67c8cf346cc67305cf771caeff6645c410b5948cbeb0  ./ops/nginx/vorigin.conf
 c245bea0020e186f43b45bfa5dae328397bdd56fc69d557c2afc532a9f998a04  ./ops/security/bootstrap-pi5.sh
 f3859b510d2c1d7161baf6c7fb07108e8adc346643575897e1e2b67bfc7bb52d  ./ops/security/harden-pi5.sh
 6199f62cbad3ba7ce2f99996fd1efe0749c9bd70a202eccc0b40637be179df71  ./ops/systemd/vorigin-backup.service
@@ -321,7 +321,7 @@ d5fec9cb27fc46b2774595e5f7ae71a29c6e4962b6f3f7b1e2a990a6a9226ee0  ./public/asset
 f9d6220f98682a2240255563e9d343afaaab51b640629ee3c1b462a1ab467a10  ./public/assets/vorigin-logo-footer-bronze.svg
 4b894c1201d6aa737e6d1041e4d9faf7a2a052586d1603c7a30004275cda5956  ./public/assets/vorigin-logo-primary.svg
 ce710ccb751241ba31ca5703416f5716ae03b4eb59bf5fd02af43c00f4426c52  ./public/fonts.css
-0e7dce293635e04d1284e494ef52f6049363091a89b286d5ebda10ce42be5d59  ./public/styles.css
+d98b562721dc972e49dc6ffaf269d22bc93e38449da3bcecee6ff10379b47a01  ./public/styles.css
 35621307fb3ed8ca98f39ead6ca0e47db86fb445a83702150b419ccefe44db67  ./scripts/backup.sh
 70ccfdd90c365d1904e1a2984d6914ddaa3edc9d0073321c74fc0022ed555294  ./scripts/browser_matrix.py
 10a1aa48bf23a4f82ddc4e7de1d710d6a81cf1f67f9156ba8c60012600ce4a8f  ./scripts/browser_matrix_cdp.mjs
@@ -353,5 +353,5 @@ d5fec9cb27fc46b2774595e5f7ae71a29c6e4962b6f3f7b1e2a990a6a9226ee0  ./source-asset
 8d2386be90a0c218d3e14840b830bde9fee772a6b350c740fee922266d9f516d  ./tests/browser-assert.mjs
 d337d235be4247e26334f466fe4b79e92f65841c13d86a05ab1f42f9fbae6988  ./tests/browser-verify.sh
 a8bbe5be57e59c1661b9805b699d58bff045092a1c64811e041e1f8eb82dd633  ./tests/lead-api.test.mjs
-59a9cd1940f80a0c5bfac11aaf909fa182fbf3022c31e4ac32ef9759072388fb  ./tests/test_deploy_script_contract.py
+8b1cb6104b3ecdea4f8096234d15b0da4cf6c641a9f4c61a8728e8746a4ff8d9  ./tests/test_deploy_script_contract.py
 d008498bcbfbf1b6bc74f68d5786a5f5ef856938180539b61990c2607137d583  ./tools/ai_content_assistant.py

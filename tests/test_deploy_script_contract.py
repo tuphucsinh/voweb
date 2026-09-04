@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 import unittest
 from pathlib import Path
 
@@ -12,11 +13,13 @@ class DeployScriptContractTests(unittest.TestCase):
         cls.staging_conf_path = ROOT / "ops" / "nginx" / "vorigin-staging.conf"
         cls.prod_conf_path = ROOT / "ops" / "nginx" / "vorigin.conf"
         cls.deploy_doc_path = ROOT / "DEPLOY_PI5.md"
+        cls.styles_path = ROOT / "public" / "styles.css"
 
         cls.deploy_script = cls.deploy_script_path.read_text(encoding="utf-8")
         cls.staging_conf = cls.staging_conf_path.read_text(encoding="utf-8")
         cls.prod_conf = cls.prod_conf_path.read_text(encoding="utf-8")
         cls.deploy_doc = cls.deploy_doc_path.read_text(encoding="utf-8")
+        cls.styles = cls.styles_path.read_text(encoding="utf-8")
 
     def test_deploy_script_manifest_integrity(self):
         """Deploy script must verify manifest integrity but never mutate or self-write it."""
@@ -104,6 +107,63 @@ class DeployScriptContractTests(unittest.TestCase):
         self.assertIn("http://127.0.0.1:8081/healthz", self.deploy_doc)
         self.assertIn("8081", self.deploy_doc)
         self.assertIn("RUN_DATA_SERVICES", self.deploy_doc)
+
+    def test_root_geo_contract_is_exact_and_safe_for_known_country_values(self):
+        """Both Nginx sites must map only VN to VI and vary the bare-root redirect safely."""
+        expected_values = {
+            "VN": "vi",
+            "US": "en",
+            "SG": "en",
+            "missing": "en",
+            "XX": "en",
+            "T1": "en",
+            "unknown": "en",
+        }
+        for config in (self.prod_conf, self.staging_conf):
+            map_match = re.search(
+                r"map\s+\$http_cf_ipcountry\s+\$root_locale\s*\{(?P<body>.*?)\}",
+                config,
+                re.S,
+            )
+            if map_match is None:
+                self.fail("missing root locale map")
+            map_body = map_match.group("body")
+            self.assertRegex(map_body, r"(?m)^\s*default\s+en;\s*$")
+            self.assertRegex(map_body, r"(?m)^\s*VN\s+vi;\s*$")
+            self.assertNotRegex(map_body, r"(?m)^\s*(?:US|SG|XX|T1|unknown)\s+vi;\s*$")
+            for country, locale in expected_values.items():
+                expected = "vi" if country == "VN" else "en"
+                self.assertEqual(locale, expected)
+
+            root_match = re.search(r"location\s*=\s*/\s*\{(?P<body>.*?)\n\s*\}", config, re.S)
+            if root_match is None:
+                self.fail("missing exact bare-root location")
+            root_body = root_match.group("body")
+            self.assertIn("return 302 /$root_locale/;", root_body)
+            self.assertIn('add_header Cache-Control "no-store" always;', root_body)
+            self.assertIn('add_header Vary "CF-IPCountry" always;', root_body)
+            self.assertNotIn("return 301", root_body)
+
+            # Geo routing must not be attached to explicit locale, asset, or health paths.
+            self.assertNotRegex(config, r"location\s+[^\n]*\s/(?:vi|en)(?:/|\s)[^\n]*\{[^}]*\$root_locale", re.S)
+            self.assertIn("location = /healthz", config)
+            self.assertIn("location ~* \\.(?:png|jpg|jpeg|webp|avif|svg|ico)$", config)
+
+    def test_vietnamese_display_rules_are_scoped_without_global_shrink(self):
+        """VI display protections are mechanical CSS guards, not a blanket typography rewrite."""
+        for selector in (
+            'html[lang="vi"] .story .section-heading h2',
+            'html[lang="vi"] .why-value-intro h2',
+            'html[lang="vi"] .about-page .about-hero h1',
+            'html[lang="vi"] .capabilities-page .page-hero h1',
+        ):
+            self.assertIn(selector, self.styles)
+        self.assertIn("text-wrap: balance", self.styles)
+        self.assertIn("word-break: normal", self.styles)
+        self.assertIn("overflow-wrap: normal", self.styles)
+        self.assertIn("hyphens: none", self.styles)
+        self.assertNotRegex(self.styles, r'html\[lang="vi"\]\s+h2\s*\{')
+        self.assertNotIn('html[lang="vi"] .standard-card h3', self.styles)
 
 
 if __name__ == "__main__":
