@@ -407,7 +407,7 @@ Current repo state, governance flags and audit docs no longer contradict the imp
 
 ## [#P3M2T10] `run_premium_closure_gate()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`
 **Owner:** Mika  
 **Runner:** agy for bounded test execution; Mika owns verdict  
 **Depends on:** `P3M2T02`–`P3M2T09`  

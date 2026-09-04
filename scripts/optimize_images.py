@@ -61,6 +61,13 @@ RESPONSIVE_SPECS = {
          Variant(768, "logistics-ship-nologo-768w.webp", 80, 190_000)),
     ),
 }
+for _story in ("origin", "nature", "craft", "value"):
+    _key = f"story-{_story}"
+    RESPONSIVE_SPECS[_key] = ResponsiveAsset(
+        _key, f"{_key}.png", (1774, 887),
+        (Variant(480, f"{_key}-480w.webp", 80, 120_000),
+         Variant(768, f"{_key}-768w.webp", 80, 190_000)),
+    )
 for _flavor in ("apple", "orange", "mango", "grape"):
     _key = f"marigold-{_flavor}-real"
     RESPONSIVE_SPECS[_key] = ResponsiveAsset(

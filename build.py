@@ -118,6 +118,7 @@ RESPONSIVE_POLICIES = {
     'mini_flavor': ImagePolicy((390, 640), '(max-width: 580px) 74vw, 30vw', 'lazy', 'auto', 'mini-flavor-responsive'),
     'home_market': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 48vw', 'lazy', 'auto', 'market-visual-image'),
     'partners_hero': ImagePolicy((480, 768), '(max-width: 820px) 100vw, 52vw', 'eager', 'high', 'partners-hero-image'),
+    'story_card': ImagePolicy((480, 768), '(max-width: 820px) 86vw, 25vw', 'lazy', 'auto', 'story-card-image'),
 }
 
 
@@ -179,7 +180,7 @@ def nav(locale, alt_path_vi=None, alt_path_en=None, route_key=None):
         current=' aria-current="page"' if active_key == key else ''
         return f'<a href="{r[key]}"{current}>{t[key]}</a>'
     return f'''<header class="site-header" id="top"><div class="shell nav-wrap">
-<a class="brand-lockup" href="{r['home']}" aria-label="VOrigin — From Origins to Value"><img src="/assets/vorigin-logo-primary.svg" alt="VOrigin" width="700" height="173"><span class="brand-tagline">FROM ORIGINS TO VALUE</span></a>
+<a class="brand-lockup" href="{r['home']}" aria-label="VOrigin — From Origins to Value"><img src="/assets/vorigin-logo-primary.svg" alt="VOrigin" width="700" height="173" fetchpriority="high"><span class="brand-tagline">FROM ORIGINS TO VALUE</span></a>
 <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="{menu_label}"><span></span><span></span></button>
 <nav class="primary-nav" id="primary-nav" aria-label="{nav_label}">
 {nav_link('about')}{nav_link('brands')}{nav_link('cap')}{nav_link('partners')}{nav_link('insights')}{nav_link('contact')}</nav>
@@ -226,7 +227,7 @@ def base_page(locale, title, description, route_key=None, body='', canonical_pat
 <title>{e(title)}</title><meta name="description" content="{e(description)}"><link rel="canonical" href="{e(canonical)}">'''
     if alt_path_vi: head += f'<link rel="alternate" hreflang="vi-VN" href="{BASE}{alt_path_vi}">'
     if alt_path_en: head += f'<link rel="alternate" hreflang="en" href="{BASE}{alt_path_en}">'
-    head += f'''<link rel="alternate" hreflang="x-default" href="{BASE}/vi/"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(description)}"><meta property="og:type" content="website"><meta property="og:url" content="{e(canonical)}"><meta property="og:image" content="{BASE}/assets/hero-marigold-premium.webp"><meta name="twitter:card" content="summary_large_image"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"><script type="application/ld+json">{json.dumps(ld,ensure_ascii=False)}</script>{extra_head}{analytics()}</head>'''
+    head += f'''<link rel="alternate" hreflang="x-default" href="{BASE}/vi/"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(description)}"><meta property="og:type" content="website"><meta property="og:url" content="{e(canonical)}"><meta property="og:image" content="{BASE}/assets/hero-marigold-premium.webp"><meta name="twitter:card" content="summary_large_image"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="stylesheet" href="/fonts.css"><link rel="stylesheet" href="/styles.css"><script type="application/ld+json">{json.dumps(ld,ensure_ascii=False)}</script>{extra_head}{analytics()}</head>'''
     skip='Chuyển đến nội dung' if locale=='vi' else 'Skip to content'
     return head + f'<body class="{e(body_class)}"><a class="skip-link" href="#main">{skip}</a>{nav(locale,alt_path_vi,alt_path_en,route_key)}<main id="main">{body}</main>{footer(locale)}<script src="/app.js" defer></script></body></html>'
 
@@ -276,10 +277,12 @@ def story_card(img,title,copy,icon,index='01',modifier=''):
         'story-value.webp': (215, 132),
     }
     width, height = dimensions.get(img, (1774, 887))
+    asset_key = img.rsplit('.', 1)[0]
+    story_image = responsive_picture(asset_key, title, RESPONSIVE_POLICIES['story_card'])
     return (
         f'<article class="story-card {e(modifier)} reveal">'
         f'<div class="story-media">'
-        f'<img src="/assets/{img}" alt="{e(title)}" width="{width}" height="{height}" loading="lazy" decoding="async">'
+        f'{story_image}'
         f'</div>'
         f'<div class="story-body">'
         f'<div class="story-meta">'
@@ -699,7 +702,7 @@ def main():
     if DIST.exists(): shutil.rmtree(DIST)
     DIST.mkdir()
     shutil.copytree(PUBLIC/'assets', DIST/'assets')
-    shutil.copy2(PUBLIC/'styles.css', DIST/'styles.css'); shutil.copy2(PUBLIC/'app.js',DIST/'app.js')
+    shutil.copy2(PUBLIC/'styles.css', DIST/'styles.css'); shutil.copy2(PUBLIC/'fonts.css', DIST/'fonts.css'); shutil.copy2(PUBLIC/'app.js',DIST/'app.js')
     for loc in ('vi','en'):
         write(ROUTES[loc]['home'], home(loc)); write(ROUTES[loc]['about'],about(loc)); write(ROUTES[loc]['brands'],brands(loc)); write(ROUTES[loc]['marigold'],marigold(loc)); write(ROUTES[loc]['cap'],capabilities(loc)); write(ROUTES[loc]['partners'],partners(loc)); write(ROUTES[loc]['insights'],insights(loc)); write(ROUTES[loc]['contact'],contact(loc)); write(ROUTES[loc]['privacy'],legal(loc,'privacy')); write(ROUTES[loc]['terms'],legal(loc,'terms'))
         for p in PRODUCTS: write((f'/vi/san-pham/marigold-{p["slug"]}/' if loc=='vi' else f'/en/products/marigold-{p["slug"]}/'), product_page(loc,p))
