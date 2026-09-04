@@ -96,8 +96,8 @@ def render_b2b_picture(css_class, alt_text, loading='lazy'):
 
 def render_market_visual(locale):
     """Render canonical visual for homepage international brands market section."""
-    alt = 'Thùng container mang thương hiệu VOrigin tại cảng biển lúc bình minh' if locale == 'vi' else 'VOrigin branded container at a port at sunrise'
-    return f'<img class="market-visual-image" src="/assets/Container1.png" alt="{e(alt)}" width="1672" height="941" loading="lazy" decoding="async">'
+    alt = 'Thùng container tại cảng biển lúc bình minh' if locale == 'vi' else 'Container at a commercial port at sunrise'
+    return f'<img class="market-visual-image" src="/assets/logistics-container-nologo.png" alt="{e(alt)}" width="1672" height="941" loading="lazy" decoding="async">'
 
 
 @dataclass(frozen=True)
@@ -391,12 +391,12 @@ def partners(locale):
     contact_href = f"{r['contact']}?type=partner"
     contact_cta = 'Bắt đầu trao đổi' if vi else 'Start a conversation'
     hero_eyebrow = 'DÀNH CHO THƯƠNG HIỆU QUỐC TẾ' if vi else 'FOR INTERNATIONAL BRANDS'
-    hero_img_alt = 'Tàu container mang thương hiệu VOrigin tại cảng biển lúc bình minh' if vi else 'VOrigin container ship at port at sunrise'
+    hero_img_alt = 'Tàu container tại cảng biển lúc bình minh' if vi else 'Container ship at a commercial port at sunrise'
 
     # 1. Hero section
     hero_html = f'''<section class="partners-hero" aria-label="{e(t['partners'])}">
   <figure class="partners-hero-visual reveal">
-    <img class="partners-hero-image" src="/assets/tau1.png" alt="{e(hero_img_alt)}" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">
+    <img class="partners-hero-image" src="/assets/logistics-ship-nologo.png" alt="{e(hero_img_alt)}" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">
   </figure>
   <div class="shell partners-hero-shell">
     <div class="partners-hero-copy reveal">
