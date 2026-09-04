@@ -50,6 +50,16 @@ RESPONSIVE_SPECS = {
         (Variant(480, "marigold-lineup-premium-480w.webp", 80, 60_000),
          Variant(768, "marigold-lineup-premium-768w.webp", 80, 100_000)),
     ),
+    "logistics-container-nologo": ResponsiveAsset(
+        "logistics-container-nologo", "logistics-container-nologo.png", (1672, 941),
+        (Variant(480, "logistics-container-nologo-480w.webp", 80, 120_000),
+         Variant(768, "logistics-container-nologo-768w.webp", 80, 190_000)),
+    ),
+    "logistics-ship-nologo": ResponsiveAsset(
+        "logistics-ship-nologo", "logistics-ship-nologo.png", (1672, 941),
+        (Variant(480, "logistics-ship-nologo-480w.webp", 80, 120_000),
+         Variant(768, "logistics-ship-nologo-768w.webp", 80, 190_000)),
+    ),
 }
 for _flavor in ("apple", "orange", "mango", "grape"):
     _key = f"marigold-{_flavor}-real"
@@ -193,9 +203,9 @@ def optimize_responsive_asset(spec: ResponsiveAsset, mode: Mode) -> Report:
     source_data = source.read_bytes()
     try:
         with Image.open(io.BytesIO(source_data)) as image:
-            if image.format != "WEBP" or image.mode != "RGB" or image.size != spec.source_size:
+            if image.format not in {"PNG", "WEBP"} or image.mode != "RGB" or image.size != spec.source_size:
                 raise RuntimeError(
-                    f"{spec.source_filename}: expected WebP RGB {spec.source_size}, "
+                    f"{spec.source_filename}: expected PNG or WebP RGB {spec.source_size}, "
                     f"got {image.format} {image.mode} {image.size}"
                 )
             image.verify()
