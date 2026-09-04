@@ -84,7 +84,7 @@ A concise baseline is available for all following tasks and every later diff can
 
 ## [#P3M2T02] `replace_branded_logistics_with_owner_nologo_sources()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Owner:** Mika  
 **Runner:** agy  
 **Depends on:** `P3M2T01`  
@@ -122,7 +122,7 @@ Public/generated pages use only approved no-logo logistics imagery and no longer
 
 ## [#P3M2T03] `wire_existing_responsive_image_infrastructure_to_heavy_assets()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Owner:** Mika  
 **Runner:** agy  
 **Depends on:** `P3M2T02`  
