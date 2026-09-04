@@ -41,9 +41,18 @@ VARIANTS = (
 )
 RESPONSIVE_SPECS = {
     "hero-marigold-premium": ResponsiveAsset(
-        "hero-marigold-premium", "hero-marigold-premium.webp", (1494, 1065),
+        "hero-marigold-premium", "Hero1.png", (1672, 941),
         (Variant(480, "hero-marigold-premium-480w.webp", 80, 120_000),
-         Variant(768, "hero-marigold-premium-768w.webp", 80, 190_000)),
+         Variant(768, "hero-marigold-premium-768w.webp", 80, 190_000),
+         Variant(1024, "hero-marigold-premium-1024w.webp", 84, 400_000),
+         Variant(1440, "hero-marigold-premium-1440w.webp", 86, 700_000)),
+    ),
+    "marigold-featured-premium": ResponsiveAsset(
+        "marigold-featured-premium", "Brand1.png", (1672, 941),
+        (Variant(480, "marigold-featured-premium-480w.webp", 80, 120_000),
+         Variant(768, "marigold-featured-premium-768w.webp", 80, 190_000),
+         Variant(1024, "marigold-featured-premium-1024w.webp", 84, 400_000),
+         Variant(1440, "marigold-featured-premium-1440w.webp", 86, 700_000)),
     ),
     "marigold-lineup-premium": ResponsiveAsset(
         "marigold-lineup-premium", "marigold-lineup-premium.webp", (1300, 500),

@@ -56,6 +56,8 @@ dist/assets/fonts/xn7gYHE41ni1AdIRggexSg.woff2
 dist/assets/fonts/xn7gYHE41ni1AdIRggixSuXd.woff2
 dist/assets/fonts/xn7gYHE41ni1AdIRggmxSuXd.woff2
 dist/assets/fonts/xn7gYHE41ni1AdIRggqxSuXd.woff2
+dist/assets/hero-marigold-premium-1024w.webp
+dist/assets/hero-marigold-premium-1440w.webp
 dist/assets/hero-marigold-premium-480w.webp
 dist/assets/hero-marigold-premium-768w.webp
 dist/assets/hero-marigold-premium.webp
@@ -73,6 +75,10 @@ dist/assets/marigold-apple-real-390w.webp
 dist/assets/marigold-apple-real-640w.webp
 dist/assets/marigold-apple-real.png
 dist/assets/marigold-apple-real.webp
+dist/assets/marigold-featured-premium-1024w.webp
+dist/assets/marigold-featured-premium-1440w.webp
+dist/assets/marigold-featured-premium-480w.webp
+dist/assets/marigold-featured-premium-768w.webp
 dist/assets/marigold-grape-premium-390w.webp
 dist/assets/marigold-grape-premium-640w.webp
 dist/assets/marigold-grape-premium.webp
@@ -223,6 +229,8 @@ public/assets/fonts/xn7gYHE41ni1AdIRggexSg.woff2
 public/assets/fonts/xn7gYHE41ni1AdIRggixSuXd.woff2
 public/assets/fonts/xn7gYHE41ni1AdIRggmxSuXd.woff2
 public/assets/fonts/xn7gYHE41ni1AdIRggqxSuXd.woff2
+public/assets/hero-marigold-premium-1024w.webp
+public/assets/hero-marigold-premium-1440w.webp
 public/assets/hero-marigold-premium-480w.webp
 public/assets/hero-marigold-premium-768w.webp
 public/assets/hero-marigold-premium.webp
@@ -240,6 +248,10 @@ public/assets/marigold-apple-real-390w.webp
 public/assets/marigold-apple-real-640w.webp
 public/assets/marigold-apple-real.png
 public/assets/marigold-apple-real.webp
+public/assets/marigold-featured-premium-1024w.webp
+public/assets/marigold-featured-premium-1440w.webp
+public/assets/marigold-featured-premium-480w.webp
+public/assets/marigold-featured-premium-768w.webp
 public/assets/marigold-grape-premium-390w.webp
 public/assets/marigold-grape-premium-640w.webp
 public/assets/marigold-grape-premium.webp

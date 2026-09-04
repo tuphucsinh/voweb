@@ -20,7 +20,7 @@ d6ab9c892d09acc2e6f947d5ccb2b2d8fdd7754b101aaea5166e749e717de95a  ./README.md
 1854b808048e31e1079a58b49f2d416c4e33d7f27b3969eec3174c4c25425b56  ./SECURITY.md
 4cfdf554cdaaa47340a2a3c903ab520499d013c50aec2660d827eeb23c22d299  ./SEO_GEO.md
 efeed193f2b50da5aab9d51ff8f8793049d323a0969b135f12f90de3ca13fc57  ./VERSION
-83e0fcaedb63f135da011400a9c9d3b9efaa02689c486780c6c2531d675030f3  ./build.py
+3eb889a71bbe7fef3fa7824882ce912738163d220012bce6bfb0ac8e5e6a989f  ./build.py
 65d7088ae419b0fd761f87fc11b4c2ffa315ce2a8406a267ad73025da9917e5e  ./config/site.json
 a3b54c15b5effcee407deb24961857547b2e3ba57322d239475a08c70bf02521  ./content/brands/marigold.json
 3aac2227cc9c49928c6831232f52a6ac0cb64180af9cca464bcfdcb86ac3cf05  ./content/claims.json
@@ -54,8 +54,10 @@ a30ddcd349703aff7464c34bef3fffdff405ee50c113440d7c8693c02d210972  ./dist/assets/
 6bbb044ab420e07edb0a3042d2eb314b85e83a0182e945a15ab3b9092668dfd5  ./dist/assets/fonts/xn7gYHE41ni1AdIRggixSuXd.woff2
 3911b66d9f2e005a4b989223405d0e5032619c668597ba467cc76a23c8fffcfb  ./dist/assets/fonts/xn7gYHE41ni1AdIRggmxSuXd.woff2
 de37de877dc17e4577341fa68bb5cb526b53d54cb29721e674208546a3c7849d  ./dist/assets/fonts/xn7gYHE41ni1AdIRggqxSuXd.woff2
-9982d49a92ba2487f25a734a02d3ac008f849ae4e0c8bf8fc097fce300f861ff  ./dist/assets/hero-marigold-premium-480w.webp
-8ef988dfe2a0436c32cce8ed1300146b9726d366090df242bcfb73b243d11722  ./dist/assets/hero-marigold-premium-768w.webp
+f448135df6e3b86e3f21dde8ad0c049c28ce4a93784aec3d4ecd63e4e10f8c98  ./dist/assets/hero-marigold-premium-1024w.webp
+55cbf329045ca633788aa9c9900e375ce6fe3d97479137f76a89267f1ad820c7  ./dist/assets/hero-marigold-premium-1440w.webp
+9471b18d96fce9c2af22f0271472f3327c73a48663bcb0bfebf7daab3812a2f6  ./dist/assets/hero-marigold-premium-480w.webp
+42ff896a2c60d9f2690405ee3cc00109d9139bec3f519866086d1d455f7d0332  ./dist/assets/hero-marigold-premium-768w.webp
 a598c164ba83d72f3c37c06a1924af0e0f284565158f2723be663f02034b3ca4  ./dist/assets/hero-marigold-premium.webp
 a1a893d6c95f6f1158cf68afbc1da0718070a71c15e71bfd3e2949e867fa2be1  ./dist/assets/hero-marigold.webp
 a07e7a3deba2c5a440c94541ab48054f56130e26fb77a028594538a3d2b1bf87  ./dist/assets/logistics-container-nologo-480w.webp
@@ -71,6 +73,10 @@ a172ee8e4296536ac9871529f928e146c9c81e8e67da4e22a7670863b29c04d2  ./dist/assets/
 61c756e5652034302787d9b6234fdc569d2764dfe1f321c98b30cbf5ca5a00c2  ./dist/assets/marigold-apple-real-640w.webp
 1badf4001ba1ca0eb48f6e98d0741ee69f04d7509fb5480cfda63465f13f13a2  ./dist/assets/marigold-apple-real.png
 f9883ef929b30db7594983ca5e5d334d344880175efdc381ec087fb7444bf709  ./dist/assets/marigold-apple-real.webp
+0f07aa7e00febbd27435361e76c1a2e930dd6219d656ea475d61f4b895805913  ./dist/assets/marigold-featured-premium-1024w.webp
+8a59a223418443e0c711fc8413aa974288b8478767de1ab323123f6687851da8  ./dist/assets/marigold-featured-premium-1440w.webp
+0ef0a7c4bdb3ce6af6a4003398ed886d2cc22d53ae5d8bf037b670612dba2189  ./dist/assets/marigold-featured-premium-480w.webp
+4b758b6ccdb82e4e51edb610e952cdfb5353a27ab774688e5d89525fc8207a37  ./dist/assets/marigold-featured-premium-768w.webp
 bdedb2078a3666b993873360c4e3ade9615e1bc8c1cf451f65992efdca95d824  ./dist/assets/marigold-grape-premium-390w.webp
 d8ce69a1c840bbfc6fd3b49c4d0e437fe058b2d1c5483db0fcb709e9a5baf609  ./dist/assets/marigold-grape-premium-640w.webp
 61d8fd7a372623887bffecea2f7abd2345dd150fed97e7e951e1cbe54103c1c2  ./dist/assets/marigold-grape-premium.webp
@@ -152,7 +158,7 @@ f9d6220f98682a2240255563e9d343afaaab51b640629ee3c1b462a1ab467a10  ./dist/assets/
 111784d62adaafb7ff1788f5a19d5df4d63da46a35c4112df55858f7a90afead  ./dist/en/brands/marigold/index.html
 0127aa3dbfa13261fd2a209d55fa50abeef84c40e7231865b24f95ebf9680ee3  ./dist/en/capabilities/index.html
 5070745914526e3e7eb318ab47a5a3124022d0bfbec5cf9ccd35e71dac1d1af8  ./dist/en/contact/index.html
-0712a04db730676b87a1f087de9dddd3627847daaa3634ff8dbff915067f9ae1  ./dist/en/index.html
+f63c024f102a59d353961761743df904f2676d99d709122ee7aa47ac3ddca16e  ./dist/en/index.html
 e2e37d2ca09a45cc8f99fb98dbdb571ddee6040bf944e7a16f0c92000bf715f6  ./dist/en/insights/index.html
 24cf37d48408318adc3aedb28203fbcc742db7c742f96bbb818f16b21d39dfd8  ./dist/en/partners/index.html
 7783d124fcf9f098402b0d5c1398a0c58c9abedfeed15d62a47643c9c0e974b3  ./dist/en/privacy/index.html
@@ -174,7 +180,7 @@ ed3e3a9dd4457625b0db8850d3f9135c07d6d08dd956063c2e7cc705bf3ca7c7  ./dist/vi/dieu
 0421e62180e44863ac2e14f37f4cfc76d8bdd0cd81ee6aa46bdeedae05d4b944  ./dist/vi/doi-tac/index.html
 3297e5e9667551defa6f25907ad87abed2534f90e4bff59b1267ce68249821bd  ./dist/vi/gioi-thieu/index.html
 5a1435c3fb84f50e084a3e3464463dfbfb805609bf7aca9edd9a95764b58926e  ./dist/vi/goc-nhin/index.html
-af46065578716c626f3d7e094b35c5c0eaf906c584148277ab231db6a1dd0522  ./dist/vi/index.html
+28f7c370f9b823ee502ab2a6a5ed1756dd5f3be5f158d1920c04140c4330d99a  ./dist/vi/index.html
 fd415813f06746328ee8fab710717e8aa6443a055f74d2e4f61a174d4396a70f  ./dist/vi/lien-he/index.html
 f323e664bfe1e46c83143975f55ad32246eb5a19ca9205a88859afe072de0f76  ./dist/vi/nang-luc/index.html
 4260dbb9f6c77049f86872df41f9ee97b2186ba03d064a07f8368baa020566b7  ./dist/vi/san-pham/marigold-apple/index.html
@@ -221,8 +227,10 @@ a30ddcd349703aff7464c34bef3fffdff405ee50c113440d7c8693c02d210972  ./public/asset
 6bbb044ab420e07edb0a3042d2eb314b85e83a0182e945a15ab3b9092668dfd5  ./public/assets/fonts/xn7gYHE41ni1AdIRggixSuXd.woff2
 3911b66d9f2e005a4b989223405d0e5032619c668597ba467cc76a23c8fffcfb  ./public/assets/fonts/xn7gYHE41ni1AdIRggmxSuXd.woff2
 de37de877dc17e4577341fa68bb5cb526b53d54cb29721e674208546a3c7849d  ./public/assets/fonts/xn7gYHE41ni1AdIRggqxSuXd.woff2
-9982d49a92ba2487f25a734a02d3ac008f849ae4e0c8bf8fc097fce300f861ff  ./public/assets/hero-marigold-premium-480w.webp
-8ef988dfe2a0436c32cce8ed1300146b9726d366090df242bcfb73b243d11722  ./public/assets/hero-marigold-premium-768w.webp
+f448135df6e3b86e3f21dde8ad0c049c28ce4a93784aec3d4ecd63e4e10f8c98  ./public/assets/hero-marigold-premium-1024w.webp
+55cbf329045ca633788aa9c9900e375ce6fe3d97479137f76a89267f1ad820c7  ./public/assets/hero-marigold-premium-1440w.webp
+9471b18d96fce9c2af22f0271472f3327c73a48663bcb0bfebf7daab3812a2f6  ./public/assets/hero-marigold-premium-480w.webp
+42ff896a2c60d9f2690405ee3cc00109d9139bec3f519866086d1d455f7d0332  ./public/assets/hero-marigold-premium-768w.webp
 a598c164ba83d72f3c37c06a1924af0e0f284565158f2723be663f02034b3ca4  ./public/assets/hero-marigold-premium.webp
 a1a893d6c95f6f1158cf68afbc1da0718070a71c15e71bfd3e2949e867fa2be1  ./public/assets/hero-marigold.webp
 a07e7a3deba2c5a440c94541ab48054f56130e26fb77a028594538a3d2b1bf87  ./public/assets/logistics-container-nologo-480w.webp
@@ -238,6 +246,10 @@ a172ee8e4296536ac9871529f928e146c9c81e8e67da4e22a7670863b29c04d2  ./public/asset
 61c756e5652034302787d9b6234fdc569d2764dfe1f321c98b30cbf5ca5a00c2  ./public/assets/marigold-apple-real-640w.webp
 1badf4001ba1ca0eb48f6e98d0741ee69f04d7509fb5480cfda63465f13f13a2  ./public/assets/marigold-apple-real.png
 f9883ef929b30db7594983ca5e5d334d344880175efdc381ec087fb7444bf709  ./public/assets/marigold-apple-real.webp
+0f07aa7e00febbd27435361e76c1a2e930dd6219d656ea475d61f4b895805913  ./public/assets/marigold-featured-premium-1024w.webp
+8a59a223418443e0c711fc8413aa974288b8478767de1ab323123f6687851da8  ./public/assets/marigold-featured-premium-1440w.webp
+0ef0a7c4bdb3ce6af6a4003398ed886d2cc22d53ae5d8bf037b670612dba2189  ./public/assets/marigold-featured-premium-480w.webp
+4b758b6ccdb82e4e51edb610e952cdfb5353a27ab774688e5d89525fc8207a37  ./public/assets/marigold-featured-premium-768w.webp
 bdedb2078a3666b993873360c4e3ade9615e1bc8c1cf451f65992efdca95d824  ./public/assets/marigold-grape-premium-390w.webp
 d8ce69a1c840bbfc6fd3b49c4d0e437fe058b2d1c5483db0fcb709e9a5baf609  ./public/assets/marigold-grape-premium-640w.webp
 61d8fd7a372623887bffecea2f7abd2345dd150fed97e7e951e1cbe54103c1c2  ./public/assets/marigold-grape-premium.webp
@@ -326,7 +338,7 @@ e49c191998e01c97d886111dfd81cddf496eb638c4f45acb416bbf425b6a0972  ./scripts/copy
 79c0563eac3fb5d2a46dd02182363d4b9b5e5f9a5a2f0f7efb0ad5e95dc9d030  ./scripts/generate_release_manifest.py
 af71e6e0a2f5ec0f981dcdf5a105287361de9ed7116ba72b34a03010c836df52  ./scripts/healthcheck.sh
 50837ea7f3c791598145ccd5e6c463680257d598c3cdaa9acd4cb0bfe780ed09  ./scripts/init-pi5-env.sh
-bafaa0fc05c3a28be9f02e734b13293509793ef0c5b24ee0c383ec45b6e9541a  ./scripts/optimize_images.py
+5dd3243e945093ef4390be98f545874a2e705c9db055d8f18148a1f2b9270922  ./scripts/optimize_images.py
 a5f3c3755c9a4847d10b9df53fbd64cf806f26445f32da085c501cdbc92bdf90  ./scripts/preflight.py
 d09d8bdf0810ab455c79c4425c844dca5eb5893c34eb15e475d55bcd1c05b1ab  ./scripts/qa_static.py
 c9166a059d42919d7c0685743300371097adb2311f2411043f44d5ceda56b32f  ./scripts/sync-directus.mjs
