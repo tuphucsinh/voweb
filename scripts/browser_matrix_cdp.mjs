@@ -26,6 +26,7 @@ const routes = [
 ];
 const viewports = [[390, 844], [430, 900], [768, 1024], [1024, 900], [1440, 900], [1920, 1080]];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const isKnownExternalCspWarning = message => message.includes('https://static.cloudflareinsights.com/beacon.min.js/') && message.includes('Content Security Policy directive');
 
 function freePort() {
   return new Promise((resolve, reject) => {
@@ -208,7 +209,9 @@ try {
       if (!state.keyboard.ok) failures.push(`keyboard=${state.keyboard.reason || 'focus return failed'}`);
       if ((route.endsWith('/doi-tac/') || route.endsWith('/partners/')) && !state.hasPartnersHero) failures.push('missing .partners-hero');
       if ((route.endsWith('/lien-he/') || route.endsWith('/contact/')) && state.formCount !== 0) failures.push(`forms=${state.formCount}`);
-      if (runtimeErrors.length) failures.push(`jsErrors=${runtimeErrors.join('|')}`);
+      const knownExternalWarnings = runtimeErrors.filter(isKnownExternalCspWarning);
+      const applicationRuntimeErrors = runtimeErrors.filter(error => !isKnownExternalCspWarning(error));
+      if (applicationRuntimeErrors.length) failures.push(`jsErrors=${applicationRuntimeErrors.join('|')}`);
       if (networkFailures.length) failures.push(`networkFailures=${networkFailures.join('|')}`);
       if (networkBadResponses.length) failures.push(`networkHTTP=${networkBadResponses.join('|')}`);
       await cdp.send('Emulation.setEmulatedMedia', {features: [{name: 'prefers-reduced-motion', value: 'reduce'}]});
@@ -219,8 +222,9 @@ try {
       const screenshot = await cdp.send('Page.captureScreenshot', {format: 'png'});
       await fs.mkdir(evidence, {recursive: true});
       await fs.writeFile(path.join(evidence, `${name}-${width}x${height}.png`), Buffer.from(screenshot.data, 'base64'));
-      results.push({name, route, viewport: `${width}x${height}`, failures});
-      console.log(`${failures.length ? 'FAIL' : 'PASS'} ${name} ${width}x${height}${failures.length ? ` — ${failures.join(', ')}` : ''}`);
+      results.push({name, route, viewport: `${width}x${height}`, failures, knownExternalWarnings});
+      const warningNote = knownExternalWarnings.length ? ` — KNOWN_EXTERNAL_WARNING=${knownExternalWarnings.length}` : '';
+      console.log(`${failures.length ? 'FAIL' : 'PASS'} ${name} ${width}x${height}${failures.length ? ` — ${failures.join(', ')}` : ''}${warningNote}`);
     }
   }
 } catch (error) {
@@ -234,5 +238,6 @@ try {
   await fs.rm(profile, {recursive: true, force: true, maxRetries: 5, retryDelay: 100}).catch(() => {});
 }
 const failed = results.filter(result => result.failures.length).length;
-console.log(JSON.stringify({cases: results.length, failures: failed, evidence}));
+const externalCspWarnings = results.reduce((total, result) => total + result.knownExternalWarnings.length, 0);
+console.log(JSON.stringify({cases: results.length, failures: failed, external_csp_warnings: externalCspWarnings, evidence}));
 if (process.exitCode === undefined) process.exitCode = failed ? 1 : 0;
