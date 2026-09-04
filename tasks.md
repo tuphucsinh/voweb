@@ -165,7 +165,7 @@ The main heavy images use the existing responsive pipeline and no critical LCP s
 
 ## [#P3M2T04] `finish_contact_experience_when_forms_are_disabled()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Owner:** Mika  
 **Runner:** agy  
 **Depends on:** `P3M2T01`  
