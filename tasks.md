@@ -241,7 +241,7 @@ Homepage/About use approved V2 copy and pass first human/native review.
 
 ## [#P3M2T06] `simplify_partners_and_make_capabilities_process_canonical()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Owner:** Mika  
 **Runner:** agy  
 **Depends on:** `P3M2T05`  

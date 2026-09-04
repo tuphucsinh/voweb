@@ -42,7 +42,7 @@ LANG = {
   'about_title':'Từ nguồn gốc đáng tin đến giá trị bền lâu','about_lede':'VOrigin bắt đầu từ những điều căn bản nhất: sản phẩm đến từ đâu, được tạo ra như thế nào, tiêu chuẩn phía sau ra sao và liệu sản phẩm ấy có thể tạo nên giá trị bền lâu tại Việt Nam hay không.','standard':'Tiêu chuẩn VOrigin','mission':'Sứ mệnh','vision':'Tầm nhìn',
   'brands_title':'Những thương hiệu được chọn cho giá trị bền lâu','brands_lede':'MARIGOLD là thương hiệu nổi bật đầu tiên trong danh mục VOrigin. Từ nền tảng đó, chúng tôi mở rộng từng bước, chọn những thương hiệu có nguồn gốc rõ ràng, chất lượng ổn định và sự phù hợp thực sự với thị trường Việt Nam.',
   'cap_title':'Từ cơ hội thị trường đến hiện diện bền vững','cap_lede':'Đưa một thương hiệu vào thị trường mới không dừng ở việc nhập khẩu sản phẩm. VOrigin đồng hành từ đánh giá thị trường, tuân thủ và phân phối đến bản địa hóa và tiếp thị thương mại tại Việt Nam.',
-  'partners_title':'YOUR BRAND. OUR MARKET.','partners_lede':'VOrigin tìm kiếm những thương hiệu có nền tảng tốt, câu chuyện đáng tin và dư địa phát triển rõ ràng tại Việt Nam. Mục tiêu là cùng xây một hiện diện bền vững trên thị trường, không chỉ hoàn thành một lô hàng.','contact_title':'Bắt đầu bằng một cuộc trao đổi có trọng tâm.','contact_lede':'Nếu bạn đại diện cho một thương hiệu quốc tế, đang hoạt động trong lĩnh vực bán lẻ hoặc phân phối, hay đang cân nhắc cơ hội tại Việt Nam, hãy cho chúng tôi biết điều bạn đang hướng tới. Chỉ cần vài thông tin rõ ràng để bắt đầu một cuộc trao đổi đúng trọng tâm.','send':'Gửi thông tin',
+  'partners_title':'YOUR BRAND. OUR MARKET.','partners_lede':'VOrigin tìm kiếm những thương hiệu có nền tảng đủ vững để xây dựng một vị trí lâu dài tại Việt Nam. Cách tiếp cận của chúng tôi có chọn lọc, có kỷ luật và luôn nhìn xa hơn lô hàng đầu tiên.','contact_title':'Bắt đầu bằng một cuộc trao đổi có trọng tâm.','contact_lede':'Nếu bạn đại diện cho một thương hiệu quốc tế, đang hoạt động trong lĩnh vực bán lẻ hoặc phân phối, hay đang cân nhắc cơ hội tại Việt Nam, hãy cho chúng tôi biết điều bạn đang hướng tới. Chỉ cần vài thông tin rõ ràng để bắt đầu một cuộc trao đổi đúng trọng tâm.','send':'Gửi thông tin',
   'insights_title':'Góc nhìn từ VOrigin','insights_lede':'Những góc nhìn thực tế về nguồn gốc, thị trường Việt Nam và những điều cần được làm đúng để một thương hiệu tạo nên giá trị bền lâu.','coming':'Các bài viết đầu tiên đang được biên tập cẩn trọng.',
   'privacy_title':'Chính sách quyền riêng tư','terms_title':'Điều khoản sử dụng','draft_legal':'Nội dung này đang được rà soát trước khi website chính thức hoạt động.',
   'back':'Quay lại','source':'Nguồn chính thức','product_info':'Thông tin sản phẩm','pack':'Quy cách tham khảo','market_note':'Thông tin công bố cho thị trường Việt Nam được đối chiếu với nhãn, hồ sơ nhập khẩu và tài liệu phân phối do VOrigin lưu giữ.','view':'Xem chi tiết','privacy':'Quyền riêng tư','terms':'Điều khoản'
@@ -57,7 +57,7 @@ LANG = {
   'about_title':'Where trusted origins become lasting value','about_lede':'VOrigin starts with the fundamentals: where a product comes from, how it is made, the standards behind it, and whether it can create lasting value in Vietnam.','standard':'The VOrigin Standard','mission':'Mission','vision':'Vision',
   'brands_title':'Brands chosen for lasting value','brands_lede':'MARIGOLD is the first featured brand in VOrigin’s portfolio. From that foundation, we will grow at a measured pace, choosing brands for clear provenance, consistent quality and genuine relevance to the Vietnamese market.',
   'cap_title':'From market opportunity to lasting presence','cap_lede':'Entering a new market takes more than importing a product. VOrigin works across market assessment, compliance, distribution, localisation and trade marketing to build a practical route into Vietnam.',
-  'partners_title':'YOUR BRAND. OUR MARKET.','partners_lede':'VOrigin looks for brands with a sound foundation, a credible story and clear room to grow in Vietnam. The aim is to build a lasting market presence together, not simply move a shipment.','contact_title':'Start with a focused conversation.','contact_lede':'If you represent an international brand, work in retail or distribution, or are exploring opportunities in Vietnam, tell us what you are working on. A few clear details are enough to begin a focused conversation.','send':'Send enquiry',
+  'partners_title':'YOUR BRAND. OUR MARKET.','partners_lede':'We work with brands built on substance — and with the ambition to establish a meaningful place in Vietnam. Our approach is selective, disciplined and designed to look beyond the first shipment.','contact_title':'Start with a focused conversation.','contact_lede':'If you represent an international brand, work in retail or distribution, or are exploring opportunities in Vietnam, tell us what you are working on. A few clear details are enough to begin a focused conversation.','send':'Send enquiry',
   'insights_title':'VOrigin Insights','insights_lede':'Practical perspectives on provenance, the Vietnamese market and what it takes to build lasting brand value with care and credibility.','coming':'Our first articles are being prepared with care.',
   'privacy_title':'Privacy Policy','terms_title':'Terms of Use','draft_legal':'This page is being reviewed before the website goes live.',
   'back':'Back','source':'Official source','product_info':'Product information','pack':'Pack format','market_note':'Information published for the Vietnam market is checked against labels, import documentation and distribution records held by VOrigin.','view':'View details','privacy':'Privacy','terms':'Terms'
@@ -404,7 +404,7 @@ def partners(locale):
     hero_eyebrow = 'DÀNH CHO THƯƠNG HIỆU QUỐC TẾ' if vi else 'FOR INTERNATIONAL BRANDS'
     hero_img_alt = 'Tàu container tại cảng biển lúc bình minh' if vi else 'Container ship at a commercial port at sunrise'
 
-    # 1. Hero section
+    # 1. Hero module
     hero_html = f'''<section class="partners-hero" aria-label="{e(t['partners'])}">
   <figure class="partners-hero-visual reveal">
     {responsive_picture('logistics-ship-nologo', hero_img_alt, RESPONSIVE_POLICIES['partners_hero'])}
@@ -422,115 +422,75 @@ def partners(locale):
   </div>
 </section>'''
 
-    # 2. Value pillars section (Four pillars from source-gated criteria)
-    pillars_eyebrow = 'GIÁ TRỊ CỐT LÕI' if vi else 'CORE VALUES'
-    pillars_title = 'Nền tảng cho sự hợp tác bền vững' if vi else 'Foundations for a lasting partnership'
-    pillars_data = [
-        ('origin', 'Nguồn gốc rõ ràng' if vi else 'Clear Provenance', 'Nguồn gốc, nhà sản xuất và hồ sơ đủ rõ để kiểm chứng.' if vi else 'Provenance, manufacturer and documentation that can be clearly verified.'),
-        ('premium-approach', 'Tiêu chuẩn rõ ràng' if vi else 'Defined Standards', 'Chất lượng ổn định và tiêu chuẩn đủ rõ để phát triển lâu dài.' if vi else 'Consistent quality and standards clear enough to support long-term growth.'),
-        ('market-entry', 'Phù hợp thị trường' if vi else 'Market Relevance', 'Sản phẩm có sự phù hợp rõ ràng với người tiêu dùng và kênh bán tại Việt Nam.' if vi else 'A clear fit with Vietnamese consumers and the channels that serve them.'),
-        ('long-term-value', 'Tiềm năng dài hạn' if vi else 'Long-term Potential', 'Tiềm năng xây dựng thương hiệu, không chỉ hoàn thành một lô hàng.' if vi else 'The potential to build a brand, not simply complete a shipment.')
-    ]
-    pillars_cards = ''.join(
-        f'''<article class="partners-pillar-card reveal">
-  <span class="partners-pillar-icon">{icon_img(ic, "pillar-icon-svg")}</span>
-  <h3>{e(heading)}</h3>
-  <p>{e(desc)}</p>
-</article>'''
-        for ic, heading, desc in pillars_data
-    )
-    pillars_html = f'''<section class="partners-pillars page-section" aria-labelledby="partners-pillars-heading">
-  <div class="shell">
-    <div class="section-heading centered reveal">
-      <p class="eyebrow">{e(pillars_eyebrow)}</p>
-      <h2 id="partners-pillars-heading">{e(pillars_title)}</h2>
-      <i class="bronze-rule"></i>
-    </div>
-    <div class="partners-pillars-grid">
-      {pillars_cards}
-    </div>
-  </div>
-</section>'''
-
-    # 3. Ideal partner section (Editorial split stating who VOrigin works with)
-    ideal_eyebrow = 'ĐỐI TÁC PHÙ HỢP' if vi else 'IDEAL PARTNER'
-    ideal_title = 'Những thương hiệu VOrigin đồng hành' if vi else 'Who we work with'
-    ideal_lede = (
-        'VOrigin tìm kiếm sự đồng điệu về tiêu chuẩn và tầm nhìn dài hạn. Chúng tôi đồng hành cùng các thương hiệu đáp ứng bốn tiêu chuẩn then chốt để phát triển bền vững tại Việt Nam.'
+    # 2. What We Look For module (Merged Core Values + Ideal Partner)
+    look_for_eyebrow = 'TIÊU CHUẨN LỰA CHỌN' if vi else 'WHAT WE LOOK FOR'
+    look_for_title = 'Những gì chúng tôi tìm kiếm' if vi else 'What We Look For'
+    look_for_lede = (
+        'VOrigin tìm kiếm sự đồng điệu về tiêu chuẩn và tầm nhìn dài hạn. Chúng tôi tập trung vào bốn tiêu chí then chốt để xây dựng vị thế bền vững tại thị trường Việt Nam.'
         if vi else
         'VOrigin partners with brand owners who share a commitment to standards and enduring value. We focus on brands meeting four essential qualifications for the Vietnam market.'
     )
-    ideal_criteria = [
-        ('Nguồn gốc minh bạch' if vi else 'Clear provenance',
-         'Sản phẩm có nguồn gốc rõ ràng và hồ sơ đủ chi tiết để đối chiếu.'
+    look_for_criteria = [
+        ('Nguồn gốc có thể kiểm chứng' if vi else 'Traceable origins',
+         'Xuất xứ, nhà sản xuất và hồ sơ kỹ thuật đủ rõ ràng để kiểm chứng và đối chiếu.'
          if vi else
-         'Clear provenance and documentation that can be understood and verified.'),
-        ('Tiêu chuẩn nhất quán' if vi else 'Consistent standards',
-         'Tiêu chuẩn sản phẩm rõ ràng, nhất quán và phù hợp với định hướng phát triển dài hạn.'
+         'Clear provenance, manufacturer credentials and documentation that can be understood and verified.'),
+        ('Chất lượng có tính nhất quán' if vi else 'Consistent quality',
+         'Tiêu chuẩn sản phẩm rõ ràng, chất lượng ổn định và phù hợp với định hướng phát triển lâu dài.'
          if vi else
-         'Consistent standards that support a considered, long-term market presence.'),
-        ('Phù hợp thị trường Việt Nam' if vi else 'Genuine market fit',
-         'Sản phẩm có sự phù hợp rõ ràng với người tiêu dùng và các kênh bán tại Việt Nam.'
+         'Defined product standards and consistent quality that support a considered, long-term market presence.'),
+        ('Một lý do thực sự để hiện diện' if vi else 'A genuine reason to be here',
+         'Sản phẩm có sự phù hợp thực tế với thị hiếu người tiêu dùng và các kênh phân phối tại Việt Nam.'
          if vi else
-         'A genuine fit with Vietnamese consumers and the channels that serve them.'),
-        ('Dư địa xây dựng thương hiệu' if vi else 'Room to build a lasting brand',
-         'Có dư địa để cùng xây dựng một hiện diện bền vững trên thị trường.'
+         'A genuine and credible fit with Vietnamese consumers and the channels that serve them.'),
+        ('Dư địa để xây dựng thương hiệu' if vi else 'Room to build a brand',
+         'Có tiềm năng và dư địa để cùng xây dựng một hiện diện thương mại bền vững, vượt trên một lô hàng.'
          if vi else
-         'Room to build an enduring market presence together, beyond a single shipment.')
+         'Clear room to build an enduring market presence together, well beyond a single shipment.')
     ]
-    ideal_list_items = ''.join(
+    look_for_items = ''.join(
         f'''<li class="partners-ideal-item reveal">
   <strong class="partners-ideal-item-title">{e(item_title)}</strong>
   <p class="partners-ideal-item-desc">{e(item_desc)}</p>
 </li>'''
-        for item_title, item_desc in ideal_criteria
+        for item_title, item_desc in look_for_criteria
     )
-    ideal_html = f'''<section class="partners-ideal page-section alt" aria-labelledby="partners-ideal-heading">
+    look_for_html = f'''<section class="partners-ideal page-section alt" id="what-we-look-for" aria-labelledby="partners-look-heading">
   <div class="shell partners-ideal-grid editorial-grid">
     <div class="partners-ideal-header reveal">
-      <p class="eyebrow">{e(ideal_eyebrow)}</p>
-      <h2 id="partners-ideal-heading">{e(ideal_title)}</h2>
-      <p class="partners-ideal-lede">{e(ideal_lede)}</p>
+      <p class="eyebrow">{e(look_for_eyebrow)}</p>
+      <h2 id="partners-look-heading">{e(look_for_title)}</h2>
+      <p class="partners-ideal-lede">{e(look_for_lede)}</p>
     </div>
     <div class="content-block partners-ideal-content">
       <ul class="partners-ideal-list" role="list">
-        {ideal_list_items}
+        {look_for_items}
       </ul>
     </div>
   </div>
 </section>'''
 
-    # 4. How we build the market section (Ordered 5-step process using existing capability meanings and icons)
-    process_eyebrow = 'LỘ TRÌNH PHÁT TRIỂN' if vi else 'ROUTE TO MARKET'
-    process_title = 'Cách chúng tôi cùng xây dựng thị trường' if vi else 'How we build the market'
-    process_steps = [
+    # 3. How We Approach the Market module (3 high-level steps with link to Capabilities)
+    approach_eyebrow = 'CÁCH TIẾP CẬN THỊ TRƯỜNG' if vi else 'HOW WE APPROACH THE MARKET'
+    approach_title = 'Cách chúng tôi tiếp cận thị trường' if vi else 'How We Approach the Market'
+    approach_steps = [
         ('market-entry',
-         'Gia nhập thị trường' if vi else 'Market Assessment & Entry',
-         'Đánh giá cơ hội, xác định định vị ban đầu và xây lộ trình vào thị trường phù hợp với năng lực sản phẩm.'
+         'Đánh giá sự phù hợp' if vi else 'Assess the fit',
+         'Đánh giá tiềm năng thương hiệu, tính khả thi của sản phẩm và sự phù hợp thực tế với thị trường Việt Nam.'
          if vi else
-         'Assess market opportunity, define initial positioning, and shape a clear entry roadmap tailored to the product.'),
+         'Assess brand opportunity, product viability, and realistic relevance to the Vietnamese market and consumer.'),
         ('import-compliance',
-         'Nhập khẩu & Tuân thủ' if vi else 'Import & Compliance',
-         'Rà soát hồ sơ, công bố, ghi nhãn và đáp ứng các yêu cầu nhập khẩu dựa trên thông tin kỹ thuật thực tế.'
+         'Chuẩn bị lộ trình vào thị trường' if vi else 'Prepare the market route',
+         'Rà soát hồ sơ tuân thủ, chuẩn bị thủ tục nhập khẩu và xây dựng kế hoạch phân phối theo từng giai đoạn.'
          if vi else
-         'Review dossiers, product declarations, labelling, and import regulatory requirements against technical specifications.'),
-        ('distribution-development',
-         'Phát triển phân phối' if vi else 'Distribution Development',
-         'Phát triển các kênh bán phù hợp với ngành hàng, khách hàng mục tiêu và từng giai đoạn tăng trưởng thị trường.'
-         if vi else
-         'Develop targeted distribution channels aligned with the category, target consumers, and stages of growth.'),
-        ('brand-localization',
-         'Bản địa hóa thương hiệu' if vi else 'Brand Localisation',
-         'Điều chỉnh thông điệp và vật liệu tiếp thị phù hợp văn hóa tiêu dùng Việt Nam mà vẫn gìn giữ bản sắc gốc của thương hiệu.'
-         if vi else
-         'Adapt brand messaging and sales materials for the Vietnamese market while safeguarding original brand identity.'),
+         'Review regulatory compliance, prepare import requirements, and shape a structured distribution roadmap.'),
         ('trade-marketing',
-         'Tiếp thị thương mại' if vi else 'Trade Marketing',
-         'Chuyển chiến lược thành hiện diện trực quan tại kênh phân phối và điểm bán lẻ để xây dựng nhận biết thương hiệu bền vững.'
+         'Xây dựng hiện diện thương mại' if vi else 'Build the commercial presence',
+         'Bản địa hóa thông điệp, triển khai tiếp thị thương mại và từng bước xây dựng vị thế vững chắc tại điểm bán.'
          if vi else
-         'Translate strategy into credible retail presence across sales channels and points of sale to foster brand awareness.')
+         'Adapt brand messaging, execute trade marketing, and establish a lasting commercial presence at retail.')
     ]
-    process_items = ''.join(
+    approach_items = ''.join(
         f'''<li class="partners-process-step reveal">
   <div class="partners-process-step-top">
     <span class="partners-process-num" aria-hidden="true">0{i}</span>
@@ -541,25 +501,35 @@ def partners(locale):
     <p>{e(step_desc)}</p>
   </div>
 </li>'''
-        for i, (ic, step_title, step_desc) in enumerate(process_steps, 1)
+        for i, (ic, step_title, step_desc) in enumerate(approach_steps, 1)
     )
-    process_html = f'''<section class="partners-process page-section" aria-labelledby="partners-process-heading">
+    cap_link_intro = (
+        'Để tìm hiểu quy trình chi tiết qua từng giai đoạn từ gia nhập đến tăng trưởng, xem thêm năng lực vận hành của VOrigin.'
+        if vi else
+        'For our comprehensive five-stage route from initial entry to enduring growth, explore our full operational capabilities.'
+    )
+    cap_link_label = 'Xem quy trình 5 giai đoạn tại Năng lực' if vi else 'View the 5-stage process on Capabilities'
+    approach_html = f'''<section class="partners-process page-section" id="how-we-approach" aria-labelledby="partners-process-heading">
   <div class="shell">
     <div class="section-heading centered reveal">
-      <p class="eyebrow">{e(process_eyebrow)}</p>
-      <h2 id="partners-process-heading">{e(process_title)}</h2>
+      <p class="eyebrow">{e(approach_eyebrow)}</p>
+      <h2 id="partners-process-heading">{e(approach_title)}</h2>
       <i class="bronze-rule"></i>
     </div>
     <ol class="partners-process-list">
-      {process_items}
+      {approach_items}
     </ol>
+    <div class="partners-process-link-wrap reveal">
+      <p class="partners-process-link-text">{e(cap_link_intro)}</p>
+      <a class="button button-gold partners-cta-button" href="{r['cap']}">{e(cap_link_label)}<span>→</span></a>
+    </div>
   </div>
 </section>'''
 
-    # 5. Partnership expectations section (Three concise expectation points)
-    expectations_eyebrow = 'NGUYÊN TẮC ĐỒNG HÀNH' if vi else 'PARTNERSHIP PRINCIPLES'
-    expectations_title = 'Kỳ vọng trong quan hệ hợp tác' if vi else 'Partnership expectations'
-    expectations_data = [
+    # 4. How Partnership Begins module (Merged principles + final direct contact CTA)
+    begins_eyebrow = 'CÁCH MỘT QUAN HỆ HỢP TÁC BẮT ĐẦU' if vi else 'HOW PARTNERSHIP BEGINS'
+    begins_title = 'Hiểu đúng trước khi cam kết.' if vi else 'Understand first. Commit second.'
+    principles_data = [
         ('trusted-partner',
          'Rõ ràng ngay từ đầu' if vi else 'Clarity from the start',
          'Bắt đầu bằng việc tìm hiểu kỹ sản phẩm, nguồn gốc và mục tiêu thực tế trước khi bàn đến các cam kết thương mại.'
@@ -576,48 +546,81 @@ def partners(locale):
          if vi else
          'Prioritising lasting brand equity and steady growth over quick, transactional volume.')
     ]
-    expectations_cards = ''.join(
+    principles_cards = ''.join(
         f'''<article class="partners-expectation-card reveal">
   <span class="partners-expectation-icon">{icon_img(ic, "expectation-icon-svg")}</span>
   <h3>{e(heading)}</h3>
   <p>{e(desc)}</p>
 </article>'''
-        for ic, heading, desc in expectations_data
+        for ic, heading, desc in principles_data
     )
-    expectations_html = f'''<section class="partners-expectations page-section alt" aria-labelledby="partners-expectations-heading">
-  <div class="shell">
-    <div class="section-heading centered reveal">
-      <p class="eyebrow">{e(expectations_eyebrow)}</p>
-      <h2 id="partners-expectations-heading">{e(expectations_title)}</h2>
-      <i class="bronze-rule"></i>
-    </div>
-    <div class="partners-expectations-grid">
-      {expectations_cards}
-    </div>
-  </div>
-</section>'''
-
-    # 6. Final CTA section (Localized invitation to start a focused conversation)
-    cta_eyebrow = 'HỢP TÁC CÙNG VORIGIN' if vi else 'PARTNER WITH VORIGIN'
-    cta_title = 'Bắt đầu từ một cuộc trao đổi rõ ràng' if vi else 'Start with a clear conversation'
     cta_lede = (
         'Nếu bạn đại diện cho một thương hiệu quốc tế đang tìm hiểu cơ hội phát triển bền vững tại Việt Nam, hãy kết nối cùng VOrigin để bắt đầu một cuộc trao đổi đúng trọng tâm.'
         if vi else
         'If you represent an international brand exploring sustainable growth in Vietnam, connect with VOrigin to begin a focused, practical conversation.'
     )
-    cta_html = f'''<section class="partners-cta section-dark" aria-labelledby="partners-cta-heading">
-  <div class="shell partners-cta-wrap reveal">
-    <p class="eyebrow">{e(cta_eyebrow)}</p>
-    <h2 id="partners-cta-heading">{e(cta_title)}</h2>
-    <p class="partners-cta-lede">{e(cta_lede)}</p>
-    <div class="partners-cta-actions">
-      <a class="button button-gold partners-cta-button" href="{contact_href}">{e(contact_cta)}<span>→</span></a>
+    begins_html = f'''<section class="partners-expectations page-section alt" id="how-partnership-begins" aria-labelledby="partners-begins-heading">
+  <div class="shell">
+    <div class="section-heading centered reveal">
+      <p class="eyebrow">{e(begins_eyebrow)}</p>
+      <h2 id="partners-begins-heading">{e(begins_title)}</h2>
+      <i class="bronze-rule"></i>
+    </div>
+    <div class="partners-expectations-grid">
+      {principles_cards}
+    </div>
+    <div class="partners-begin-cta reveal">
+      <p class="partners-begin-cta-lede">{e(cta_lede)}</p>
+      <div class="partners-cta-actions">
+        <a class="button button-solid partners-begin-btn" href="{contact_href}">{e(contact_cta)}<span>→</span></a>
+      </div>
     </div>
   </div>
 </section>'''
 
-    body = f"{hero_html}\n{pillars_html}\n{ideal_html}\n{process_html}\n{expectations_html}\n{cta_html}"
-    return base_page(locale, f'{t["partners"]} — VOrigin', t['partners_lede'], 'partners', body, body_class='partners-page')
+    extra_css = '''<style>
+@media (min-width: 1081px) {
+  .partners-page .partners-process-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.partners-page .partners-process-link-wrap {
+  text-align: center;
+  margin-top: clamp(40px, 5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.partners-page .partners-process-link-text {
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.6;
+  color: rgba(247, 238, 220, 0.82);
+  margin: 0 0 20px;
+  max-width: 600px;
+}
+.partners-page .partners-begin-cta {
+  text-align: center;
+  margin-top: clamp(48px, 6vw, 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.partners-page .partners-begin-cta-lede {
+  font-size: clamp(15px, 1.25vw, 17px);
+  line-height: 1.68;
+  color: #485153;
+  max-width: 640px;
+  margin: 0 0 28px;
+}
+.partners-page .partners-begin-btn {
+  min-height: 48px;
+  padding: 0 28px;
+  letter-spacing: 0.05em;
+}
+</style>'''
+
+    body = f"{hero_html}\n{look_for_html}\n{approach_html}\n{begins_html}"
+    return base_page(locale, f'{t["partners"]} — VOrigin', t['partners_lede'], 'partners', body, extra_head=extra_css, body_class='partners-page')
 
 def insights(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
