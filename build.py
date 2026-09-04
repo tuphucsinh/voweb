@@ -34,11 +34,11 @@ ANALYTICS_ID = os.getenv('ANALYTICS_WEBSITE_ID', SITE['analytics'].get('website_
 LANG = {
  'vi': {
   'home':'Trang chủ','about':'Giới thiệu','brands':'Thương hiệu','cap':'Năng lực','partners':'Đối tác','insights':'Góc nhìn','contact':'Liên hệ','cta':'Hợp tác cùng chúng tôi',
-  'hero_lead':'VOrigin tuyển chọn những sản phẩm có nguồn gốc đáng tin cậy và đưa chúng đến thị trường Việt Nam bằng tiêu chuẩn rõ ràng, sự chỉn chu trong từng bước và một tầm nhìn dài hạn.',
-  'hero_primary':'Tìm hiểu VOrigin','hero_secondary':'Khám phá danh mục','story_title':'Mỗi sản phẩm, một hành trình giá trị','origin':'Nguồn gốc rõ ràng','nature':'Giữ trọn đặc tính tự nhiên','craft':'Chọn lọc theo tiêu chuẩn','value':'Kiến tạo giá trị bền lâu',
-  'featured_copy':'MARIGOLD Fruit Drinks là thương hiệu nổi bật đầu tiên trong danh mục VOrigin, với bốn hương vị Apple, Orange, Mango và Grape. Một dòng sản phẩm tươi sáng, dễ tiếp cận và phù hợp với những khoảnh khắc thường ngày.',
-  'discover_marigold':'Khám phá MARIGOLD','portfolio_copy':'VOrigin mở rộng danh mục một cách chọn lọc, ưu tiên nguồn gốc rõ ràng, sự phù hợp thực sự với thị trường và tiềm năng phát triển dài hạn. Những nhóm bên dưới là các hướng chúng tôi đang tìm hiểu, không phải danh sách đối tác đã ký kết.','portfolio_cta':'Xem danh mục tuyển chọn',
-  'why':'Vì sao chọn VOrigin','market_copy':'VOrigin đồng hành cùng các thương hiệu quốc tế trong hành trình vào Việt Nam, từ đánh giá thị trường và tuân thủ nhập khẩu đến phát triển phân phối, bản địa hóa thương hiệu và tiếp thị thương mại.','market_cta':'Bắt đầu lộ trình vào Việt Nam',
+  'hero_lead':'VOrigin tìm kiếm những sản phẩm có nền tảng đáng tin, bản sắc rõ nét và tiềm năng thực sự tại Việt Nam. Từ lựa chọn ban đầu đến cách thương hiệu bước vào thị trường, mỗi quyết định đều được cân nhắc với một tầm nhìn dài hơn.',
+  'hero_primary':'Khám phá VOrigin','hero_secondary':'Danh mục thương hiệu','story_title':'Giá trị được định hình từ những lựa chọn đầu tiên.','origin':'Nguồn gốc đáng tin','nature':'Bản sắc sản phẩm','craft':'Tiêu chuẩn lựa chọn','value':'Giá trị thị trường',
+  'featured_copy':'MARIGOLD Fruit Drinks mở đầu danh mục VOrigin với bốn hương vị Apple, Orange, Mango và Grape. Dòng sản phẩm phản ánh những điều chúng tôi coi trọng ở một thương hiệu: nền tảng đáng tin, thông tin có thể đối chiếu và một đề xuất sản phẩm dễ được hiểu trên thị trường.',
+  'discover_marigold':'Khám phá MARIGOLD','portfolio_copy':'VOrigin không mở rộng danh mục để chạy theo số lượng. Mỗi hướng mới chỉ đáng theo đuổi khi sản phẩm có nền tảng phù hợp với tiêu chuẩn của chúng tôi và một khoảng trống đủ rõ để tạo dựng tại Việt Nam. Các nhóm bên dưới là những định hướng đang được nghiên cứu, không phải danh sách đối tác đã ký kết.','portfolio_cta':'Xem danh mục tuyển chọn',
+  'why':'Điều định hình cách VOrigin làm việc.','market_copy':'VOrigin đồng hành cùng các thương hiệu quốc tế trong hành trình vào Việt Nam, từ đánh giá thị trường và tuân thủ nhập khẩu đến phát triển phân phối, bản địa hóa thương hiệu và tiếp thị thương mại.','home_market_copy':'VOrigin hỗ trợ các thương hiệu quốc tế xây dựng lộ trình vào Việt Nam — từ đánh giá cơ hội, tuân thủ nhập khẩu và phát triển phân phối đến bản địa hóa thương hiệu và tiếp thị thương mại.','market_cta':'Bắt đầu lộ trình vào Việt Nam',
   'about_title':'Từ nguồn gốc đáng tin đến giá trị bền lâu','about_lede':'VOrigin bắt đầu từ những điều căn bản nhất: sản phẩm đến từ đâu, được tạo ra như thế nào, tiêu chuẩn phía sau ra sao và liệu sản phẩm ấy có thể tạo nên giá trị bền lâu tại Việt Nam hay không.','standard':'Tiêu chuẩn VOrigin','mission':'Sứ mệnh','vision':'Tầm nhìn',
   'brands_title':'Những thương hiệu được chọn cho giá trị bền lâu','brands_lede':'MARIGOLD là thương hiệu nổi bật đầu tiên trong danh mục VOrigin. Từ nền tảng đó, chúng tôi mở rộng từng bước, chọn những thương hiệu có nguồn gốc rõ ràng, chất lượng ổn định và sự phù hợp thực sự với thị trường Việt Nam.',
   'cap_title':'Từ cơ hội thị trường đến hiện diện bền vững','cap_lede':'Đưa một thương hiệu vào thị trường mới không dừng ở việc nhập khẩu sản phẩm. VOrigin đồng hành từ đánh giá thị trường, tuân thủ và phân phối đến bản địa hóa và tiếp thị thương mại tại Việt Nam.',
@@ -49,11 +49,11 @@ LANG = {
  },
  'en': {
   'home':'Home','about':'About','brands':'Brands','cap':'Capabilities','partners':'Partners','insights':'Insights','contact':'Contact','cta':'Partner with us',
-  'hero_lead':'VOrigin curates products from trusted origins and brings them to Vietnam with clear standards, thoughtful execution and a long-term view.',
-  'hero_primary':'Discover VOrigin','hero_secondary':'Explore the portfolio','story_title':'Every product carries a journey of value','origin':'Clear provenance','nature':'Respect for natural character','craft':'Selection with standards','value':'Lasting value',
-  'featured_copy':'MARIGOLD Fruit Drinks is the first featured brand in VOrigin’s portfolio, with four flavours: Apple, Orange, Mango and Grape. A bright, approachable range made for everyday moments.',
-  'discover_marigold':'Discover MARIGOLD','portfolio_copy':'VOrigin grows its portfolio with restraint and intention, favouring clear provenance, genuine market relevance and long-term potential. The categories below are areas we are exploring; they do not represent signed brand partnerships.','portfolio_cta':'View curated portfolio',
-  'why':'Why Choose VOrigin','market_copy':'VOrigin works with international brands to shape a clear route into Vietnam, from market assessment and import compliance to distribution development, localisation and trade marketing.','market_cta':'Start your route into Vietnam',
+  'hero_lead':'VOrigin identifies distinctive international brands with credible foundations and genuine relevance to Vietnam, then shapes a considered route from first entry to enduring market presence.',
+  'hero_primary':'Discover VOrigin','hero_secondary':'Explore our portfolio','story_title':'Value is shaped long before a product reaches the market.','origin':'Trusted Origin','nature':'Product Character','craft':'Selection Standards','value':'Market Potential',
+  'featured_copy':'MARIGOLD Fruit Drinks opens the VOrigin portfolio with four flavours: Apple, Orange, Mango and Grape. It reflects what we value in a brand: a credible foundation, verifiable product information and a proposition people can readily understand.',
+  'discover_marigold':'Discover MARIGOLD','portfolio_copy':'We would rather build the right portfolio slowly than a large one quickly. New categories are explored only where there is a credible product case and a meaningful place to build in Vietnam. The areas below are directions under consideration, not signed brand partnerships.','portfolio_cta':'View curated portfolio',
+  'why':'What shapes the way we work.','market_copy':'VOrigin works with international brands to shape a clear route into Vietnam, from market assessment and import compliance to distribution development, localisation and trade marketing.','home_market_copy':'VOrigin helps international brands turn market ambition into a workable route through Vietnam — from assessment and compliance to distribution, localisation and trade marketing.','market_cta':'Start your route into Vietnam',
   'about_title':'Where trusted origins become lasting value','about_lede':'VOrigin starts with the fundamentals: where a product comes from, how it is made, the standards behind it, and whether it can create lasting value in Vietnam.','standard':'The VOrigin Standard','mission':'Mission','vision':'Vision',
   'brands_title':'Brands chosen for lasting value','brands_lede':'MARIGOLD is the first featured brand in VOrigin’s portfolio. From that foundation, we will grow at a measured pace, choosing brands for clear provenance, consistent quality and genuine relevance to the Vietnamese market.',
   'cap_title':'From market opportunity to lasting presence','cap_lede':'Entering a new market takes more than importing a product. VOrigin works across market assessment, compliance, distribution, localisation and trade marketing to build a practical route into Vietnam.',
@@ -232,20 +232,20 @@ def page_hero(locale, eyebrow, title, lede, breadcrumbs=''):
 def home(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
     partner_copy = [
-      ('Đối tác đáng tin' if vi else 'Trusted Partner','Minh bạch từ thông tin đến cam kết, rõ ràng trong từng bước làm việc.' if vi else 'Clear information, clear commitments and transparency in the way we work.'),
-      ('Am hiểu thị trường' if vi else 'Local Expertise','Hiểu thị trường Việt Nam, từ người tiêu dùng đến nhịp vận hành của từng kênh bán.' if vi else 'A grounded understanding of Vietnam, from consumers to the rhythm of each sales channel.'),
-      ('Giá trị dài hạn' if vi else 'Long-term Value','Ưu tiên nền tảng bền vững hơn những mục tiêu ngắn hạn.' if vi else 'We favour enduring value over short-term momentum.'),
-      ('Cách làm chỉn chu' if vi else 'Considered Approach','Chọn lọc kỹ, tiêu chuẩn rõ và triển khai với sự cẩn trọng cần thiết.' if vi else 'Careful selection, clear standards and the discipline to execute well.'),
-      ('Cùng phát triển' if vi else 'Grow Together','Mỗi quan hệ hợp tác đều hướng đến sự tăng trưởng ổn định và lâu dài.' if vi else 'Each partnership is built with steady, long-term growth in mind.')]
+      ('Minh bạch trong cam kết' if vi else 'Clarity in commitments','Minh bạch từ thông tin đến cam kết, rõ ràng trong từng bước làm việc.' if vi else 'Clear information, clear commitments and transparency in the way we work.'),
+      ('Am hiểu thị trường' if vi else 'Local judgement','Hiểu thị trường Việt Nam, từ người tiêu dùng đến nhịp vận hành của từng kênh bán.' if vi else 'A grounded understanding of Vietnam, from consumers to the rhythm of each sales channel.'),
+      ('Góc nhìn dài hơn' if vi else 'A longer view','Ưu tiên nền tảng bền vững hơn những mục tiêu ngắn hạn.' if vi else 'We favour enduring value over short-term momentum.'),
+      ('Kỷ luật trong thực thi' if vi else 'Disciplined execution','Chọn lọc kỹ, tiêu chuẩn rõ và triển khai với sự cẩn trọng cần thiết.' if vi else 'Careful selection, clear standards and the discipline to execute well.'),
+      ('Hợp tác thay vì giao dịch' if vi else 'Partnership over transaction','Mỗi quan hệ hợp tác đều hướng đến sự tăng trưởng ổn định và lâu dài.' if vi else 'Each partnership is built with steady, long-term growth in mind.')]
     benefits=''.join(
       f'<article class="why-value-row reveal" role="listitem"><div class="why-value-meta"><span class="why-value-number">0{i+1}</span><span class="why-value-icon" aria-hidden="true">{icon_img(icon, "why-value-icon-svg")}</span></div><div class="why-value-copy"><h3>{e(a)}</h3><p>{e(b)}</p></div></article>'
       for i,(icon,(a,b)) in enumerate(zip(['trusted-partner','local-expertise','long-term-value','premium-approach','grow-together'],partner_copy))
     )
-    hero_eyebrow='NGUỒN GỐC ĐÁNG TIN. GIÁ TRỊ BỀN LÂU.' if vi else 'TRUSTED ORIGINS. LASTING VALUE.'
-    story_eyebrow='TUYỂN CHỌN BỞI VORIGIN' if vi else 'CURATED BY VORIGIN'
+    hero_eyebrow='NGUỒN GỐC ĐÁNG TIN. LỰA CHỌN CÓ CƠ SỞ.' if vi else 'TRUSTED ORIGINS. CONSIDERED CHOICES.'
+    story_eyebrow='CÁCH VORIGIN LỰA CHỌN' if vi else 'HOW WE CHOOSE'
     featured_label='THƯƠNG HIỆU NỔI BẬT' if vi else 'FEATURED BRAND'
     portfolio_label='DANH MỤC THƯƠNG HIỆU' if vi else 'OUR PORTFOLIO'
-    portfolio_title='Danh mục chọn lọc,<br>lớn lên từng bước' if vi else 'A growing portfolio<br>of carefully chosen brands'
+    portfolio_title='Một danh mục được xây dựng có chủ đích.' if vi else 'A portfolio built with intent.'
     global_label='DÀNH CHO THƯƠNG HIỆU QUỐC TẾ' if vi else 'FOR INTERNATIONAL BRANDS'
     services=[('market-entry','Gia nhập<br>thị trường' if vi else 'Market Entry'),('import-compliance','Nhập khẩu &amp;<br>tuân thủ' if vi else 'Import &amp;<br>Compliance'),('distribution-development','Phát triển<br>phân phối' if vi else 'Distribution<br>Development'),('brand-localization','Bản địa hóa<br>thương hiệu' if vi else 'Brand<br>Localisation'),('trade-marketing','Tiếp thị<br>thương mại' if vi else 'Trade<br>Marketing')]
     service_html=''.join(f'<span><i class="service-icon">{icon_img(ic,"service-icon-svg")}</i><small>{label}</small></span>' for ic,label in services)
@@ -255,7 +255,7 @@ def home(locale):
 <section class="featured section-soft" id="brands"><div class="shell featured-grid"><div class="featured-copy reveal"><div class="featured-copy-inner"><p class="eyebrow">{featured_label}</p><h2>MARIGOLD</h2><p>{e(t['featured_copy'])}</p><div class="featured-trust">{marigold_trust_chips(locale, True)}</div><a href="{r['marigold']}" class="button button-outline">{e(t['discover_marigold'])}<span>→</span></a></div></div><figure class="lineup reveal"><div class="lineup-surface">{responsive_picture('marigold-lineup-premium', 'MARIGOLD Fruit Drink Apple, Orange, Mango and Grape', RESPONSIVE_POLICIES['lineup'])}</div></figure></div></section>
 <section class="portfolio section-light"><div class="shell portfolio-grid"><div class="portfolio-copy reveal"><div class="portfolio-copy-header"><p class="eyebrow">{portfolio_label}</p><h2>{portfolio_title}</h2></div><div class="portfolio-copy-meta"><p>{e(t['portfolio_copy'])}</p><a class="button button-outline" href="{r['brands']}">{e(t['portfolio_cta'])}<span>→</span></a></div></div><div class="portfolio-cards" role="list">{portfolio_cards(locale)}</div></div></section>
 <section class="why-partner section-light" id="partners" aria-labelledby="why-title"><div class="shell why-value-index"><div class="why-value-intro reveal"><h2 id="why-title">{e(t['why'])}</h2><i class="bronze-rule transition-rule"></i></div><div class="why-value-list" role="list">{benefits}</div></div></section>
-<section class="market section-dark" id="market"><div class="shell market-grid"><figure class="market-visual reveal">{render_market_visual(locale)}</figure><div class="market-copy reveal"><p class="eyebrow">{global_label}</p><h2>YOUR BRAND<br>OUR MARKET</h2><p>{e(t['market_copy'])}</p><div class="services">{service_html}</div><a class="button button-gold" href="{r['partners']}">{e(t['market_cta'])}<span>→</span></a></div></div></section>'''
+<section class="market section-dark" id="market"><div class="shell market-grid"><figure class="market-visual reveal">{render_market_visual(locale)}</figure><div class="market-copy reveal"><p class="eyebrow">{global_label}</p><h2>YOUR BRAND<br>OUR MARKET</h2><p>{e(t['home_market_copy'])}</p><div class="services">{service_html}</div><a class="button button-gold" href="{r['partners']}">{e(t['market_cta'])}<span>→</span></a></div></div></section>'''
     return base_page(locale,'VOrigin — From Origins to Value',t['hero_lead'],'home',body)
 
 def story_card(img,title,copy,icon,index='01',modifier=''):
@@ -309,17 +309,25 @@ def simple_page(locale,key,title,lede,sections):
 
 def about(locale):
     t=LANG[locale]; r=ROUTES[locale]; vi=locale=='vi'
-    lead = 'Giá trị bền lâu luôn bắt đầu từ một nguồn gốc đáng tin.' if vi else 'Lasting value begins with a trusted origin.'
-    story = 'Khởi Nguyên gợi về điểm bắt đầu của giá trị. VOrigin mang tinh thần ấy vào thương mại: chọn đúng nguồn, hiểu đúng thị trường và phát triển bằng những tiêu chuẩn có thể tin cậy.' if vi else 'Khởi Nguyên, our Vietnamese name, speaks to where value begins. VOrigin carries that idea into trade: choose the right origins, understand the market, and grow with standards people can trust.'
-    standards=[('origin','Nguồn gốc' if vi else 'Origin','Đáng tin và có thể kiểm chứng' if vi else 'Trusted and verifiable'),('premium-approach','Chất lượng' if vi else 'Quality','Ổn định, rõ tiêu chuẩn' if vi else 'Consistent, with clear standards'),('market-entry','Phù hợp' if vi else 'Relevance','Phù hợp với nhu cầu và kênh bán' if vi else 'A genuine fit with people and channels'),('nature','Câu chuyện' if vi else 'Story','Có nền tảng thật để kể' if vi else 'A story with substance'),('long-term-value','Phát triển' if vi else 'Growth','Có dư địa phát triển bền vững' if vi else 'Room to grow responsibly')]
+    lead = 'Giá trị được định hình từ những lựa chọn ban đầu.' if vi else 'Lasting value is shaped by the choices made at the start.'
+    story = 'Khởi Nguyên là điểm bắt đầu. Với VOrigin, đó cũng là một cách nhìn về giá trị: trước một thương hiệu luôn có một nguồn gốc; trước một quyết định thương mại luôn cần một lý do đủ vững chắc.' if vi else 'Our Vietnamese name, Khởi Nguyên, speaks to beginnings — and to the belief that enduring value starts with what a business chooses to stand behind.'
+    standards=[
+        ('origin','Nguồn gốc' if vi else 'Origin','Đủ rõ để kiểm chứng.' if vi else 'Traceable and credible.'),
+        ('premium-approach','Chất lượng' if vi else 'Quality','Nhất quán và có cơ sở.' if vi else 'Consistent, with substance behind it.'),
+        ('market-entry','Thị trường' if vi else 'Market','Có một lý do thuyết phục để hiện diện.' if vi else 'A convincing reason to be here.'),
+        ('nature','Bản sắc' if vi else 'Character','Có điều riêng đủ để được ghi nhớ.' if vi else 'Something distinctive enough to remember.'),
+        ('long-term-value','Tiềm năng' if vi else 'Potential','Có khả năng phát triển theo thời gian.' if vi else 'Room to build over time.')
+    ]
     cards=''.join(f'<article class="standard-card reveal"><span class="standard-icon">{icon_img(ic,"standard-icon-svg")}</span><p class="eyebrow">{e(k)}</p><h3>{e(v)}</h3></article>' for ic,k,v in standards)
     standard_eyebrow='TIÊU CHUẨN VORIGIN' if vi else 'THE VORIGIN STANDARD'
+    vision_eyebrow='CÁCH VORIGIN LÀM VIỆC' if vi else 'HOW WE WANT TO BE KNOWN'
+    vision_title='Được tin cậy bởi chất lượng của những lựa chọn và cách chúng tôi thực hiện chúng.' if vi else 'For the quality of our judgement and the discipline of our execution.'
     vision_copy='Trở thành đối tác thương mại – nhập khẩu đáng tin cậy cho những thương hiệu muốn phát triển tại Việt Nam, với cách chọn sản phẩm có tiêu chuẩn, làm việc minh bạch và tầm nhìn dài hạn.' if vi else 'To become a trusted partner for brands seeking to grow in Vietnam — with disciplined selection, transparent relationships and a long-term view.'
     cue='NGUỒN GỐC → CHỌN LỌC → GIÁ TRỊ' if vi else 'ORIGIN → SELECTION → VALUE'
     breadcrumbs=f'<a href="{r["home"]}">{t["home"]}</a> / {t["about"]}'
     body=f'''<section class="about-hero" aria-labelledby="about-hero-title"><div class="about-hero-backdrop" aria-hidden="true"></div><div class="shell about-hero-shell"><div class="about-hero-copy reveal"><div class="breadcrumb">{breadcrumbs}</div><p class="eyebrow">FROM ORIGINS TO VALUE</p><h1 id="about-hero-title">{e(lead)}</h1><p class="lede">{e(story)}</p><div class="about-hero-cue"><span class="about-hero-cue-line" aria-hidden="true"></span><span>{cue}</span></div></div></div></section>'''
     body+=f'''<section class="page-section alt" id="standard"><div class="shell"><div class="section-heading centered"><p class="eyebrow">{standard_eyebrow}</p><h2>{e(t['standard'])}</h2><i class="bronze-rule"></i></div><div class="standard-grid">{cards}</div></div></section>'''
-    body+=f'''<section class="page-section"><div class="shell editorial-grid"><div><p class="eyebrow">{'TẦM NHÌN' if vi else 'VISION'}</p><h2>{e(t['vision'])}</h2></div><div class="content-block"><p>{e(vision_copy)}</p></div></div></section>'''
+    body+=f'''<section class="page-section"><div class="shell editorial-grid"><div><p class="eyebrow">{vision_eyebrow}</p><h2>{e(vision_title)}</h2></div><div class="content-block"><p>{e(vision_copy)}</p></div></div></section>'''
     return base_page(locale,f'{t["about"]} — VOrigin',t['about_lede'],'about',body,body_class='about-page')
 
 def brands(locale):

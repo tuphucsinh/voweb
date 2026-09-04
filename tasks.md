@@ -201,7 +201,7 @@ Contact is production-complete without pretending the deferred online form exist
 
 ## [#P3M2T05] `apply_homepage_and_about_copy_v2()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Owner:** Mika  
 **Runner:** agy  
 **Depends on:** `P3M2T01`  
