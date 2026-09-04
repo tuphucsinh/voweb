@@ -284,7 +284,7 @@ Partners reads as an editorial B2B partnership page rather than a repeated premi
 
 ## [#P3M2T07] `apply_remaining_copy_and_factual_source_framing()`
 
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Owner:** Mika  
 **Runner:** agy  
 **Depends on:** `P3M2T05`, `P3M2T06`  
