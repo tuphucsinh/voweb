@@ -1,4 +1,6 @@
-# VOrigin Website — Bilingual Copy Audit
+# VOrigin Website — Bilingual Copy Audit (SUPERSEDED — historical evidence)
+
+> This audit records the earlier rc5 editorial review and remains useful as historical evidence. It is not the current closure verdict; current truth is defined by `.ai/MASTER_PLAN.md`, generated output, official QA and `tasks.md`.
 
 Version reviewed: **1.0.0-rc5**
 Scope: all generated VI/EN public pages

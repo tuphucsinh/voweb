@@ -1,4 +1,6 @@
-# VOrigin Premium MAX Audit — rc4
+# VOrigin Premium MAX Audit — rc4 (SUPERSEDED — historical evidence)
+
+> This scorecard is retained as historical visual evidence. It is not the current release verdict. Current truth is defined by `.ai/MASTER_PLAN.md`, `config/site.json`, the generated candidate, official verifiers and the active tasks in `tasks.md`.
 
 ## Result
 
@@ -28,7 +30,7 @@
 11. Mobile scroll-snap art direction for Story, Portfolio, Why Partner, flavours and criteria.
 12. Subtle paper grain, depth, hover motion and hero scroll drift.
 
-## Remaining launch blockers — not visual defects
+## Historical launch blockers — not visual defects
 
 The production preflight intentionally still blocks launch until VOrigin supplies/approves:
 

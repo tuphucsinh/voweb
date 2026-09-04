@@ -22,6 +22,7 @@ class PreflightTests(unittest.TestCase):
     def test_production_is_fail_closed_for_unapproved_gates_and_placeholder_salt(self):
         site = copy.deepcopy(self.site)
         site['launch'].update({
+            'production_ready': False,
             'privacy_reviewed': False,
             'terms_reviewed': False,
             'official_marigold_assets_confirmed': False,

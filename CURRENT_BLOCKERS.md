@@ -1,15 +1,16 @@
-# Remaining owner-controlled public launch gates — rc7
+# Current owner-controlled release gates — Premium Closure
 
-The static release candidate is current. Public contact and partnership forms are intentionally disabled until the online enquiry flow is approved and protected; the lead API is not called by the public site in this state.
+The static release candidate is current. Public contact and partnership forms remain intentionally disabled; the public Contact page provides verified direct contact details and does not call the lead API in this state.
 
-## Current production preflight blocker
+## Current production preflight condition
 
-1. `launch.production_ready=true` remains false and must not be enabled until the approved production/runtime evidence is complete.
+1. `launch.production_ready=true` and the content/legal launch flags are enabled in `config/site.json`.
+2. Production preflight still requires `IP_HASH_SALT` from the approved secure `ops/.env` environment path. The value must never be hardcoded, printed or tracked.
 
 ## Deferred while contact forms are disabled
 
 - `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` are intentionally blank and are not required by production preflight while `contact_forms_enabled=false`.
-- Public contact UI displays the bilingual temporary-unavailable status and provides direct contact details; it does not render an active lead form.
+- Public Contact UI renders a complete bilingual direct-contact experience and does not render an active lead form.
 
 ## Already recorded
 
