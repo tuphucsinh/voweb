@@ -91,6 +91,7 @@ dist/assets/story-origin.png
 dist/assets/story-origin.webp
 dist/assets/story-value.png
 dist/assets/story-value.webp
+dist/assets/tau1.png
 dist/assets/ui-icons/arrow-right-circle.svg
 dist/assets/ui-icons/brand-localization.svg
 dist/assets/ui-icons/chevron-down.svg
@@ -231,6 +232,7 @@ public/assets/story-origin.png
 public/assets/story-origin.webp
 public/assets/story-value.png
 public/assets/story-value.webp
+public/assets/tau1.png
 public/assets/ui-icons/arrow-right-circle.svg
 public/assets/ui-icons/brand-localization.svg
 public/assets/ui-icons/chevron-down.svg

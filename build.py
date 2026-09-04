@@ -185,8 +185,9 @@ def footer(locale):
     phone=contact.get('phone','')
     digits=''.join(c for c in phone if c.isdigit())
     phone_tel=f'+{digits}' if digits else ''
-    address=contact.get('address_vi' if locale=='vi' else 'address_en','')
-    city=contact.get('city_vi' if locale=='vi' else 'city_en','')
+    address=contact.get('address','')
+    address_line_one, address_line_two = address.split(', Ho Chi Minh City, Vietnam', 1)
+    address_line_two = f'Ho Chi Minh City, Vietnam{address_line_two}'
     story_label='Câu chuyện thương hiệu' if locale=='vi' else 'Our story'
     portfolio_label='Danh mục tuyển chọn' if locale=='vi' else 'Curated portfolio'
     market_label='Gia nhập thị trường' if locale=='vi' else 'Market Entry'
@@ -194,7 +195,7 @@ def footer(locale):
     distribution_label='Phát triển phân phối' if locale=='vi' else 'Distribution Development'
     partner_label='Dành cho thương hiệu quốc tế' if locale=='vi' else 'For international brands'
     return f'''<footer class="site-footer" id="footer"><div class="shell footer-grid">
-<div class="footer-brand"><div class="footer-logo-lockup"><img src="/assets/vorigin-logo-footer-bronze.svg" alt="VOrigin" width="700" height="173" loading="lazy"><span>FROM ORIGINS TO VALUE</span></div><strong>{e(SITE['legal_name'])}</strong><p>VORIGIN Corp</p><div class="footer-contact"><div class="footer-contact__item"><a href="https://vorigin.vn">VOrigin.vn</a></div><div class="footer-contact__item"><a href="mailto:{e(email)}">{e(email)}</a></div><div class="footer-contact__item"><a href="tel:{phone_tel}">{e(phone)}</a></div><div class="footer-contact__address"><span>{e(address)}</span><span>{e(city)}</span></div></div></div>
+<div class="footer-brand"><div class="footer-logo-lockup"><img src="/assets/vorigin-logo-footer-bronze.svg" alt="VOrigin" width="700" height="173" loading="lazy"><span>FROM ORIGINS TO VALUE</span></div><strong>{e(SITE['legal_name'])}</strong><p>VORIGIN Corp</p><div class="footer-contact"><div class="footer-contact__item"><a href="mailto:{e(email)}">{e(email)}</a></div><div class="footer-contact__item"><a href="tel:{phone_tel}">{e(phone)}</a></div><div class="footer-address"><span class="footer-address-line">{e(address_line_one)}</span><span class="footer-address-line">{e(address_line_two)}</span></div></div></div>
 <div class="footer-col"><h3>{t['about']}</h3><a href="{r['about']}">{story_label}</a><a href="{r['about']}#standard">{t['standard']}</a></div>
 <div class="footer-col"><h3>{t['brands']}</h3><a href="{r['marigold']}">MARIGOLD</a><a href="{r['brands']}">{portfolio_label}</a></div>
 <div class="footer-col"><h3>{t['cap']}</h3><a href="{r['cap']}#market-entry">{market_label}</a><a href="{r['cap']}#compliance">{compliance_label}</a><a href="{r['cap']}#distribution">{distribution_label}</a></div>
@@ -390,11 +391,14 @@ def partners(locale):
     contact_href = f"{r['contact']}?type=partner"
     contact_cta = 'Bắt đầu trao đổi' if vi else 'Start a conversation'
     hero_eyebrow = 'DÀNH CHO THƯƠNG HIỆU QUỐC TẾ' if vi else 'FOR INTERNATIONAL BRANDS'
-    hero_img_alt = 'Thùng container mang thương hiệu VOrigin tại cảng biển lúc bình minh' if vi else 'VOrigin branded container at a port at sunrise'
+    hero_img_alt = 'Tàu container mang thương hiệu VOrigin tại cảng biển lúc bình minh' if vi else 'VOrigin container ship at port at sunrise'
 
     # 1. Hero section
     hero_html = f'''<section class="partners-hero" aria-label="{e(t['partners'])}">
-  <div class="shell partners-hero-grid">
+  <figure class="partners-hero-visual reveal">
+    <img class="partners-hero-image" src="/assets/tau1.png" alt="{e(hero_img_alt)}" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">
+  </figure>
+  <div class="shell partners-hero-shell">
     <div class="partners-hero-copy reveal">
       <div class="breadcrumb"><a href="{r['home']}">{t['home']}</a> / {t['partners']}</div>
       <p class="eyebrow">{e(hero_eyebrow)}</p>
@@ -404,9 +408,6 @@ def partners(locale):
         <a class="button button-gold partners-cta" href="{contact_href}">{e(contact_cta)}<span>→</span></a>
       </div>
     </div>
-    <figure class="partners-hero-visual reveal">
-      <img class="partners-hero-image" src="/assets/Container1.png" alt="{e(hero_img_alt)}" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">
-    </figure>
   </div>
 </section>'''
 

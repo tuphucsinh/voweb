@@ -26,7 +26,7 @@ def validate_production_environment(
     is_production = production if production is not None else env.get('SITE_ENV') == 'production'
     issues: list[str] = []
     contact = site.get('contact', {})
-    for key in ('email', 'phone', 'address_vi', 'address_en'):
+    for key in ('email', 'phone', 'address'):
         if not str(contact.get(key, '')).strip():
             issues.append(f'missing contact.{key}')
 
