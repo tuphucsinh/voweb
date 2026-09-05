@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
+import importlib.util
 import re
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -20,6 +23,13 @@ class DeployScriptContractTests(unittest.TestCase):
         cls.prod_conf = cls.prod_conf_path.read_text(encoding="utf-8")
         cls.deploy_doc = cls.deploy_doc_path.read_text(encoding="utf-8")
         cls.styles = cls.styles_path.read_text(encoding="utf-8")
+        manifest_path = ROOT / "scripts" / "generate_release_manifest.py"
+        spec = importlib.util.spec_from_file_location("generate_release_manifest", manifest_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("unable to load generate_release_manifest.py")
+        cls.manifest_module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = cls.manifest_module
+        spec.loader.exec_module(cls.manifest_module)
 
     def test_deploy_script_manifest_integrity(self):
         """Deploy script must verify manifest integrity but never mutate or self-write it."""
@@ -27,6 +37,48 @@ class DeployScriptContractTests(unittest.TestCase):
         self.assertIn("sha256sum -c CHECKSUMS.sha256", self.deploy_script)
         self.assertNotIn('generate_release_manifest.py" --write', self.deploy_script)
         self.assertNotIn("--write", self.deploy_script)
+
+    def test_source_manifest_ignores_preview_production_dist_difference(self):
+        """Source controls must pass even when preview and production dist outputs differ."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "source.txt").write_text("same source\n", encoding="utf-8")
+            dist = root / "dist"
+            dist.mkdir()
+            generated = dist / "index.html"
+            generated.write_text('meta name="robots" content="noindex"\n', encoding="utf-8")
+
+            first = self.manifest_module.generate_manifest(root, "write")
+            self.assertFalse(first.errors)
+            self.assertNotIn("dist/index.html", (root / "MANIFEST.txt").read_text(encoding="utf-8"))
+
+            generated.write_text('meta name="robots" content="index,follow"\n', encoding="utf-8")
+            second = self.manifest_module.generate_manifest(root, "check")
+            self.assertFalse(second.errors)
+
+    def test_dist_release_integrity_is_ephemeral_and_fail_closed(self):
+        """Every built dist file is hashed and verified before the atomic pointer switch."""
+        self.assertIn('DIST_HASHES="$(mktemp)"', self.deploy_script)
+        self.assertIn('trap cleanup EXIT', self.deploy_script)
+        self.assertIn('find . -type f -print0 | sort -z', self.deploy_script)
+        self.assertIn('cmp -s "$DIST_FILE_LIST" "$REL_FILE_LIST"', self.deploy_script)
+        self.assertIn('sha256sum -c "$DIST_HASHES"', self.deploy_script)
+        verify_idx = self.deploy_script.find('if ! (cd "$REL" && sha256sum -c "$DIST_HASHES")')
+        switch_idx = self.deploy_script.find('sudo ln -sfn "$REL" "$CURRENT_LINK.next"')
+        self.assertGreaterEqual(verify_idx, 0)
+        self.assertGreaterEqual(switch_idx, 0)
+        self.assertLess(verify_idx, switch_idx)
+
+    def test_source_validation_precedes_mode_specific_build(self):
+        """Committed source controls are checked before either preview or production build."""
+        manifest_idx = self.deploy_script.find('generate_release_manifest.py" --check')
+        source_hash_idx = self.deploy_script.find("sha256sum -c CHECKSUMS.sha256")
+        build_idx = self.deploy_script.find('python3 "$ROOT/build.py"')
+        self.assertGreaterEqual(manifest_idx, 0)
+        self.assertGreaterEqual(source_hash_idx, 0)
+        self.assertGreaterEqual(build_idx, 0)
+        self.assertLess(manifest_idx, build_idx)
+        self.assertLess(source_hash_idx, build_idx)
 
     def test_production_turnstile_safe_default(self):
         """Production build must expand TURNSTILE_SITE_KEY with fallback to prevent set -u errors."""

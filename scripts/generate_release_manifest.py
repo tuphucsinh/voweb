@@ -11,7 +11,7 @@ from typing import Literal
 
 CONTROL_FILES = {"MANIFEST.txt", "CHECKSUMS.sha256"}
 EXCLUDED_DIRS = {".git", ".ai", ".tmp", "Doc", "node_modules", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".cache"}
-EXCLUDED_TOP_LEVEL = {"artifacts", "browser-evidence"}
+EXCLUDED_TOP_LEVEL = {"artifacts", "browser-evidence", "dist"}
 SECRET_BASENAMES = {".env", ".env.local", ".env.production", ".env.staging", "auth.json", "credentials.json"}
 SECRET_NAME_RE = re.compile(r"(?:secret|token|password|credential|private[_-]?key)", re.I)
 
