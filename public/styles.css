@@ -2956,6 +2956,7 @@ html[lang="vi"] body h2 {
 
 html[lang="vi"] body :is(h3, h4):not(.footer-col h3):not(.site-footer h3) {
   font-family: var(--vi-display-serif);
+  font-weight: 400;
 }
 
 html[lang="vi"] .site-footer .footer-col h3 {
