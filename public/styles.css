@@ -17,6 +17,10 @@
   --sans: "Segoe UI", Arial, Helvetica, system-ui, -apple-system, sans-serif;
 }
 
+html[lang="vi"] {
+  --vi-display-serif: "EB Garamond", Georgia, serif;
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; background: var(--ivory); overflow-x: clip; }
 body {
@@ -2871,16 +2875,20 @@ html.reveal-ready .partners-page .reveal.is-visible {
 }
 
 /* Vietnamese display system — preserve the GOLD scale while allowing current copy to breathe. */
+html[lang="vi"] .hero h1,
 html[lang="vi"] .page-hero h1,
 html[lang="vi"] .capabilities-page .page-hero h1,
 html[lang="vi"] .about-page .about-hero h1,
+html[lang="vi"] .marigold-hero-copy h1,
+html[lang="vi"] .product-hero-copy h1,
 html[lang="vi"] .story .section-heading h2,
 html[lang="vi"] .story .story-heading h2,
 html[lang="vi"] .editorial-grid h2,
 html[lang="vi"] .content-block h2,
+html[lang="vi"] .portfolio-copy h2,
 html[lang="vi"] .section-heading h2,
 html[lang="vi"] .why-value-intro h2 {
-  font-family: var(--serif);
+  font-family: var(--vi-display-serif);
   font-weight: 500;
   text-wrap: balance;
   word-break: normal;
@@ -2935,4 +2943,18 @@ html[lang="vi"] .why-value-intro h2 {
     grid-template-columns: minmax(0, .36fr) minmax(0, .64fr);
     gap: clamp(48px, 5vw, 80px);
   }
+}
+
+/* Vietnamese display subheadings use EB Garamond without contaminating footer UI labels. */
+html[lang="vi"] body h1,
+html[lang="vi"] body h2 {
+  font-family: var(--vi-display-serif) !important;
+}
+
+html[lang="vi"] body :is(h3, h4):not(.footer-col h3):not(.site-footer h3) {
+  font-family: var(--vi-display-serif);
+}
+
+html[lang="vi"] .site-footer .footer-col h3 {
+  font-family: var(--sans);
 }
