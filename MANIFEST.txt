@@ -45,6 +45,10 @@ dist/assets/b2b-vorigin-premium.webp
 dist/assets/b2b-vorigin.webp
 dist/assets/favicon-32.png
 dist/assets/favicon.svg
+dist/assets/fonts/EB-Garamond-OFL.txt
+dist/assets/fonts/SlGUmQSNjdsmc35JDF1K5GR1SDk.woff2
+dist/assets/fonts/SlGUmQSNjdsmc35JDF1K5GR6SDktYw.woff2
+dist/assets/fonts/SlGUmQSNjdsmc35JDF1K5GR7SDktYw.woff2
 dist/assets/fonts/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYp3tKgS4.woff2
 dist/assets/fonts/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpHtKgS4.woff2
 dist/assets/fonts/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpntKgS4.woff2
@@ -215,6 +219,10 @@ public/assets/b2b-vorigin-premium.webp
 public/assets/b2b-vorigin.webp
 public/assets/favicon-32.png
 public/assets/favicon.svg
+public/assets/fonts/EB-Garamond-OFL.txt
+public/assets/fonts/SlGUmQSNjdsmc35JDF1K5GR1SDk.woff2
+public/assets/fonts/SlGUmQSNjdsmc35JDF1K5GR6SDktYw.woff2
+public/assets/fonts/SlGUmQSNjdsmc35JDF1K5GR7SDktYw.woff2
 public/assets/fonts/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYp3tKgS4.woff2
 public/assets/fonts/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpHtKgS4.woff2
 public/assets/fonts/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpntKgS4.woff2
