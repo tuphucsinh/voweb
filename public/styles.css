@@ -2889,7 +2889,7 @@ html[lang="vi"] .portfolio-copy h2,
 html[lang="vi"] .section-heading h2,
 html[lang="vi"] .why-value-intro h2 {
   font-family: var(--vi-display-serif);
-  font-weight: 500;
+  font-weight: 400;
   text-wrap: balance;
   word-break: normal;
   overflow-wrap: normal;
@@ -2949,6 +2949,7 @@ html[lang="vi"] .why-value-intro h2 {
 html[lang="vi"] body h1,
 html[lang="vi"] body h2 {
   font-family: var(--vi-display-serif) !important;
+  font-weight: 400;
 }
 
 html[lang="vi"] body :is(h3, h4):not(.footer-col h3):not(.site-footer h3) {
