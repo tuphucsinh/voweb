@@ -2870,83 +2870,69 @@ html.reveal-ready .partners-page .reveal.is-visible {
   }
 }
 
-/* Owner recovery V2 — Vietnamese large-display rhythm only. */
+/* Vietnamese display system — preserve the GOLD scale while allowing current copy to breathe. */
+html[lang="vi"] .page-hero h1,
+html[lang="vi"] .capabilities-page .page-hero h1,
+html[lang="vi"] .about-page .about-hero h1,
 html[lang="vi"] .story .section-heading h2,
-html[lang="vi"] .story .story-heading h2 {
-  max-width: 900px;
-  font-size: clamp(30px, 3.5vw, 46px);
-  line-height: 1.14;
-  letter-spacing: -0.012em;
+html[lang="vi"] .story .story-heading h2,
+html[lang="vi"] .editorial-grid h2,
+html[lang="vi"] .content-block h2,
+html[lang="vi"] .section-heading h2,
+html[lang="vi"] .why-value-intro h2 {
+  font-family: var(--serif);
+  font-weight: 500;
   text-wrap: balance;
   word-break: normal;
   overflow-wrap: normal;
   hyphens: none;
 }
 
-html[lang="vi"] .why-value-intro h2 {
-  max-width: 100%;
-  font-size: clamp(42px, 4.3vw, 62px);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-  word-break: normal;
-  overflow-wrap: normal;
-  hyphens: none;
+/* VI_PAGE_HERO: GOLD generic interior-page hierarchy, with a slightly safer leading for diacritics. */
+html[lang="vi"] .page-hero h1 {
+  max-width: 1000px;
+  font-size: clamp(54px, 7vw, 92px);
+  line-height: .98;
+  letter-spacing: -.035em;
 }
 
 html[lang="vi"] .about-page .about-hero h1 {
   max-width: 680px;
-  font-size: clamp(50px, 4.85vw, 74px);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-  word-break: normal;
-  overflow-wrap: normal;
-  hyphens: none;
+  font-size: clamp(54px, 5.35vw, 82px);
+  line-height: 1;
+  letter-spacing: -.035em;
 }
 
-html[lang="vi"] .capabilities-page .page-hero h1 {
-  max-width: 1000px;
-  font-size: clamp(48px, 6.2vw, 82px);
-  line-height: 1.03;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-  word-break: normal;
-  overflow-wrap: normal;
-  hyphens: none;
+/* VI_EDITORIAL_DISPLAY: one shared measure and rhythm for story/editorial statements. */
+html[lang="vi"] .story .section-heading h2,
+html[lang="vi"] .story .story-heading h2,
+html[lang="vi"] .editorial-grid h2,
+html[lang="vi"] .content-block h2 {
+  max-width: 900px;
+  font-size: clamp(32px, 3.9vw, 50px);
+  line-height: 1.08;
+  letter-spacing: -.02em;
+}
+
+/* VI_SECTION_HEADING: retain the GOLD section scale without language-specific shrinkage. */
+html[lang="vi"] .section-heading h2 {
+  max-width: 100%;
+  font-size: clamp(38px, 4.2vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -.025em;
+}
+
+/* The longer current Why copy needs the space, not a smaller display face. */
+html[lang="vi"] .why-value-intro h2 {
+  max-width: 100%;
+  font-size: clamp(44px, 4.6vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -.035em;
 }
 
 @media (min-width: 1100px) {
   html[lang="vi"] .why-value-index {
     grid-template-columns: minmax(0, .36fr) minmax(0, .64fr);
     gap: clamp(48px, 5vw, 80px);
-  }
-}
-
-@media (max-width: 1099px) {
-  html[lang="vi"] .why-value-intro h2 {
-    max-width: 520px;
-    font-size: clamp(42px, 5.7vw, 58px);
-  }
-}
-
-@media (min-width: 581px) and (max-width: 820px) {
-  html[lang="vi"] .about-page .about-hero h1 {
-    max-width: 560px;
-    font-size: clamp(48px, 6.6vw, 60px);
-  }
-}
-
-@media (max-width: 580px) {
-  html[lang="vi"] .why-value-intro h2 {
-    max-width: 100%;
-    font-size: clamp(40px, 11.5vw, 52px);
-    line-height: 1.06;
-  }
-
-  html[lang="vi"] .about-page .about-hero h1 {
-    max-width: 345px;
-    font-size: clamp(46px, 11.2vw, 54px);
-    line-height: 1.02;
   }
 }
