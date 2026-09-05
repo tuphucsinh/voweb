@@ -168,7 +168,7 @@ d5fec9cb27fc46b2774595e5f7ae71a29c6e4962b6f3f7b1e2a990a6a9226ee0  ./public/asset
 f9d6220f98682a2240255563e9d343afaaab51b640629ee3c1b462a1ab467a10  ./public/assets/vorigin-logo-footer-bronze.svg
 4b894c1201d6aa737e6d1041e4d9faf7a2a052586d1603c7a30004275cda5956  ./public/assets/vorigin-logo-primary.svg
 b077f36f27e45c1dcaad0857fbeff55466b6384c39bb324d31c9c5c8bffff00a  ./public/fonts.css
-3d4b7cc7e0c43f1ebdfa4ac820228202065c64e447389c1c07db4ac7100cc531  ./public/styles.css
+0fcb02b6608fd80349168f6764e1452bc2ebf535cd3e7b35963c46fd4cfc84c3  ./public/styles.css
 35621307fb3ed8ca98f39ead6ca0e47db86fb445a83702150b419ccefe44db67  ./scripts/backup.sh
 70ccfdd90c365d1904e1a2984d6914ddaa3edc9d0073321c74fc0022ed555294  ./scripts/browser_matrix.py
 10a1aa48bf23a4f82ddc4e7de1d710d6a81cf1f67f9156ba8c60012600ce4a8f  ./scripts/browser_matrix_cdp.mjs
